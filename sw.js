@@ -1,6 +1,6 @@
 ﻿// Lưu sẵn app để mở nhanh và học được khi mất mạng (chấm AI vẫn cần mạng).
 // Sửa app xong thì tăng số phiên bản này để điện thoại tải bản mới.
-const V = "lo-ielts-v6";
+const V = "lo-ielts-v7";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
   ...["01","02","03","04","05","06","07","08","09","10"].map(n => `img/${n}.svg`)];
 
