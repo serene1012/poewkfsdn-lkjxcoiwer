@@ -16,8 +16,21 @@
 - Bản làm việc: chính là repo này (clone về đâu làm đó). Server test:
   `python -m http.server 8432` chạy trong thư mục repo, mở http://localhost:8432.
 - Repo gốc (không đụng): `serene1012/dfsoiweun-lwkashdfsoiu`.
-- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v8`)
+- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v9`)
   thì điện thoại tải bản mới. Bản test qua server thì chỉ cần reload là network-first.
+- **Follow-up 5A.2 (cùng đêm, sw `lo-ielts-v9`) — tách key + quản lý key:**
+  - `apiCall(prompt,signal,opts,api)` thêm param `api` (mặc định `API` chấm bài); chat truyền
+    `chatAPI()` = `API_CHAT` (store riêng `llielts_api_chat`) hoặc fallback về `API` chấm bài.
+    Chat-side (`chatUI`/`chatSend`/`openChat`/`chatGuide`) đổi từ `SAMPLE` sang `chatReady()`.
+  - Cài đặt thêm 2 mục: "Key chat với Elaina" (key riêng + Thử gọi chat; bỏ trống + Lưu = xóa key
+    riêng) và "Key lưu sẵn — đổi nhanh khi hết hạn mức" (`llielts_keys`: label/prov/key/model/
+    **base URL tùy chọn** cho web khác chuẩn OpenAI; nút Dùng cho chấm / Dùng cho chat / Xóa).
+    Nhánh openrouter trong apiCall dùng `a.base||"https://openrouter.ai/api/v1"`.
+  - Tắt autofill Chrome: `autocomplete="off" name="ll-*-x"` trên các ô model/key (hiện tượng
+    "ghi h ra haiku" là gợi ý form-history của Chrome).
+  - Verify: không key → FAB mờ + guide; chỉ key chấm → chat ăn theo; 2 key lưu sẵn → Dùng cho
+    chat (auth = key chat, base tùy chỉnh `/chat/completions`) và Dùng cho chấm (auth = key chấm,
+    base OpenRouter mặc định) KHÔNG lẫn nhau; xóa key; export tiến độ 0/3 key; 7 tab 0 lỗi.
 
 ## 2. Đã xong — 5 commit
 
