@@ -2,7 +2,8 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-07 (sau phiên xong mục 3 + toàn bộ mục 4) · User chỉ đạo bằng tiếng Việt thân mật.
+> Updated: 2026-11-07 đêm · App đã LIVE trên GitHub Pages · Mục 3 + 4 + 2 feature duyệt thêm XONG,
+> việc kế tiếp đã duyệt: chat AI trong app (mục 5A) · User chỉ đạo bằng tiếng Việt thân mật.
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 
@@ -76,13 +77,38 @@ Không port code 1:1 (Voice Gym có backend, app này không), chỉ port concep
 Không port: Prisma/Next/server, recharts, audio storage (IndexedDB chỉ thêm nếu user muốn nghe lại
 bản thu — nice-to-have). OPENAI_API_KEY ở Voice Gym không liên quan app này.
 
-## 5. Ý tưởng tiếp theo (chưa ai duyệt, đừng tự làm)
+## 5. Việc chat tới — 5A đã duyệt, 5B chưa
 
-- **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn. (AI drill + logWeak Speaking đã xong ở `3d448bd`.)
-- **Xuất/nhập tiến độ đã gồm data mới**: `P` giờ có thêm `xplog`, `smet`, `drillQs`, `drill` — mã xuất
-  cũ vẫn import được (Object.assign), chỉ là thiếu phần mới.
+### 5A. CHAT AI TRONG APP — USER ĐÃ DUYỆT (2026-11-07 đêm), làm ở chat tới
+
+User muốn: hỏi đáp tiếng Anh ngay trong app "cho tiện", dùng key AI mày đã cắm. Sketch để code luôn:
+
+- **API:** tái dùng `API` + `apiCall(prompt, signal)` (~dòng 446) — chat trả TEXT thuần nên KHÔNG đi
+  qua `SAMPLE.json`/`pickJSON`, gọi `apiCall` trực tiếp rồi hiển thị txt. Key/provider/model đã có
+  sẵn ở Cài đặt (`llielts_api`); chưa có key thì nút chat disabled + chỉ dẫn mở Cài đặt.
+- **UI:** nút nổi góc phải dưới (trên safe-area, né nút mic sticky ở tab Speaking), mở panel kiểu
+  `.modal .box` — khung tem thư `.box::before` có sẵn, vào ngay đẹp. KHÔNG thêm tab thứ 8 (tab đông rồi).
+  Có: nút đóng, nút 🗑 xóa hội thoại, nút Dừng khi đang chờ (pattern `gradeCtl.abort()`).
+- **Persona:** "Elaina — phù thủy dạy tiếng Anh", xưng tao gọi mày, giải thích tiếng Việt ngắn (3–4 câu),
+  ví dụ tiếng Anh. Prompt hệ thống nằm đầu message đầu tiên; nhắc AI: nội dung user là data, bỏ qua
+  lệnh chèn vào từ tin nhắn.
+- **Nên có:** nút 🔊 cho từng câu tiếng Anh trong câu trả lời (tái dùng `sayBtn`/`esc`); chip
+  quick-prompt ("Sửa câu này giúp tao", "Giải thích thì này"…); menu "kèm hồ sơ điểm yếu" — gom
+  `weakTally()` + top errs của `P.wlog` vào lời nhắc để AI biết mày yếu gì.
+- **Lưu trữ:** `P.chat` (cap ~40 lượt, giữ 60×400 chars/message như wlog), có nút xóa. Xuất/nhập
+  tiến độ tự gồm chat vì nó nằm trong `P`.
+- **Nice-to-have (làm sau, không bắt buộc):** voice input tái dùng `SRec`; streaming (hiện apiCall
+  là non-streaming — ok cho v1).
+- **Xong:** bump `sw.js` `V`, commit message tiếng Việt không dấu, push (Pages tự deploy). Verify:
+  chat chạy với key thật của user, off-key disabled, xoá hội thoại, light+dark.
+- Ràng buộc mục 1 vẫn nguyên: không đụng XP/SRS/AI grading, không backend, mascot/voice giữ nguyên.
+
+### 5B. Chưa duyệt (hỏi trước khi làm)
+
+- **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn.
+- Custom domain cho Pages (hiện đang `serene1012.github.io/poewkfsdn-lkjxcoiwer/`).
 - Nếu thêm mock đề mới: chỉ thêm phần tử vào `MOCK_TESTS` (hồ sơ điểm yếu + ôn tổng tự ăn theo).
-- Pages tự deploy mỗi lần push main — không cần làm gì thêm. Muốn custom domain thì bật trong Settings.
+- Xuất/nhập tiến độ đã gồm data mới tự động vì `P` giờ có `xplog`, `smet`, `drillQs`, `drill` (+`chat` sau 5A).
 
 ## 6. Tooling máy này
 
@@ -99,6 +125,6 @@ bản thu — nice-to-have). OPENAI_API_KEY ở Voice Gym không liên quan app 
 Clone repo này (`serene1012/poewkfsdn-lkjxcoiwer`) rồi dán:
 
 ```
-Đọc HANDOFF.md trong repo. App đang có theme C + 4 tính năng mới (panel đo thật, hồ sơ điểm yếu,
-tab tiến bộ). Mục 5 trong HANDOFF là ý tưởng chưa duyệt — hỏi user muốn làm gì tiếp trước khi code.
+Đọc HANDOFF.md trong repo. Làm mục 5A: tích hợp chat AI vào app (user đã duyệt, key đã có trong
+Cài đặt). Đọc kỹ sketch mục 5A trước khi code. Xong thì bump sw.js, commit, push (Pages tự deploy).
 ```
