@@ -244,6 +244,13 @@ textarea:focus{border-color:var(--accent)}
 .weak{border:2px solid var(--accent);border-bottom-width:6px;border-radius:18px;padding:16px;background:var(--accent-soft);display:flex;flex-direction:column;gap:8px}
 .hist{display:flex;flex-direction:column;gap:6px;font-size:15px}
 .hist div{display:flex;justify-content:space-between;gap:8px}
+/* ===== Tab Tiến bộ ===== */
+.xpchart{display:flex;gap:5px;align-items:flex-end;height:92px}
+.xc{flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;min-width:0}
+.xc .xb{height:68px;display:flex;align-items:flex-end;width:100%}
+.xc .xb i{display:block;width:100%;background:var(--accent);border-radius:5px 5px 2px 2px;box-shadow:inset 0 2px 0 rgba(255,255,255,.25)}
+.xc .xb i.zero{background:var(--line);box-shadow:none}
+.xc small{font-size:10.5px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
 
 /* ===== Chi tiết "Kem sáp manga": nền sao mờ, viền kép, con dấu sáp ===== */
 body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='%23A9639B' fill-opacity='.05'%3E%3Cpath d='M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z' transform='translate(6 8) scale(.62)'/%3E%3Cpath d='M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z' transform='translate(104 92) scale(.42)'/%3E%3Ccircle cx='70' cy='126' r='1.5'/%3E%3Ccircle cx='134' cy='38' r='1.5'/%3E%3Ccircle cx='12' cy='82' r='1.2'/%3E%3C/g%3E%3C/svg%3E")}
@@ -317,7 +324,8 @@ const PARTS=[
   {id:"listening",name:"3 · Nghe",ready:true,soon:"Listening Section 1–2: điền tên, số, ngày tháng, đánh vần."},
   {id:"reading",name:"4 · Đọc",ready:true,soon:"True/False/Not Given, Matching Headings, Sentence Completion."},
   {id:"speaking",name:"5 · Speaking",ready:true,soon:"Mẫu câu giao tiếp, Speaking Part 1–3, AI chấm."},
-  {id:"mock",name:"6 · Thi thử",ready:true,soon:"Mini mock test và ôn tổng."}
+  {id:"mock",name:"6 · Thi thử",ready:true,soon:"Mini mock test và ôn tổng."},
+  {id:"prog",name:"7 · Tiến bộ",ready:true,soon:""}
 ];
 /* ================= BỘ ICON SVG (phong cách Elaina: nét dày, sao phép thuật) ================= */
 const IC={
@@ -605,7 +613,8 @@ function showLogRes(r){
 }
 
 /* ================= GAME STATE ================= */
-function gain(n){P.xp+=n;save();renderStats()}
+function dayKey(d){d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function gain(n){P.xp+=n;P.xplog=P.xplog||{};const k=dayKey();P.xplog[k]=(P.xplog[k]||0)+n;save();renderStats()}
 function renderStats(){
   let cur=LEVELS[0],nxt=null;LEVELS.forEach((x,i)=>{if(P.xp>=x[0]){cur=x;nxt=LEVELS[i+1]||null}});
   $("lvName").textContent=cur[1];
@@ -629,6 +638,7 @@ function route(){
   if(p.id==="reading")return readMenu();
   if(p.id==="speaking")return speakMenu();
   if(p.id==="mock")return mockMenu();
+  if(p.id==="prog")return progView();
 }
 function renderLocked(p){
   $("main").innerHTML=`<section class="card locked"><div class="ic">🔒</div><h2>${esc(p.name)} đang nung trong lò</h2>
@@ -2552,6 +2562,52 @@ function revEnd(){
   const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
   const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
   a.onclick=()=>{restore();startRev()};b.onclick=()=>{restore();mockMenu()};
+}
+
+/* ================= PHẦN 7: TIẾN BỘ — chỉ vẽ số đo được, thiếu data thì bỏ trống (không zero-fill) ================= */
+function svgPts(vals,opt){
+  if(!vals.length)return "";
+  const w=300,h=opt.h||96,pad=12,n=vals.length;
+  const x=i=>n===1?w/2:pad+i*(w-2*pad)/(n-1);
+  const y=v=>h-pad-(v-opt.min)/((opt.max-opt.min)||1)*(h-2*pad);
+  const pts=vals.map((v,i)=>x(i).toFixed(1)+","+y(v).toFixed(1)).join(" ");
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;max-width:${w}px" role="img" aria-label="${esc(opt.label||"")}">
+    <text x="1" y="11" font-size="10" font-weight="700" fill="var(--muted)">${opt.max}${opt.unit||""}</text>
+    <text x="1" y="${h-1}" font-size="10" font-weight="700" fill="var(--muted)">${opt.min}${opt.unit||""}</text>
+    ${n>=2?`<polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 4" opacity=".65"/>`:""}
+    ${vals.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="4.5" fill="var(--accent)"><title>điểm ${i+1}: ${v}${opt.unit||""}</title></circle>`).join("")}
+  </svg>`;
+}
+function progView(){
+  mStop();stopSpeak();
+  const log=P.xplog||{},keys=Object.keys(log).sort(),days=[];
+  if(keys.length)for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dayKey(d);days.push({k,v:k in log?log[k]:null,d})}
+  const max=Math.max(1,...days.map(x=>x.v||0));
+  const mh=(P.mhist||[]).slice().reverse();
+  const wv=(Array.isArray(P.smet)?P.smet:[]).filter(x=>x.wpm>0).map(x=>x.wpm);
+  const knownN=Object.keys(P.known||{}).length;
+  let delta="";
+  if(mh.length>=2){const d=Math.round((mh[mh.length-1].b-mh[0].b)*2)/2;
+    delta=d>=1?`Lần gần nhất hơn lúc đầu <b>+${d.toFixed(1)}</b> band`:d<=-1?`Lần gần nhất thấp hơn lúc đầu <b>${d.toFixed(1)}</b> band`:"Chênh với lúc đầu dưới 1 band — coi như đang ngang, đề mini lệch ±0.5–1 band nên chưa đủ tin để khen hay chê.";}
+  $("main").innerHTML=`<section class="card stack">
+    <div><div class="eyebrow">Chỉ vẽ cái đo được — thiếu data thì để trống, không tự điền 0 cho đẹp</div><h2>Tiến bộ</h2></div>
+    <div class="skrow">
+      <span>${ic("flame",15)} Chuỗi đúng ngay</span><span class="muted" style="font-size:14px">tốt nhất ${P.best}</span><span class="v">${P.streak}</span>
+      <span>${ic("spark",15)} Tổng XP</span><span class="muted" style="font-size:14px">cộng dồn từ lượt chơi</span><span class="v">${P.xp}</span>
+      <span>${ic("book",15)} Từ đã thuộc</span><span class="muted" style="font-size:14px">trên ${ALLW.length} từ trong app</span><span class="v">${knownN}</span>
+    </div>
+    <p class="muted" style="font-size:13px">Muốn nhìn xa hơn nữa: vào Hồ sơ điểm yếu ở tab 6 để luyện đúng chỗ rò.</p>
+  </section>
+  <section class="card stack"><b>${ic("flash",15)} XP mỗi ngày</b>
+    ${keys.length?`<div class="xpchart">${days.map(x=>`<div class="xc" title="${x.k}: ${x.v==null?"chưa ghi":"+"+(x.v||0)+" XP"}"><div class="xb">${x.v==null?"":`<i class="${x.v?"":"zero"}" style="height:${x.v?Math.max(8,Math.round(x.v/max*64)):3}px"></i>`}</div><small>${x.d.getDate()}</small></div>`).join("")}</div>
+    <p class="muted" style="font-size:13px">Ghi từ ${new Date(keys[0]+"T00:00:00").toLocaleDateString("vi-VN")}. XP trước ngày đó app chưa ghi nên không có trong hình — không bịa lại. Ô cọc màu nhạt là ngày có làm nhưng chỉ được 0–5 XP.`:`<p class="muted">Chưa ghi XP ngày nào. Học vài lượt là hình tự đầy.</p>`}
+  </section>
+  <section class="card stack"><div class="row" style="justify-content:flex-start;gap:10px"><b>${ic("exam",15)} Band thi thử</b><span class="chip" style="font-family:var(--f-body);font-size:13px">ước lượng</span></div>
+    ${mh.length?`${svgPts(mh.map(x=>+x.b),{min:Math.max(1,Math.floor(Math.min(...mh.map(x=>+x.b))-.5)),max:Math.min(9,Math.ceil(Math.max(...mh.map(x=>+x.b))+.5)),h:96,label:"Band các lần thi thử"})}<p class="muted" style="font-size:13px">Mỗi chấm là một lần nộp đề mini, theo thứ tự cũ → mới. ${delta||""}</p>`:`<p class="muted">Làm 1 đề trong tab 6 · Thi thử là hình này có data.</p>`}
+  </section>
+  <section class="card stack"><b>${ic("mic",15)} Speaking — từ/phút mỗi lần chấm</b>
+    ${wv.length?`${svgPts(wv,{min:Math.max(40,Math.floor(Math.min(...wv)/10)*10),max:Math.ceil(Math.max(...wv)/10)*10,h:96,unit:" t/p",label:"Từ mỗi phút các lần nói"})}<p class="muted" style="font-size:13px">Mỗi chấm là một lần nói được app chấm (mic đủ ≥10 giây), cũ → mới. Người nói tự nhiên 120–150 t/p. Số này đo từ mic thật, không phải AI phán.</p>`:`<p class="muted">Nói được chấm trong tab 5 · Speaking (mic đủ 10 giây) là hình này có data.</p>`}
+  </section>`;
 }
 
 /* ================= PHÁO GIẤY ================= */
