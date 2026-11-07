@@ -222,6 +222,12 @@ textarea:focus{border-color:var(--accent)}
 .crit{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-size:16px;align-items:baseline}
 .crit .b{font-weight:900;color:var(--accent-d);text-align:right;font-size:18px}
 .crit .n{grid-column:1/-1;color:var(--muted);font-size:14px;margin-bottom:6px}
+/* Panel số liệu đo thật trong Speaking: app tự đo từ transcript + đồng hồ, không qua AI */
+.met{border:2px dashed var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
+.met .t{font-size:12px;font-weight:900;letter-spacing:.05em;color:var(--muted)}
+.met .t small{font-weight:600;letter-spacing:0;font-size:12px}
+.mtag{display:inline-block;padding:0 8px;border-radius:99px;font-size:12.5px;font-weight:800;border:1.5px solid currentColor;vertical-align:1px}
+.mtag.lo{color:var(--bad)}.mtag.ok{color:var(--good)}.mtag.hi{color:var(--gold-d)}
 .sample{white-space:pre-line}
 .tiles.link .opt{font-size:15px;min-height:42px}
 .opt.pick{border-color:var(--accent);background:var(--accent-soft);font-weight:800}
@@ -2018,12 +2024,27 @@ const S_CHECK={
   p2:["Nói đủ 4 ý trên cue card","Kể theo trình tự: At first / Then / In the end","Dùng thì quá khứ đúng khi kể","Có cảm xúc và lý do ở ý cuối (explain…)","Nói gần đủ 2 phút (khoảng 200–250 từ)"],
   p3:["Nêu quan điểm rõ ràng ngay đầu","Lý do mang tính chung (xã hội, kinh tế, giáo dục…)","Có ví dụ, nhất là ở Việt Nam","Có nhìn mặt kia (Having said that… / On the other hand…)","Dài 4–6 câu"]
 };
+const FILLERS=["um","uh","er","ah","like","you know","i mean","kind of","sort of","basically","actually"];
 function sStats(ans){
   const low=" "+ans.toLowerCase().replace(/[^a-z' ]+/g," ").replace(/\s+/g," ")+" ";
   const used=[...new Set(LINK_KEYS.filter(k=>low.includes(" "+k.replace(/[^a-z' ]+/g," ").replace(/\s+/g," ").trim()+" ")))];
   const words=sWords(ans),secs=S.part==="p2"?S.talkSecs:(S.t0?((S.t1||Date.now())-S.t0)/1000:0);
   const wpm=S.mic&&secs>=10?Math.round(words/(secs/60)):0;
-  return {words,used,secs,wpm,html:`<div class="muted" style="font-size:14px">📊 ${words} từ${secs>=1?` · ${fmtT(secs)}`:""}${wpm?` · ~${wpm} từ/phút (người nói tự nhiên ~120–150)`:""} · từ nối: ${used.length?esc(used.join(", ")):"chưa có"}</div>`};
+  const sent=ans.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
+  const avgLen=sent.length?Math.round(words/sent.length):words;
+  const fillers=FILLERS.map(f=>[f,(low.match(new RegExp(" "+f.replace(/ /g,"\\s+")+" ","g"))||[]).length]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  const fillN=fillers.reduce((a,b)=>a+b[1],0);
+  const wpmtag=wpm?(wpm<95?["lo","chậm"]:wpm<=160?["ok","tự nhiên"]:["hi","nhanh"]):null;
+  const html=`<div class="met"><div class="t">SỐ LIỆU ĐO THẬT <small>· app tự đo từ mic + đồng hồ, không phải AI phán</small></div>
+    <div><b>${words}</b> từ${secs>=1?` · <b>${fmtT(secs)}</b>`:""}${wpmtag?` · <b>~${wpm}</b> từ/phút <span class="mtag ${wpmtag[0]}">${wpmtag[1]}</span> <span class="muted">(người nói tự nhiên 120–150)</span>`:""}</div>
+    <div>${sent.length||1} câu · dài trung bình <b>${avgLen}</b> từ${sent.length?"":" · chưa thấy dấu câu"} · filler ${fillN?`${fillN}: ${fillers.map(([f,n])=>esc(f)+" ×"+n).join(", ")} (đếm thô, từ dùng đúng vẫn bị đếm)`:"0, sạch"}</div>
+    <div>từ nối: ${used.length?esc(used.join(", ")):"chưa có"}</div></div>`;
+  return {words,used,secs,wpm,sent:sent.length||1,avgLen,fillers,fillN,html};
+}
+/* Mỗi lần chấm (AI hoặc tự chấm) ghi lại số liệu đo thật vào P.smet — tab Tiến bộ dùng */
+function sLog(st,band){
+  P.smet=(Array.isArray(P.smet)?P.smet:[]).concat({t:Date.now(),part:S.part,words:st.words,secs:Math.round(st.secs),wpm:st.wpm,fill:st.fillN,band:band==null?null:band}).slice(-40);
+  save();
 }
 function sAfterBtns(){
   const next=S.part==="p2"?`<button class="btn pri" id="sP3">Sang Part 3 của đề này →</button>`:`<button class="btn pri" id="sNext">Câu tiếp →</button>`;
@@ -2037,6 +2058,7 @@ function sAfterWire(){
   if($("sNext"))$("sNext").onclick=()=>pView(S.part,S.qi+1);
 }
 function sSelf(reason,st){
+  sLog(st);
   const smp=sSampleFor(),chk=S_CHECK[S.part];
   fb("tip",`<div>${reason}</div>${st.html}
     ${smp?`<div><b>Bài mẫu band 7:</b> ${sayBtn(smp)}</div><div class="ex sample">${esc(smp)}</div>`:`<div><b>Khung để so:</b> ${esc(FRAMES[S.part].steps.join(" → "))}</div>`}
@@ -2068,7 +2090,7 @@ async function gradeSpeak(){
     const x=r.raw||{},band=v=>{v=+v;return isFinite(v)&&v>0?Math.max(0,Math.min(9,Math.round(v*2)/2)):null};
     const fc=band(x.fc),lr=band(x.lr),gra=band(x.gra),bs=[fc,lr,gra].filter(v=>v!=null);
     const avg=bs.length?Math.round(bs.reduce((a,b)=>a+b,0)/bs.length*2)/2:Math.round(r.score*9/10*2)/2;
-    const g=avg>=6.5?20:avg>=5?15:5;gain(g);P.sdone[sKey()]=1;
+    const g=avg>=6.5?20:avg>=5?15:5;gain(g);P.sdone[sKey()]=1;sLog(st,avg);
     if(avg>=6.5){P.streak++;P.best=Math.max(P.best,P.streak)}else P.streak=0;
     save();renderStats();if(avg>=6.5)confetti();
     try{sessionStorage.removeItem("sdraft_"+sKey())}catch(_){}
