@@ -414,6 +414,7 @@ volOff:'<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m16.5 9.5 5 5"/><path d="m21.
 flame:'<path d="M12 22c4.4 0 7.5-2.8 7.5-7 0-3-1.6-5.2-3.2-7.2-.4 2-1.4 3.1-2.8 3.6.3-2.4-.7-5.6-3.5-7.4.3 3-1 4.6-2.6 6.2C5.8 11.8 4.5 13.4 4.5 15c0 4.2 3.1 7 7.5 7Z"/>',
 lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
 notebook:'<rect x="5" y="3" width="15" height="18" rx="2"/><path d="M9 3v18"/><path d="M13 8h4"/><path d="M13 12h4"/>',
+clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
 send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>'
 };
 const ic=(n,s)=>'<svg viewBox="0 0 24 24" width="'+(s||16)+'" height="'+(s||16)+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IC[n]||"")+"</svg>";
@@ -772,6 +773,14 @@ Chỉ trả về đúng một JSON, không thêm chữ nào khác:
 /* ================= GAME STATE ================= */
 function dayKey(d){d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function gain(n){P.xp+=n;P.xplog=P.xplog||{};const k=dayKey();P.xplog[k]=(P.xplog[k]||0)+n;save();renderStats()}
+/* Bộ đếm thời gian học: 15 giây/nhịp, tab nào đang mở thì tính vào tab đó. Tab ẩn (đổi cửa sổ, tắt màn hình) thì không đếm. */
+let tTick=null;
+function tBeat(){
+  if(document.visibilityState!=="visible")return;
+  const k=dayKey();P.tlog=P.tlog||{};P.tlog[k]=P.tlog[k]||{};
+  P.tlog[k][P.tab]=(P.tlog[k][P.tab]||0)+15;save();
+}
+function tHeartbeat(){clearInterval(tTick);tTick=setInterval(tBeat,15000)}
 function renderStats(){
   let cur=LEVELS[0],nxt=null;LEVELS.forEach((x,i)=>{if(P.xp>=x[0]){cur=x;nxt=LEVELS[i+1]||null}});
   $("lvName").textContent=cur[1];
@@ -787,7 +796,7 @@ $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.tab=b.da
 function route(){
   const p=PARTS.find(x=>x.id===P.tab)||PARTS[0];
   try{CAN_SPEAK&&speechSynthesis.cancel()}catch(e){}
-  sStopAll();mStop();chatUI();
+  sStopAll();mStop();chatUI();tHeartbeat();
   if(!p.ready)return renderLocked(p);
   if(p.id==="vocab")return vocabMenu();
   if(p.id==="grammar")return grammarMenu();
@@ -1346,6 +1355,57 @@ qs:[
  {seg:3,t:"mc",q:"What do volunteers need to bring themselves?",a:"boots",o:["gloves","waterproof jackets","a uniform"],why:"Cả ba thứ đều được nhắc. Gloves và jackets được cho mượn (lend), chỉ boots là We don't provide."},
  {seg:4,t:"gap",label:"Volunteer lunch: about £___",a:"3.40",o:["6.80","4.30","3.14"],why:"Đề cho half price để mày rối, nhưng người nói đã đọc luôn con số cuối: three pounds forty. Ghi số được đọc, đừng tự nhân đôi."},
  {seg:5,t:"gap",label:"Text Sarah on: ___",a:"07712 400963",o:["07712 400693","07721 400963","07712 440963"],why:"double oh = 00. Email bị loại (please don't email) nên chỉ cần số điện thoại. Ghi theo cụm 07712 / 400963."}
+]},
+{key:"zoo",sec:2,name:"Tham quan sở thú",en:"Melbourne Zoo · Welcome talk",intro:"Section 2: nhân viên sở thú chào đoàn trước giờ vào cổng. Bẫy: thông tin báo chí bị sửa, sự kiện bị huỷ, nơi bán vé giảm giá đổi chỗ.",who:{A:"Keeper"},
+segs:[
+ [["A","Good morning, everyone, and welcome to Melbourne Zoo. It's November, so the days are longer now, and after the main visit we're running a mini tour that starts two hours after seven in the evening."]],
+ [["A","A few changes to the events list before you go in. There is no bonfire night this year, I'm afraid — we had a small fire last month, so that one is off. The two Christmas parties in December are still going ahead; the details are on the website."]],
+ [["A","Everyone asks about the star animal. The newspapers always print kangaroos, but this season it's the koala. It sleeps for up to twenty hours a day, so most of the time you'll see it curled up in the forks of the trees."]],
+ [["A","If you want to feed the kangaroos, that's fine, but you must stay standing up. Bending down is read as aggression, and please don't touch the young ones — the mothers are very protective."]],
+ [["A","One part of the zoo is closed today: the wild dog pen. We're repairing the fence, so for safety reasons it's shut all week. Everything else is open as normal."]],
+ [["A","Last thing — discount tickets. The website is down for maintenance, so this year they are only sold at the cafe near the gift shop. Buy them early, because the afternoon queue gets very long."]]
+],
+qs:[
+ {seg:0,t:"gap",label:"Mini tour starts at: ___ p.m.",a:"9",o:["7","5","11"],why:"'two hours after seven in the evening' = 9 giờ tối. Section 2 thích bắt tự cộng giờ: nghe được seven thì đừng ghi 7 vội."},
+ {seg:1,t:"mc",q:"Which event has been cancelled?",a:"Bonfire night",o:["The Christmas parties","The mini tour","The main visit"],why:"'no bonfire night… that one is off'. Hai Christmas parties vẫn diễn ra ('still going ahead') — nghe tới cuối đoạn mới chắc."},
+ {seg:2,t:"gap",label:"The koala sleeps up to ___ hours a day.",a:"20",o:["12","24","10"],why:"'up to twenty hours a day'. Báo chí hay đăng kangaroo nhưng star animal mùa này là koala — kiểu 'người ta tưởng là X, thật ra là Y'."},
+ {seg:3,t:"mc",q:"What must visitors do when feeding the kangaroos?",a:"stand upright",o:["bend down slowly","hold the young ones","feed them in pairs"],why:"'you must stay standing up. Bending down is read as aggression'. Câu hỏi MUST thì đáp án là điều bắt buộc, còn 'don't touch the young ones' là điều cấm."},
+ {seg:4,t:"gap",label:"The ___ pen is closed for fence repairs.",a:"wild dog",o:["koala","kangaroo","bird"],why:"'the wild dog pen… it's shut all week'. Còn lại 'open as normal' — nghe cả phần khẳng định lẫn phần loại trừ."},
+ {seg:5,t:"mc",q:"Where can visitors buy discount tickets this year?",a:"at the cafe near the gift shop",o:["on the website","at the main entrance","inside the gift shop"],why:"Website đang bảo trì nên vé chỉ bán ở cafe cạnh gift shop. 'Near the gift shop' khác 'inside the gift shop' — giới từ cũng là bẫy."}
+]},
+{key:"mufs",sec:2,name:"Trồng rau trong phố",en:"Middletown Urban Farming Scheme · Talk",intro:"Section 2: người phụ trách dự án trồng rau trong thành phố giới thiệu. Bẫy: ai khởi xướng, mục tiêu ban đầu, cái gì miễn phí cái gì phải tự mua, tổ chức nào phụ trách việc nào.",who:{A:"Host",B:"Chris"},
+segs:[
+ [["A","Before we take questions, let me hand over to Chris Butcher, chairperson of the Middletown Urban Farming Scheme."],["B","Thanks. People assume our group was started by town planners, but in fact it began with a handful of local business people. University agricultural specialists joined later, and we're a non-profit now."]],
+ [["B","Our first aim was simple: the city is full of vacant land — old plots nobody uses — so we set out to put that land to work. People often say we started the scheme to cut carbon, but that idea came later; the health benefits of a better diet were a bonus we only noticed afterwards."]],
+ [["A","Who actually joins the scheme?"],["B","A lot of primary schools and corporate offices have plots now. This year we're concentrating on senior citizens — they've been the slowest group to get involved, so we're running special sessions just for them."]],
+ [["B","Two practical points. We give new members window boxes and containers free of charge, but you buy your own soil and compost — we simply can't transport that amount of material around the city."]],
+ [["A","Has the scheme changed anything in schools?"],["B","Not in the way we hoped. School lunches certainly haven't become cheaper, but teachers report that pupils are noticeably more aware of the environment, and for us that is worth just as much."]],
+ [["B","Finally, thanks to our partners. The city hospital runs free cooking classes for our members; the local government lets us use a glasshouse from the parks department to raise winter seedlings; and the university tests our soil samples and advises on fertiliser. The healthy-eating classes come from the supermarket chain, not the university."]]
+],
+qs:[
+ {seg:0,t:"mc",q:"Who started the scheme?",a:"business people",o:["town planners","university specialists","city officials"],why:"'People assume… town planners, but in fact… business people'. But in fact là tín hiệu đáp án thật của Section 2."},
+ {seg:1,t:"gap",label:"First aim: to use ___ land in the city.",a:"vacant",o:["priceless","private","central"],why:"'the city is full of vacant land… put that land to work'. Giảm carbon là điều người ta hay đoán — bài nói rõ ý đó đến sau."},
+ {seg:2,t:"mc",q:"Which group is the scheme focusing on this year?",a:"senior citizens",o:["primary schools","corporate offices","university students"],why:"Schools và offices đã tham gia nhiều rồi; 'this year' là senior citizens — 'the slowest group to get involved'."},
+ {seg:3,t:"gap",label:"Members must buy their own soil and ___.",a:"compost",o:["window boxes","containers","gloves"],why:"Window boxes và containers là miễn phí, còn 'you buy your own soil and compost'. Nghe cho rõ cái nào được cho, cái nào phải mua."},
+ {seg:4,t:"mc",q:"What effect has the scheme had on schools?",a:"pupils are more environmentally aware",o:["lunches have become cheaper","pupils stay later after class","schools have opened farm shops"],why:"'certainly haven't become cheaper… but pupils are noticeably more aware'. Ý thật nằm sau but, ý trước nó là phủ định."},
+ {seg:5,t:"mc",q:"Who runs the healthy-eating classes?",a:"the supermarket chain",o:["the city hospital","the university","the parks department"],why:"Đoạn này là bài ghép 4 tổ chức: hospital = cooking classes, government = glasshouse, university = soil testing. Healthy-eating classes thuộc về supermarket — câu chốt 'not the university' gỡ bẫy luôn."}
+]},
+{key:"shop",sec:2,name:"Ngày đầu ở siêu thị",en:"The Hollies Supermarket · Staff induction",intro:"Section 2: quản lý hướng dẫn nhân viên mới ở siêu thị. Bẫy: ngày nghỉ, giờ ca thay đổi theo tuần, việc được phép làm và việc phải tự làm ngay không cần hỏi.",who:{A:"Supervisor"},
+segs:[
+ [["A","Welcome to The Hollies, everyone. We open Tuesday to Sunday — the one day we're closed is Monday, so please don't turn up for a shift then."]],
+ [["A","Your hours will vary from week to week. Some weeks you're on the early shift, which starts at five in the morning; other weeks it's the late one, finishing at eleven at night. The rota is emailed every Thursday."]],
+ [["A","Your main duties: you'll receive deliveries and unpack them, and you'll spend most of your time on the shop floor. Only lift light items — anything heavy, leave for the delivery drivers."]],
+ [["A","When it gets busy, use any empty till you can see. And if you spot a wet floor, mop it up straight away — you don't need to ask the manager first. In the bakery, just help out when you're asked."]],
+ [["A","One thing we take seriously here: smile. It's not about pretending — smiling keeps you positive, and it keeps the whole team cheerful, even on a long shift."]],
+ [["A","Finally, if a customer becomes difficult, stay calm and call me, the supervisor. Don't argue back. And the staff relaxation area is between the frozen goods aisle and the exit — there's a microwave and a drinks dispenser in there."]]
+],
+qs:[
+ {seg:0,t:"gap",label:"The store is closed on: ___",a:"Mondays",o:["Sundays","Saturdays","Fridays"],why:"'Tuesday to Sunday — the one day we're closed is Monday'. Phải ghép vế mở cửa với vế nghỉ mới ra ngày đóng."},
+ {seg:1,t:"mc",q:"What does the supervisor say about shift times?",a:"they change from week to week",o:["they are the same for everyone","they are always at night","the rota is posted in the store"],why:"'Some weeks… other weeks…' — giờ làm thay đổi theo tuần. Rota được gửi qua email chứ không dán trong cửa hàng."},
+ {seg:2,t:"mc",q:"What are new staff allowed to lift?",a:"light items only",o:["heavy boxes with help","any delivery before ten","frozen goods only"],why:"'Only lift light items — anything heavy, leave for the delivery drivers'. Giới hạn được nói rõ ngay ở vế sau dấu gạch."},
+ {seg:3,t:"gap",label:"Wet floors can be mopped without asking the ___ first.",a:"manager",o:["customer","cleaner","supervisor"],why:"'you don't need to ask the manager first'. Chỗ nào không cần xin phép thường đi với straight away / don't need to — ghi đúng chức danh được nhắc."},
+ {seg:4,t:"mc",q:"Why does the supervisor ask staff to smile?",a:"it keeps the team positive",o:["customers photograph the staff","the company records smiles","it hides tiredness"],why:"'smiling keeps you positive and keeps the whole team cheerful'. Ba phương án còn lại là thoại đề hay bịa — bài không nói tới."},
+ {seg:5,t:"mc",q:"Where is the staff relaxation area?",a:"between the frozen goods aisle and the exit",o:["next to the bakery","behind the manager's office","opposite the tills"],why:"Địa điểm trong bài induction thường cho theo vị trí tương đối: 'between the frozen goods aisle and the exit'. Chi tiết phụ (microwave, drinks dispenser) giúp xác nhận lại."}
 ]}
 ];
 LISTENING_SETS.forEach(s=>s.qs.forEach((q,i)=>{q.id="l"+s.key+i;q.set=s.key}));
@@ -1665,6 +1725,83 @@ const READING_PASSAGES=[
   {t:"comp",q:"Salt helps bread dough ___ evenly.",a:["rise"],ev:[[1,1]],why:"'helps bread dough <b>rise</b> evenly'. Sau 'help + O' dùng động từ nguyên mẫu."},
   {t:"comp",q:"We can only taste salt that ___ on contact with the tongue.",a:["dissolves"],ev:[[3,1]],why:"'salt that <b>dissolves</b> on contact'. Chủ ngữ số ít nên nhớ thêm -s."},
   {t:"comp",q:"The smell of soy sauce or ___ can make food seem saltier.",a:["cheese"],ev:[[4,1]],why:"'the aroma of soy sauce or <b>cheese</b>'. 'Smell' = 'aroma'."}
+ ]},
+{id:"duned",title:"One Thousand Lives, Followed for a Lifetime",topic:"Sức khỏe & tâm lý",emoji:"🩺",
+ paras:[
+  {l:"A",s:["In 1972, researchers in the New Zealand city of Dunedin began one of the most ambitious projects in the history of psychology: they would follow every baby born at the city's Queen Mary Hospital over a twelve-month period.","In the end, 1,037 children — more than nine in ten of all births there that year — joined the study.","Half a century later, many of them are still being tracked, making the Dunedin Study one of the longest-running investigations of human development anywhere in the world."]},
+  {l:"B",s:["What makes the study remarkable is not just its length but the loyalty of its members.","They return to the laboratory every few years — at ages 3, 5, 7 and onwards — for a full day of tests: medical examinations, dental checks, lung measurements and, in recent decades, brain scans and blood samples.","More than ninety per cent of the original group are still taking part, a retention rate that most long-term studies can only dream of."]},
+  {l:"C",s:["The study's most celebrated finding concerns self-control.","Children rated as impulsive and easily distracted at the age of 3 were, decades later, more likely to suffer health problems, struggle with money and be convicted of crimes.","Crucially, this held true even after the researchers accounted for differences in intelligence and family background, suggesting that self-control in early childhood is a powerful predictor in its own right."]},
+  {l:"D",s:["The study has also revealed that people age at very different speeds.","By measuring balance, grip strength, cholesterol and other markers, researchers found that signs of accelerated ageing were already visible in some members at 26.","At 38, the biological ages of participants spanned from 28 to 61, even though they had all been born within the same twelve months."]},
+  {l:"E",s:["Mental health is another rich seam.","Nearly every member has experienced at least one episode of anxiety or depression, yet a small minority with persistent problems absorbs most of the services and support — knowledge that matters when health systems plan care.","The data has also settled an old argument: a gene linked to depression appears to raise the risk only when combined with stressful life events, so nature and nurture work together rather than in competition.","Now that the original children are middle-aged, the study has begun following their sons and daughters, hoping to see how advantages and disadvantages pass from one generation to the next."]}
+ ],
+ heads:["How one small hospital supplied a lifetime of data","The full-day tests members keep coming back for","A childhood trait that foreshadows adult difficulties","Growing old, but not at the same pace","Nature and nurture pulling in the same direction","The salary paid to loyal participants","How the study nearly closed in the 1980s"],
+ qs:[
+  {t:"tfng",q:"The study pays its members for each visit.",a:"NG",ev:[],why:"Đoạn B kể các bài kiểm tra và tỉ lệ giữ chân người tham gia, nhưng <b>tiền thưởng</b> thì không hề nhắc tới.",trap:"Câu hỏi về thứ bài không nhắc (tiền) thì là NOT GIVEN. Đừng suy ra 'hẳn là có trả tiền' từ đời thường."},
+  {t:"tfng",q:"Most long-term studies keep more of their participants than the Dunedin Study does.",a:"F",ev:[[1,2]],why:"Bài nói tỉ lệ giữ chân trên 90% là thứ mà 'most long-term studies <b>can only dream of</b>' — tức là các nghiên cứu khác giữ được ÍT hơn, ngược với câu hỏi.",trap:"So sánh kiểu 'most studies…' phải đối chiếu với cụm so sánh trong bài. Bài khen Dunedin hơn hẳn, câu hỏi nói ngược lại thì FALSE."},
+  {t:"tfng",q:"Half a century after it began, the Dunedin Study is still going.",a:"T",ev:[[0,2]],why:"'Half a century later, many of them are <b>still being tracked</b>' — khớp hoàn toàn với câu hỏi."},
+  {t:"tfng",q:"The link between childhood self-control and later problems disappeared once family background was considered.",a:"F",ev:[[2,2]],why:"Bài nói '<b>held true even after</b> the researchers accounted for… family background' — mối liên hệ vẫn đứng vững, không biến mất.",trap:"Câu hỏi dùng 'disappeared', bài dùng 'held true even after' — hai ý trực tiếp đối lập nhau nên FALSE, đừng nhầm với NOT GIVEN."},
+  {t:"tfng",q:"A gene linked to depression raises the risk even when life is calm.",a:"F",ev:[[4,2]],why:"Bài nói gene này tăng rủi ro '<b>only when combined with stressful life events</b>' — tức là khi cuộc sống êm đềm thì không, ngược với 'even when life is calm'."},
+  {t:"head",p:0,a:0,why:"Đoạn A kể nguồn gốc: một bệnh viện, một năm, 1.037 trẻ — nguồn của cả đời dữ liệu."},
+  {t:"head",p:1,a:1,why:"Đoạn B tả các đợt kiểm tra cả ngày mỗi vài năm và tỉ lệ tham gia kỳ high."},
+  {t:"head",p:2,a:2,why:"'self-control… powerful predictor': một đặc tính thuở 3 tuổi báo trước khó khăn lúc trưởng thành."},
+  {t:"head",p:3,a:3,why:"'people age at very different speeds' khớp thẳng với 'not at the same pace'."},
+  {t:"head",p:4,a:4,why:"Kết luận 'nature and nurture work together rather than in competition' chính là 'pulling in the same direction'."},
+  {t:"comp",q:"The study began with 1,037 babies born at ___ Hospital in Dunedin.",a:["Queen Mary"],ev:[[0,0]],why:"'born at the city's <b>Queen Mary</b> Hospital'. Hai chữ, đúng giới hạn NO MORE THAN TWO WORDS."},
+  {t:"comp",q:"Members' checks include lung measurements, brain scans and ___.",a:["blood samples"],ev:[[1,1]],why:"'brain scans and <b>blood samples</b>'. Giữ nguyên dạng số nhiều như bài."},
+  {t:"comp",q:"The study found that children with low ___ at age 3 were more likely to struggle as adults.",a:["self-control"],ev:[[2,0]],why:"'The study's most celebrated finding concerns <b>self-control</b>'. Đoạn sau chỉ mô tả nó (impulsive, easily distracted) chứ không gọi tên — từ cần điền nằm ở câu mở đầu đoạn."},
+  {t:"comp",q:"At 38, participants' biological ages ranged from 28 to ___.",a:["61","sixty-one"],ev:[[3,2]],why:"'spanned from 28 to <b>61</b>'."}
+ ]},
+{id:"buy",title:"The Way the Brain Buys",topic:"Tâm lý tiêu dùng",emoji:"🛒",
+ paras:[
+  {l:"A",s:["Every layout in a supermarket, from the width of the aisles to the height of the shelves, is the product of careful psychological research.","The first few metres inside the door are known as the decompression zone: shoppers are still adjusting and barely register what is displayed there, so the space is treated as advertising rather than a place where goods actually sell.","Some stores employ greeters to welcome customers, and studies suggest the practice has an unexpected benefit — people find it harder to steal from a shop whose staff have been friendly to them."]},
+  {l:"B",s:["Fresh produce is usually placed near the entrance for a reason that has little to do with convenience.","Choosing healthy items makes shoppers feel virtuous, and a customer who has already bought vegetables feels less guilty about adding cakes or snacks later in the trip.","Essential purchases such as milk and medicine, meanwhile, are deliberately pushed to the far corner so that people must walk past more shelves, increasing what the industry calls dwell time."]},
+  {l:"C",s:["Smell is another quiet salesperson.","Many supermarkets bake bread on site, not because it is efficient — the dough often arrives frozen and the process costs more than a central bakery — but because the aroma stimulates appetite and lifts sales of everything around it."]},
+  {l:"D",s:["Shelf height matters just as much.","The best position is at eye level and just to the right of it, because most customers are right-handed and their eyes drift in that direction; the space is usually given to a store's own expensive brands.","Popular items are often placed in the middle of an aisle so that shoppers hunting for them must pass products they never planned to buy."]},
+  {l:"E",s:["Even the failure to buy has been studied.","When consultants tracked why shoppers left empty-handed, the most common reason was not price but being unable to decide.","One trick is the decoy: a third option deliberately made to look worse, which makes the real choice feel easy — and customers who feel they have chosen well buy more."]}
+ ],
+ heads:["A zone where almost nothing is noticed","Why the healthy food comes first","A smell that sells more than bread","Positions chosen with the shopper's eyes in mind","A fake option that makes choosing easier","Why online stores always charge less","Training staff to greet in several languages"],
+ qs:[
+  {t:"tfng",q:"Retailers expect to sell many products in the decompression zone.",a:"F",ev:[[0,1]],why:"Bài nói khách 'barely register' đồ ở đó và khu này được coi là '<b>advertising rather than a place where goods actually sell</b>' — tức là không ai kỳ vọng bán được ở đó.",trap:"'Expect to sell' đối chiếu với 'rather than a place where goods actually sell' — bài phủ định trực tiếp thì FALSE."},
+  {t:"tfng",q:"Friendly greetings may reduce shoplifting.",a:"T",ev:[[0,2]],why:"'people find it <b>harder to steal</b> from a shop whose staff have been friendly'. 'May' trong câu hỏi khớp với 'studies suggest' — cả hai đều nói khả năng, không nói chắc."},
+  {t:"tfng",q:"Baking bread in the supermarket costs the store more than using a central bakery.",a:"T",ev:[[2,1]],why:"'the process <b>costs more than a central bakery</b>'. Bài thừa nhận điều này rồi mới giải thích vì sao vẫn làm (mùi kích thích mua sắm)."},
+  {t:"tfng",q:"The shelf just to the right of eye level is usually occupied by cheap own brands.",a:"F",ev:[[3,1]],why:"Bài nói vị trí đó '<b>usually given to a store's own expensive brands</b>' — đắt, không phải rẻ.",trap:"Câu hỏi chỉ đổi một chữ so với bài (expensive → cheap) — đúng kiểu bẫy FALSE dễ nhất của đề thi."},
+  {t:"tfng",q:"Price is the most common reason shoppers leave without buying.",a:"F",ev:[[4,1]],why:"Bài nói lý do hay nhất là '<b>not price but being unable to decide</b>' — bài phủ định thẳng lý do giá."},
+  {t:"tfng",q:"Stores play slow music to make shoppers stay longer.",a:"NG",ev:[],why:"Bài nói về smell, shelf height, decoy… nhưng <b>nhạc</b> thì không hề được nhắc tới.",trap:"Thấy một kỹ thuật bán hàng quen thuộc ngoài đời (nhạc) mà bài không nói thì chọn NOT GIVEN, đừng lấy kiến thức ngoài đề."},
+  {t:"head",p:0,a:0,why:"Đoạn A nói decompression zone — khu khách 'barely register' gì cả."},
+  {t:"head",p:1,a:1,why:"Rau củ đặt trước để khách cảm thấy tử tế rồi bớt tội lỗi khi mua đồ ngọt — vì sao đồ healthy lên trước."},
+  {t:"head",p:2,a:2,why:"'Smell is another quiet salesperson': mùi bánh bán được nhiều hơn chính ổ bánh."},
+  {t:"head",p:3,a:3,why:"Eye level, lệch phải theo tay thuận, giữa lối đi — toàn vị trí tính theo mắt và chân khách."},
+  {t:"head",p:4,a:4,why:"'the decoy: a third option deliberately made to look worse' — lựa chọn giả làm việc chọn trở nên dễ."},
+  {t:"comp",q:"The first few metres inside the door are known as the ___ zone.",a:["decompression"],ev:[[0,1]],why:"'known as the <b>decompression</b> zone'. Từ dài nhưng chép nguyên từ bài."},
+  {t:"comp",q:"Milk and medicine are placed far away to increase ___ time.",a:["dwell"],ev:[[1,2]],why:"'increasing what the industry calls <b>dwell</b> time'. Câu hỏi đã có 'time' nên chỉ điền 1 từ."},
+  {t:"comp",q:"The shelf just to the right of eye level usually holds a store's own ___ brands.",a:["expensive"],ev:[[3,1]],why:"'a store's own <b>expensive</b> brands'."},
+  {t:"comp",q:"Consultants found that shoppers leave empty-handed most often because they cannot ___.",a:["decide"],ev:[[4,1]],why:"'the most common reason was not price but being <b>unable to decide</b>'. Sau cannot dùng động từ nguyên mẫu."}
+ ]},
+{id:"sgplan",title:"Planning a City with No Room to Grow",topic:"Đô thị & quy hoạch",emoji:"🏙️",
+ paras:[
+  {l:"A",s:["When Singapore became independent in 1965, it was a small island with no natural resources, little industry and not even fresh water of its own.","The new state had no hinterland to fall back on, so its leaders concluded that survival depended on persuading foreign companies to build factories there.","An agency called the Economic Development Board was created for exactly this purpose, and it spent years courting multinational firms with tax breaks and ready-built industrial estates."]},
+  {l:"B",s:["By the end of the twentieth century, cheaper labour elsewhere was pulling manufacturing away, and Singapore moved up the value chain into services.","Regional headquarters, banking and tourism replaced factories as the engines of the economy, and a financial district known as the Golden Shoe had already been planned out in the early 1970s to house them.","The city's planners had gambled that office towers would pay more per hectare than workshops, and the gamble succeeded."]},
+  {l:"C",s:["With land so scarce, the current plan is decentralisation: four regional centres, each meant to serve about 800,000 people, where residents can work, shop and see a doctor without travelling to the old city centre.","Marina Bay, the newest of these projects, was extended into the sea through land reclamation covering 667 hectares, a scale borrowed from waterfront cities such as Sydney and San Francisco.","Zoning rules were also loosened so that homes, offices and leisure facilities could share the same blocks, cutting the need to commute at all."]},
+  {l:"D",s:["Greenery, in this plan, is not decoration but policy.","With only one large natural zone — the water catchment area — left on the island, the government launched a 'beautification' programme that planted green corridors along transport routes.","Golf courses and beaches were built partly to impress the visiting executives whose investment the economy depends on."]},
+  {l:"E",s:["The island is also being marketed as a place that never closes.","Rules against eating outdoors were relaxed in 1996, and the riverside quickly filled with cafes; two years later, the Urban Redevelopment Authority designated an official entertainment district.","Planners point to the city's trading heritage, its communications and airport, and an English-speaking workforce as advantages that are hard to copy — a clean, safe environment being the one they mention last but never forget."]}
+ ],
+ heads:["Survival built on attracting foreign companies","From factories to finance","Several centres instead of one","Greenery used to win business","Keeping the island awake after dark","The collapse of the public housing programme","How the port lost its regional lead"],
+ qs:[
+  {t:"tfng",q:"Singapore's leaders believed the country had plenty of farmland.",a:"F",ev:[[0,0]],why:"Bài nói đảo nhỏ, '<b>no natural resources</b>', và có 'little industry' — còn <b>farmland</b> thì đoạn A khẳng định không có hinterland để dựa vào, ngược hẳn với 'plenty of farmland'.",trap:"Câu hỏi gán cho lãnh đạo một niềm tin mà bài nói ngược lại — có câu chứng minh là sai nên FALSE, không phải NOT GIVEN."},
+  {t:"tfng",q:"The Economic Development Board was set up to attract foreign companies.",a:"T",ev:[[0,2]],why:"'created for exactly this purpose' — purpose ở đây là 'persuading foreign companies to build factories there'. Khớp ý."},
+  {t:"tfng",q:"Manufacturing has grown steadily in Singapore since independence.",a:"F",ev:[[1,0]],why:"Bài nói cuối thế kỷ 20, '<b>cheaper labour elsewhere was pulling manufacturing away</b>' — sản xuất bị hút đi chứ không lớn dần."},
+  {t:"tfng",q:"Each regional centre is intended to serve around 800,000 people.",a:"T",ev:[[2,0]],why:"'each meant to serve <b>about 800,000 people</b>'. 'Intended' khớp với 'meant to'."},
+  {t:"tfng",q:"New laws were introduced to protect the island's historic buildings.",a:"NG",ev:[],why:"Đoạn D nói cây xanh, đoạn E nói giải trí; về <b>di tích cũ</b> thì bài không nhắc một chữ.",trap:"Chủ đề quen thuộc của các bài quy hoạch đô thị khác (bảo vệ nhà cũ) nhưng bài này không nói — NOT GIVEN."},
+  {t:"tfng",q:"The entertainment district was designated before the outdoor-eating rules were relaxed.",a:"F",ev:[[4,1]],why:"Trình tự trong bài: nới quy định ăn ngoài <b>1996</b>, còn khu giải trí là '<b>two years later</b>' (1998). Câu hỏi đảo ngược thứ tự.",trap:"Bẫy thứ tự thời gian: hai mốc cùng nằm trong một câu, phải đọc kỹ cái nào trước cái nào sau."},
+  {t:"head",p:0,a:0,why:"Đoạn A: không có gì trong tay nên sống nhờ hút công ty nước ngoài, EDB sinh ra để làm việc đó."},
+  {t:"head",p:1,a:1,why:"Sản xuất rời đi, ngân hàng + trụ sở vùng thay thế, Golden Shoe — từ nhà máy sang tài chính."},
+  {t:"head",p:2,a:2,why:"'decentralisation: four regional centres' — dãi trung tâm ra bốn nơi thay vì một."},
+  {t:"head",p:3,a:3,why:"'Greenery… is not decoration but policy': cây xanh để gây ấn tượng với nhà đầu tư."},
+  {t:"head",p:4,a:4,why:"Nới luật ăn ngoài, khu giải trí chính thức, 'a place that never closes' — giữ thành phố thức khuya."},
+  {t:"comp",q:"The Golden Shoe district was planned in the early ___ to house the finance industry.",a:["1970s"],ev:[[1,1]],why:"'planned out in the early <b>1970s</b>'."},
+  {t:"comp",q:"Marina Bay was extended into the sea through land ___ covering 667 hectares.",a:["reclamation"],ev:[[2,1]],why:"'through land <b>reclamation</b> covering 667 hectares'."},
+  {t:"comp",q:"The 'beautification' programme planted green corridors along ___ routes.",a:["transport"],ev:[[3,1]],why:"'planted green corridors along <b>transport</b> routes'."},
+  {t:"comp",q:"Rules against eating outdoors were relaxed in ___.",a:["1996"],ev:[[4,1]],why:"'relaxed in <b>1996</b>'. Đừng ghi nhầm 1998 — năm đó là khu giải trí."}
  ]}
 ];
 const READING_TIPS=[
@@ -2746,6 +2883,26 @@ function progView(){
   const mh=(P.mhist||[]).slice().reverse();
   const wv=(Array.isArray(P.smet)?P.smet:[]).filter(x=>x.wpm>0).map(x=>x.wpm);
   const knownN=Object.keys(P.known||{}).length;
+  /* Thời gian học mỗi phần — data do tBeat() ghi mỗi 15 giây. Chỉ tính 6 phần học, tab Tiến bộ không đếm. */
+  const T_SKILLS=["vocab","grammar","listening","reading","speaking","mock"];
+  const tlog=P.tlog||{};
+  const tk=Object.keys(tlog).sort();if(tk.length>30)tk.slice(0,tk.length-30).forEach(k=>delete tlog[k]);
+  const today=tlog[dayKey()]||{};
+  const tTxt=s=>s>=3600?Math.floor(s/3600)+"h"+Math.round(s%3600/60)+"p":s>=60?Math.round(s/60)+" phút":s>0?"dưới 1 phút":"0";
+  const wk={};T_SKILLS.forEach(id=>wk[id]=0);
+  for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const o=tlog[dayKey(d)];if(o)T_SKILLS.forEach(id=>wk[id]+=o[id]||0)}
+  const todayAll=T_SKILLS.reduce((n,id)=>n+(today[id]||0),0);
+  const wkAll=T_SKILLS.reduce((n,id)=>n+wk[id],0);
+  let tRows="",thin="";
+  if(wkAll>0){
+    tRows=T_SKILLS.map(id=>{
+      const s=today[id]||0,pct=todayAll?Math.round(s/todayAll*100):0;
+      return `<span>${esc((PARTS.find(x=>x.id===id)||{name:id}).name)}</span><div style="height:9px;border-radius:5px;overflow:hidden;background:color-mix(in srgb, var(--muted) 20%, transparent)"><i style="display:block;height:100%;width:${pct}%;background:var(--accent)"></i></div><span class="v">${tTxt(s)}<small class="muted" style="font-size:12px"> · 7 ngày ${tTxt(wk[id])}</small></span>`;
+    }).join("");
+    let mn=Infinity,mid=T_SKILLS[0];T_SKILLS.forEach(id=>{if(wk[id]<mn){mn=wk[id];mid=id}});
+    const pn=esc((PARTS.find(x=>x.id===mid)||{name:mid}).name);
+    thin=`7 ngày qua <b>${pn}</b> ${mn?"là phần ít giờ nhất":"chưa được đụng tới"} (${tTxt(mn)}) — rảnh thì ghé qua một lượt cho đỡ lệch.`;
+  }
   let delta="";
   if(mh.length>=2){const d=Math.round((mh[mh.length-1].b-mh[0].b)*2)/2;
     delta=d>=1?`Lần gần nhất hơn lúc đầu <b>+${d.toFixed(1)}</b> band`:d<=-1?`Lần gần nhất thấp hơn lúc đầu <b>${d.toFixed(1)}</b> band`:"Chênh với lúc đầu dưới 1 band — coi như đang ngang, đề mini lệch ±0.5–1 band nên chưa đủ tin để khen hay chê.";}
@@ -2757,6 +2914,9 @@ function progView(){
       <span>${ic("book",15)} Từ đã thuộc</span><span class="muted" style="font-size:14px">trên ${ALLW.length} từ trong app</span><span class="v">${knownN}</span>
     </div>
     <p class="muted" style="font-size:13px">Muốn nhìn xa hơn nữa: vào Hồ sơ điểm yếu ở tab 6 để luyện đúng chỗ rò.</p>
+  </section>
+  <section class="card stack"><b>${ic("clock",15)} Thời gian học mỗi phần</b>
+    ${wkAll>0?`<div class="skrow">${tRows}</div><p class="muted" style="font-size:13px">App tự bấm giờ lúc tab đang mở: 15 giây/nhịp, tab ẩn thì tạm ngừng — chỉ đếm cái thật sự đang học. Số "7 ngày" là tổng của từng phần trong tuần qua. ${thin}</p>`:`<p class="muted">Chưa đo được phút nào. Từ bây giờ tab nào mở thì app bấm giờ tab đó (15 giây/nhịp) — lấn sâu phần nào, bỏ bê phần nào sẽ nhìn ra ngay.</p>`}
   </section>
   <section class="card stack"><b>${ic("flash",15)} XP mỗi ngày</b>
     ${keys.length?`<div class="xpchart">${days.map(x=>`<div class="xc" title="${x.k}: ${x.v==null?"chưa ghi":"+"+(x.v||0)+" XP"}"><div class="xb">${x.v==null?"":`<i class="${x.v?"":"zero"}" style="height:${x.v?Math.max(8,Math.round(x.v/max*64)):3}px"></i>`}</div><small>${x.d.getDate()}</small></div>`).join("")}</div>
