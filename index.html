@@ -43,6 +43,7 @@ b,strong{font-weight:800}
 .hero .hx{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .row{display:flex;align-items:center;gap:12px;justify-content:space-between}
 h1{margin:0;font-family:var(--f-disp);font-size:22px;font-weight:900;letter-spacing:-.01em;line-height:1.1}
+.chip svg,.eyebrow svg,.skrow svg,.btn svg,.say svg{vertical-align:-3px}
 .chip{font-family:var(--f-mono);font-size:14px;font-weight:800;padding:5px 11px;border:2px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
 .hero .chip{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:var(--gold)}
 .hbtns{display:flex;gap:6px;align-items:center;flex:none}
@@ -259,7 +260,7 @@ textarea:focus{border-color:var(--accent)}
 <div class="wrap">
   <div class="top">
     <div class="hero"><img class="masc" id="heroM" src="img/10.svg" alt="Linh vật Elaina" title="Chạm để nghe cổ vũ"><span class="bub" id="heroB" aria-live="polite"></span>
-      <div class="hx"><div class="row"><h1>Lò Luyện IELTS</h1><span class="hbtns"><button class="chip" id="fsT" aria-label="Bật/tắt toàn màn hình" title="Toàn màn hình">⛶</button><button class="chip" id="apiT" aria-label="Cài đặt và sao lưu tiến độ" title="Xuất/Nhập tiến độ">⚙</button><button class="chip vt" id="voiceT" aria-pressed="false" aria-label="Giọng tiếng Nhật của Elaina" title="Bật/tắt giọng tiếng Nhật của Elaina">🔇<span class="vtx"> Giọng</span></button><span class="chip" id="streak" title="Số câu đúng liên tiếp ngay lần đầu">🔥 0</span></span></div>
+      <div class="hx"><div class="row"><h1>Lò Luyện IELTS</h1><span class="hbtns"><button class="chip" id="fsT" aria-label="Bật/tắt toàn màn hình" title="Toàn màn hình"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5"/><path d="M15 4h5v5"/><path d="M20 15v5h-5"/><path d="M9 20H4v-5"/></svg></button><button class="chip" id="apiT" aria-label="Cài đặt và sao lưu tiến độ" title="Xuất/Nhập tiến độ"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button><button class="chip vt" id="voiceT" aria-pressed="false" aria-label="Giọng tiếng Nhật của Elaina" title="Bật/tắt giọng tiếng Nhật của Elaina"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m16.5 9.5 5 5"/><path d="m21.5 9.5-5 5"/></svg><span class="vtx"> Giọng</span></button><span class="chip" id="streak" title="Số câu đúng liên tiếp ngay lần đầu"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4.4 0 7.5-2.8 7.5-7 0-3-1.6-5.2-3.2-7.2-.4 2-1.4 3.1-2.8 3.6.3-2.4-.7-5.6-3.5-7.4.3 3-1 4.6-2.6 6.2C5.8 11.8 4.5 13.4 4.5 15c0 4.2 3.1 7 7.5 7Z"/></svg> 0</span></span></div>
       <div class="lvl"><div class="t"><b id="lvName">Band 4 · Tân binh</b><small id="lvTxt">0 XP</small></div><div class="bar"><i id="lvBar" style="width:0"></i></div></div></div></div>
     <nav class="tabs" id="tabs" aria-label="Các phần"></nav>
   </div>
@@ -298,6 +299,37 @@ const PARTS=[
   {id:"speaking",name:"5 · Speaking",ready:true,soon:"Mẫu câu giao tiếp, Speaking Part 1–3, AI chấm."},
   {id:"mock",name:"6 · Thi thử",ready:true,soon:"Mini mock test và ôn tổng."}
 ];
+/* ================= BỘ ICON SVG (phong cách Elaina: nét dày, sao phép thuật) ================= */
+const IC={
+flash:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="m12 8 1.1 2.9L16 12l-2.9 1.1L12 16l-1.1-2.9L8 12l2.9-1.1L12 8Z"/>',
+target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/>',
+pen:'<path d="M15 4l5 5L9 20H4v-5L15 4Z"/><path d="m13 6 5 5"/>',
+link:'<path d="M9.5 14.5a4.2 4.2 0 0 0 6 0l3-3a4.24 4.24 0 0 0-6-6l-1.2 1.2"/><path d="M14.5 9.5a4.2 4.2 0 0 0-6 0l-3 3a4.24 4.24 0 0 0 6 6l1.2-1.2"/>',
+spark:'<path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z"/><path d="M19 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6Z"/>',
+repeat:'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+dice:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/>',
+headset:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="2"/><rect x="17" y="14" width="4" height="6" rx="2"/>',
+hash:'<path d="M5 9h14"/><path d="M5 15h14"/><path d="m11 4-2 16"/><path d="m15 4-2 16"/>',
+type:'<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>',
+book:'<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2V4Z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7V4Z"/>',
+scale:'<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+tag:'<path d="M12.6 2.6 21 11a2 2 0 0 1 0 2.8l-7.2 7.2a2 2 0 0 1-2.8 0L2.6 12.6A2 2 0 0 1 2 11.2V4a2 2 0 0 1 2-2h7.2a2 2 0 0 1 1.4.6Z"/><circle cx="7.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>',
+chat:'<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z"/>',
+chatlines:'<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z"/><path d="M8 9h8"/><path d="M8 13h5"/>',
+speak:'<circle cx="8" cy="9" r="3.5"/><path d="M3 21c0-3 2.2-5 5-5s5 2 5 5"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19.5 6a9 9 0 0 1 0 12"/>',
+mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><path d="M12 18v4"/>',
+box:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/>',
+exam:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/><path d="m14.5 13.5 1 1 2-2"/>',
+expand:'<path d="M4 9V4h5"/><path d="M15 4h5v5"/><path d="M20 15v5h-5"/><path d="M9 20H4v-5"/>',
+gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+volOn:'<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5.5a9.5 9.5 0 0 1 0 13"/>',
+volOff:'<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m16.5 9.5 5 5"/><path d="m21.5 9.5-5 5"/>',
+flame:'<path d="M12 22c4.4 0 7.5-2.8 7.5-7 0-3-1.6-5.2-3.2-7.2-.4 2-1.4 3.1-2.8 3.6.3-2.4-.7-5.6-3.5-7.4.3 3-1 4.6-2.6 6.2C5.8 11.8 4.5 13.4 4.5 15c0 4.2 3.1 7 7.5 7Z"/>',
+lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+notebook:'<rect x="5" y="3" width="15" height="18" rx="2"/><path d="M9 3v18"/><path d="M13 8h4"/><path d="M13 12h4"/>'
+};
+const ic=(n,s)=>'<svg viewBox="0 0 24 24" width="'+(s||16)+'" height="'+(s||16)+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IC[n]||"")+"</svg>";
 const LEVELS=[[0,"Band 4 · Tân binh"],[150,"Band 4.5 · Biết chào hỏi"],[400,"Band 5 · Nói được câu"],[800,"Band 5.5 · Bắt đầu mượt"],[1300,"Band 6 · Đủ đi du học"],[2000,"Band 6.5+ · Trùm phòng thi"]];
 /* Mỗi từ: w = từ/cụm, f = dạng xuất hiện trong ex (nếu khác w), ipa, vi, ex, tip, c = [câu có ___, đáp án đúng, nhiễu, nhiễu] */
 const VOCAB_TOPICS=[
@@ -398,7 +430,7 @@ const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
 const CAN_SPEAK="speechSynthesis" in window&&"SpeechSynthesisUtterance" in window;
 function speak(text){if(!CAN_SPEAK)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="en-GB";u.rate=.92;
   const v=speechSynthesis.getVoices().find(v=>/en-GB/i.test(v.lang))||speechSynthesis.getVoices().find(v=>/^en/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
-const sayBtn=t=>CAN_SPEAK?`<button class="say" data-say="${esc(t)}" aria-label="Nghe phát âm">🔊</button>`:"";
+const sayBtn=t=>CAN_SPEAK?`<button class="say" data-say="${esc(t)}" aria-label="Nghe phát âm">${ic("volOn",18)}</button>`:"";
 document.addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b){e.stopPropagation();speak(b.dataset.say)}});
 
 /* ================= CHẤM BẰNG CLAUDE (dùng chung cho phần 1 và phần 5) ================= */
@@ -492,16 +524,16 @@ function logWeak(src,task,ans,r){
 }
 function errTally(list){const m={};list.forEach(e=>e.err.forEach(k=>m[k]=(m[k]||0)+1));return Object.entries(m).sort((a,b)=>b[1]-a[1])}
 function logCard(){const L=P.wlog||[],nNew=L.filter(e=>!e.seen).length;
-  return `<section class="card stack"><div class="row"><div><b>📒 Sổ lỗi viết</b><div class="muted" style="font-size:14px">${L.length?`${L.length} câu yếu đã ghi${nNew?` · <b>${nNew} câu mới chưa phân tích</b>`:""}`:"Câu tự viết nào dưới 8 điểm sẽ được ghi vào đây"}</div></div>
+  return `<section class="card stack"><div class="row"><div><b>${ic("notebook",17)} Sổ lỗi viết</b><div class="muted" style="font-size:14px">${L.length?`${L.length} câu yếu đã ghi${nNew?` · <b>${nNew} câu mới chưa phân tích</b>`:""}`:"Câu tự viết nào dưới 8 điểm sẽ được ghi vào đây"}</div></div>
     <button class="btn ${nNew>=3?"pri":""}" id="logOpen" ${L.length?"":"disabled"}>Mở sổ</button></div></section>`}
 function bindLogCard(back){const b=$("logOpen");if(b)b.onclick=()=>renderLog(back)}
 let LOGRES=null;
 function renderLog(back){
   const L=P.wlog||[],tally=errTally(L);
   $("main").innerHTML=`<section class="card stack">
-    <div class="qhead"><button class="btn sm" id="qBack">← Menu</button><span class="chip">📒 Sổ lỗi viết · ${L.length} câu</span></div>
+    <div class="qhead"><button class="btn sm" id="qBack">← Menu</button><span class="chip">${ic("notebook",15)} Sổ lỗi viết · ${L.length} câu</span></div>
     ${tally.length?`<div><div class="eyebrow">Lỗi mày hay mắc</div><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">${tally.map(([k,n])=>`<span class="chip">${esc(k)} ×${n}</span>`).join("")}</div></div>`:""}
-    <div class="btns"><button class="btn pri" id="logAna" ${SAMPLE?"":"disabled"}>${SAMPLE?"Nhờ AI phân tích cả sổ":"Cần API key (⚙) để phân tích"}</button></div>
+    <div class="btns"><button class="btn pri" id="logAna" ${SAMPLE?"":"disabled"}>${SAMPLE?"Nhờ AI phân tích cả sổ":"Cần API key trong Cài đặt để phân tích"}</button></div>
     <div id="fb" hidden></div>
     <div id="logRes"></div>
     <details><summary>Xem ${L.length} câu đã ghi</summary><div class="stack" style="margin-top:8px">${L.slice().reverse().map(e=>`<div class="src"><div class="muted" style="font-size:13px">${e.score}/10 · ${esc(e.err.join(", ")||"chưa phân loại")}</div>
@@ -559,10 +591,10 @@ function renderStats(){
   $("lvName").textContent=cur[1];
   $("lvBar").style.width=(nxt?(P.xp-cur[0])/(nxt[0]-cur[0])*100:100)+"%";
   $("lvTxt").textContent=`${P.xp} XP`+(nxt?` · còn ${nxt[0]-P.xp}`:" · max");
-  $("streak").textContent="🔥 "+P.streak;
+  $("streak").innerHTML=ic("flame",15)+" "+P.streak;
 }
 function renderTabs(){
-  $("tabs").innerHTML=PARTS.map(p=>`<button data-tab="${p.id}" class="${P.tab===p.id?"on":""} ${p.ready?"":"lock"}">${p.ready?"":"🔒 "}${p.name}</button>`).join("");
+  $("tabs").innerHTML=PARTS.map(p=>`<button data-tab="${p.id}" class="${P.tab===p.id?"on":""} ${p.ready?"":"lock"}">${p.ready?"":ic("lock",15)+" "}${p.name}</button>`).join("");
   const on=$("tabs").querySelector(".on");if(on){const t=$("tabs");t.scrollLeft=Math.max(0,on.offsetLeft-t.offsetLeft-(t.clientWidth-on.offsetWidth)/2)}
 }
 $("tabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.tab=b.dataset.tab;save();renderTabs();route()};
@@ -586,12 +618,12 @@ function renderLocked(p){
 
 /* ================= PHẦN 1: TỪ VỰNG ================= */
 const MODES=[
-  {id:"flash",ic:"🃏",name:"Flashcard",d:"Lật thẻ, nghe phát âm"},
-  {id:"mean",ic:"🎯",name:"Chọn nghĩa",d:"Từ → nghĩa tiếng Việt"},
-  {id:"fill",ic:"✍️",name:"Điền từ",d:"Chọn từ hợp câu"},
-  {id:"col",ic:"🧩",name:"Collocation",d:"Ghép từ đi cặp chuẩn"},
-  {id:"write",ic:"🧠",name:"Đặt câu",d:"Tự viết, AI chấm"},
-  {id:"review",ic:"🔁",name:"Ôn từ hay sai",d:""}
+  {id:"flash",ic:"flash",name:"Flashcard",d:"Lật thẻ, nghe phát âm"},
+  {id:"mean",ic:"target",name:"Chọn nghĩa",d:"Từ → nghĩa tiếng Việt"},
+  {id:"fill",ic:"pen",name:"Điền từ",d:"Chọn từ hợp câu"},
+  {id:"col",ic:"link",name:"Collocation",d:"Ghép từ đi cặp chuẩn"},
+  {id:"write",ic:"spark",name:"Đặt câu",d:"Tự viết, AI chấm"},
+  {id:"review",ic:"repeat",name:"Ôn từ hay sai",d:""}
 ];
 const topicOf=()=>VOCAB_TOPICS.find(t=>t.key===P.topic)||VOCAB_TOPICS[0];
 const wrongIds=()=>Object.keys(P.wrong).filter(id=>WBYID[id]&&P.wrong[id]>0);
@@ -606,7 +638,7 @@ function vocabMenu(){
     <div class="topics" id="topics">${VOCAB_TOPICS.map(x=>{const k=x.words.filter(w=>P.known[w.id]).length;
       return `<button data-k="${x.key}" class="${x.key===t.key?"on":""}">${esc(x.vi)}<small>${k}/${x.words.length}</small></button>`}).join("")}</div>
   </section>
-  <section class="modes">${MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${m.ic}</span><b>${m.name}</b>
+  <section class="modes">${MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${ic(m.ic,30)}</span><b>${m.name}</b>
     <span>${m.id==="review"?(nw?`${nw} từ đang chờ mày`:"Chưa sai từ nào, ngon"):m.d}</span></button>`).join("")}</section>
   ${logCard()}
   <section class="card"><p class="muted" style="font-size:14px">Đúng ngay lần đầu +20 XP · đúng lần hai +15 · xem đáp án +5. Từ nào chọn sai sẽ vào mục Ôn từ hay sai, ôn đúng hai lần là được xóa.</p></section>`;
@@ -898,12 +930,12 @@ GRAMMAR_UNITS.forEach(u=>u.qs.forEach((q,i)=>{q.id="g"+u.key+i;q.unit=u.key}));
 const GQ=Object.fromEntries(GRAMMAR_UNITS.flatMap(u=>u.qs).map(q=>[q.id,q]));
 if(!P.gwrong)P.gwrong={};if(!P.gunit)P.gunit="cx";
 const G_MODES=[
-  {id:"mc",ic:"🎯",name:"Chọn đáp án",d:"Điền chỗ trống"},
-  {id:"fix",ic:"🔍",name:"Tìm lỗi sai",d:"Chạm vào chỗ sai"},
-  {id:"re",ic:"🔁",name:"Viết lại câu",d:"Chọn câu viết lại đúng"},
-  {id:"write",ic:"🧠",name:"Tự viết",d:"AI chấm"},
-  {id:"mix",ic:"🎲",name:"Trộn cả bài",d:"Đủ ba kiểu"},
-  {id:"review",ic:"♻️",name:"Ôn câu hay sai",d:""}
+  {id:"mc",ic:"target",name:"Chọn đáp án",d:"Điền chỗ trống"},
+  {id:"fix",ic:"search",name:"Tìm lỗi sai",d:"Chạm vào chỗ sai"},
+  {id:"re",ic:"repeat",name:"Viết lại câu",d:"Chọn câu viết lại đúng"},
+  {id:"write",ic:"spark",name:"Tự viết",d:"AI chấm"},
+  {id:"mix",ic:"dice",name:"Trộn cả bài",d:"Đủ ba kiểu"},
+  {id:"review",ic:"repeat",name:"Ôn câu hay sai",d:""}
 ];
 const gUnit=()=>GRAMMAR_UNITS.find(u=>u.key===P.gunit)||GRAMMAR_UNITS[0];
 const gWrongIds=()=>Object.keys(P.gwrong).filter(id=>GQ[id]&&P.gwrong[id]>0);
@@ -918,7 +950,7 @@ function grammarMenu(){
     <div class="topics" id="gunits">${GRAMMAR_UNITS.map(x=>`<button data-k="${x.key}" class="${x.key===u.key?"on":""}">${esc(x.name)}<small>${x.qs.length} câu</small></button>`).join("")}</div>
     <details class="rule" open><summary>📌 Nhớ nhanh trước khi làm</summary><ul>${u.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></details>
   </section>
-  <section class="modes">${G_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${m.ic}</span><b>${m.name}</b>
+  <section class="modes">${G_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${ic(m.ic,30)}</span><b>${m.name}</b>
     <span>${m.id==="review"?(nw?`${nw} câu đang chờ mày`:"Chưa sai câu nào, ngon"):m.d+(cnt(m.id)?` · ${cnt(m.id)} câu`:"")}</span></button>`).join("")}</section>
   ${logCard()}
   <section class="card"><p class="muted" style="font-size:14px">Đúng ngay lần đầu +20 XP · đúng lần hai +15 · xem đáp án +5. Câu nào làm sai sẽ vào mục Ôn câu hay sai, ôn đúng hai lần là được xóa.</p></section>`;
@@ -1220,10 +1252,10 @@ function drillQ(kind){
 
 /* ---------- Menu và lượt chơi phần 3 ---------- */
 const L_MODES=[
-  {id:"set",ic:"🎧",name:"Làm cả bài",d:"Nghe từng đoạn, điền form"},
-  {id:"drill",ic:"🔢",name:"Bẫy số & chữ",d:"13/30, giá tiền, đánh vần, giờ"},
-  {id:"dict",ic:"🔤",name:"Chính tả",d:"Nghe câu, chạm ghép lại"},
-  {id:"review",ic:"♻️",name:"Ôn câu hay sai",d:""}
+  {id:"set",ic:"headset",name:"Làm cả bài",d:"Nghe từng đoạn, điền form"},
+  {id:"drill",ic:"hash",name:"Bẫy số & chữ",d:"13/30, giá tiền, đánh vần, giờ"},
+  {id:"dict",ic:"type",name:"Chính tả",d:"Nghe câu, chạm ghép lại"},
+  {id:"review",ic:"repeat",name:"Ôn câu hay sai",d:""}
 ];
 const lSet=()=>LSET[P.lset]||LISTENING_SETS[0];
 const lWrongIds=()=>Object.keys(P.lwrong).filter(id=>(LQ[id]||LD[id])&&P.lwrong[id]>0);
@@ -1239,7 +1271,7 @@ function listenMenu(){
     ${CAN_SPEAK?"":`<div class="fb tip">Máy này không có giọng đọc tiếng Anh, nên mỗi câu có transcript bị che. Đọc đề trước, chạm vào ô che để đọc thay cho nghe.</div>`}
     <details class="rule"><summary>📌 Mẹo bẫy hay gặp</summary><ul>${LISTEN_TRAPS.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></details>
   </section>
-  <section class="modes">${L_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${m.ic}</span><b>${m.name}</b>
+  <section class="modes">${L_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${ic(m.ic,30)}</span><b>${m.name}</b>
     <span>${m.id==="review"?(nw?`${nw} câu đang chờ mày`:"Chưa sai câu nào, ngon"):m.d}</span></button>`).join("")}</section>
   <section class="card"><p class="muted" style="font-size:14px">Đúng ngay lần đầu +20 XP · đúng lần hai hoặc phải mở transcript +15 · xem đáp án +5. Nghe lại bao nhiêu lần cũng được, bấm 🐢 để nghe chậm. Câu sai vào mục ôn, ôn đúng hai lần là được xóa.</p></section>`;
   $("lsets").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.lset=b.dataset.k;save();listenMenu()};
@@ -1466,11 +1498,11 @@ if(!P.rwrong)P.rwrong={};if(!P.rpass)P.rpass="myco";if(!P.rbest)P.rbest={};if(P.
 
 /* ---------- Menu và lượt chơi phần 4 ---------- */
 const R_MODES=[
-  {id:"all",ic:"📖",name:"Làm cả bài",d:"Đủ 3 dạng như đề thật"},
-  {id:"tfng",ic:"⚖️",name:"True / False / NG",d:"Bẫy FALSE hay NOT GIVEN"},
-  {id:"head",ic:"🏷️",name:"Matching Headings",d:"Chọn tiêu đề cho đoạn"},
-  {id:"comp",ic:"✏️",name:"Điền câu",d:"Tối đa 2 từ lấy từ bài"},
-  {id:"review",ic:"♻️",name:"Ôn câu hay sai",d:""}
+  {id:"all",ic:"book",name:"Làm cả bài",d:"Đủ 3 dạng như đề thật"},
+  {id:"tfng",ic:"scale",name:"True / False / NG",d:"Bẫy FALSE hay NOT GIVEN"},
+  {id:"head",ic:"tag",name:"Matching Headings",d:"Chọn tiêu đề cho đoạn"},
+  {id:"comp",ic:"pen",name:"Điền câu",d:"Tối đa 2 từ lấy từ bài"},
+  {id:"review",ic:"repeat",name:"Ôn câu hay sai",d:""}
 ];
 let rTick=null;
 const stopTimer=()=>{clearInterval(rTick);rTick=null};
@@ -1490,7 +1522,7 @@ function readMenu(){
     <div class="topics" id="rtime">${R_TIMES.map(t=>`<button data-t="${t}" class="${P.rtime===t?"on":""}">${t?t+" phút":"Tắt"}</button>`).join("")}</div></div>
     <details class="rule"><summary>📌 Phân biệt FALSE và NOT GIVEN</summary><ul>${READING_TIPS.map(t=>`<li>${t}</li>`).join("")}</ul></details>
   </section>
-  <section class="modes">${R_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}" ${m.id==="review"?'style="grid-column:1/-1"':""}><span class="ic">${m.ic}</span><b>${m.name}</b>
+  <section class="modes">${R_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}" ${m.id==="review"?'style="grid-column:1/-1"':""}><span class="ic">${ic(m.ic,30)}</span><b>${m.name}</b>
     <span>${m.id==="review"?(nw?`${nw} câu đang chờ mày`:"Chưa sai câu nào, ngon"):m.d}</span></button>`).join("")}</section>
   <section class="card"><p class="muted" style="font-size:14px">Đúng ngay lần đầu +20 XP · đúng lần hai +15 · xem đáp án +5. Trả lời xong, câu chứa đáp án trong bài được tô vàng. Thi thật mỗi passage dài gấp ba và có 20 phút; bài ở đây ngắn hơn nên 10–15 phút là vừa.</p></section>`;
   $("rpass").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.rpass=b.dataset.k;save();readMenu()};
@@ -1744,12 +1776,12 @@ const sWords=t=>t.trim().split(/\s+/).filter(Boolean).length;
 
 /* ---------- Menu phần 5 ---------- */
 const S_MODES=[
-  {id:"phr",ic:"💬",name:"Giao tiếp",d:"Chọn câu đáp tự nhiên nhất"},
-  {id:"p1",ic:"🗣️",name:"Part 1",d:"Hỏi đáp ngắn về bản thân"},
-  {id:"p2",ic:"🎤",name:"Part 2",d:"Cue card · 1' chuẩn bị · 2' nói"},
-  {id:"p3",ic:"🧠",name:"Part 3",d:"Thảo luận, nêu quan điểm"},
-  {id:"kit",ic:"🧰",name:"Khung & từ nối",d:"Xem trước khi nói"},
-  {id:"review",ic:"♻️",name:"Ôn câu hay sai",d:""}
+  {id:"phr",ic:"chat",name:"Giao tiếp",d:"Chọn câu đáp tự nhiên nhất"},
+  {id:"p1",ic:"speak",name:"Part 1",d:"Hỏi đáp ngắn về bản thân"},
+  {id:"p2",ic:"mic",name:"Part 2",d:"Cue card · 1' chuẩn bị · 2' nói"},
+  {id:"p3",ic:"chatlines",name:"Part 3",d:"Thảo luận, nêu quan điểm"},
+  {id:"kit",ic:"box",name:"Khung & từ nối",d:"Xem trước khi nói"},
+  {id:"review",ic:"repeat",name:"Ôn câu hay sai",d:""}
 ];
 const sSit=()=>SSIT[P.ssit]||PHRASES[0];
 const sWrongIds=()=>Object.keys(P.swrong).filter(id=>SQ[id]&&P.swrong[id]>0);
@@ -1770,7 +1802,7 @@ function speakMenu(){
     <div class="topics" id="ssit">${PHRASES.map(x=>`<button data-k="${x.id}" class="${x.id===s.id?"on":""}">${x.icon} ${esc(x.name)}<small>${x.qs.length} câu</small></button>`).join("")}</div></div>
     <div class="fb tip" id="sMicNote" style="font-size:14px">🎙️ ${esc(micNote())}</div>
   </section>
-  <section class="modes">${S_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${m.ic}</span><b>${m.name}</b>
+  <section class="modes">${S_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}"><span class="ic">${ic(m.ic,30)}</span><b>${m.name}</b>
     <span>${m.id==="review"?(nw?`${nw} câu đang chờ mày`:"Chưa sai câu nào, ngon"):m.d}</span></button>`).join("")}</section>
   <section class="card"><p class="muted" style="font-size:14px">Giao tiếp: đúng ngay +20 XP · lần hai +15 · xem đáp án +5. Speaking: AI chấm band ≥ 6.5 được +20, ≥ 5 được +15, còn lại +5. Không gọi được AI thì tự chấm theo checklist.</p></section>`;
   $("ssit").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.ssit=b.dataset.k;save();speakMenu()};
@@ -2141,11 +2173,11 @@ const MOCK_TESTS=[
  ]}
 ];
 const M_SK={
-  listen:{name:"Nghe",ic:"🎧",tab:"listening",tabName:"3 · Nghe"},
-  read:{name:"Đọc",ic:"📖",tab:"reading",tabName:"4 · Đọc"},
-  vocab:{name:"Từ vựng",ic:"🔤",tab:"vocab",tabName:"1 · Từ vựng"},
-  grammar:{name:"Ngữ pháp",ic:"🧩",tab:"grammar",tabName:"2 · Ngữ pháp"},
-  speak:{name:"Giao tiếp",ic:"💬",tab:"speaking",tabName:"5 · Speaking"}
+  listen:{name:"Nghe",ic:"headset",tab:"listening",tabName:"3 · Nghe"},
+  read:{name:"Đọc",ic:"book",tab:"reading",tabName:"4 · Đọc"},
+  vocab:{name:"Từ vựng",ic:"type",tab:"vocab",tabName:"1 · Từ vựng"},
+  grammar:{name:"Ngữ pháp",ic:"link",tab:"grammar",tabName:"2 · Ngữ pháp"},
+  speak:{name:"Giao tiếp",ic:"chat",tab:"speaking",tabName:"5 · Speaking"}
 };
 const M_WEAK={
   listen:"Tai mày đang là khâu yếu nhất. Chắc lại dính bẫy người nói đổi ý với số đọc nhanh. Vào tab 3 · Nghe, cày “Bẫy số & chữ” với “Chính tả” mỗi ngày 10 phút, nghe bằng tai trước rồi hẵng mở transcript.",
@@ -2219,9 +2251,9 @@ function mockMenu(){
     <div><div class="eyebrow">Phần 6 · Thi thử mini + Ôn tổng</div><h2>Vào phòng thi</h2>
     <p class="muted">Mỗi đề ${mockItems(MOCK_TESTS[0]).length} câu trong ${MOCK_TESTS[0].mins} phút: Nghe, Đọc, Từ vựng, Ngữ pháp. Nộp bài là quy ra band ước lượng và chỉ ra chỗ mày yếu nhất.</p></div>
   </section>
-  <section class="modes">${MOCK_TESTS.map(t=>`<button class="mode" data-t="${t.id}"><span class="ic">📝</span><b>${esc(t.name)} · ${t.mins} phút</b>
+  <section class="modes">${MOCK_TESTS.map(t=>`<button class="mode" data-t="${t.id}"><span class="ic">${ic("exam",30)}</span><b>${esc(t.name)} · ${t.mins} phút</b>
     <span>${esc(t.theme)}${P.mbest[t.id]?` · tốt nhất ~${P.mbest[t.id].toFixed(1)}`:""}</span></button>`).join("")}
-    <button class="mode ${nw?"hot":""}" id="mMixBtn" style="grid-column:1/-1"><span class="ic">♻️</span><b>Ôn tổng</b>
+    <button class="mode ${nw?"hot":""}" id="mMixBtn" style="grid-column:1/-1"><span class="ic">${ic("repeat",30)}</span><b>Ôn tổng</b>
     <span>${nw?`Bốc ${REV_N} câu từ cả 6 phần, ưu tiên ${nw} câu mày hay sai`:`Bốc ngẫu nhiên ${REV_N} câu từ cả 6 phần. Chưa có câu sai nào, ngon`}</span></button></section>
   ${P.mhist.length?`<section class="card stack"><div class="eyebrow">Mấy lần thi gần đây</div><div class="hist">${P.mhist.slice(0,5).map(h=>{const t=MOCK_TESTS.find(x=>x.id===h.t);
     return `<div><span>${esc(t?t.name:"Đề "+h.t)} · ${new Date(h.d).toLocaleDateString("vi-VN")}</span><b style="font-family:var(--f-mono)">~${(+h.b).toFixed(1)} · ${h.c}/${h.n}</b></div>`}).join("")}</div></section>`:""}
@@ -2235,7 +2267,7 @@ function mockIntro(t){
   $("main").innerHTML=`<section class="card stack">
     <div class="qhead"><button class="btn sm" id="qBack">← Menu</button><span class="chip">⏱ ${t.mins} phút</span></div>
     <div><div class="eyebrow">Thi thử mini</div><h2>${esc(t.name)}</h2><p class="muted">${esc(t.theme)}</p></div>
-    <div class="skrow">${rows.map(([k,d,n])=>`<span>${M_SK[k].ic} ${M_SK[k].name}</span><span class="muted" style="font-size:14px;min-width:0">${esc(d)}</span><span class="v">${n} câu</span>`).join("")}</div>
+    <div class="skrow">${rows.map(([k,d,n])=>`<span>${ic(M_SK[k].ic,15)} ${M_SK[k].name}</span><span class="muted" style="font-size:14px;min-width:0">${esc(d)}</span><span class="v">${n} câu</span>`).join("")}</div>
     <details class="rule" open><summary>📌 Luật phòng thi</summary><ul>
       <li>Đồng hồ ${t.mins} phút chạy liên tục, hết giờ là tự nộp.</li>
       <li>Không báo đúng sai từng câu. Được quay lại đổi đáp án trước khi nộp.</li>
@@ -2267,7 +2299,7 @@ function mRender(){
   const left=Math.max(0,Math.round((M.end-Date.now())/1000)),nd=Object.keys(M.ans).length;
   $("main").innerHTML=`<section class="card stack">
     <div class="qhead"><button class="btn sm" id="mQuit">✕ Bỏ bài</button><span class="chip ${left<=120?"late":""}" id="mClock">⏱ ${fmtT(left)}</span><span class="chip">${M.i+1}/${n}</span></div>
-    <div class="eyebrow">${sk.ic} ${sk.name} · câu ${pos}/${same.length} · ${esc(it.head)}</div>
+    <div class="eyebrow">${ic(sk.ic,15)} ${sk.name} · câu ${pos}/${same.length} · ${esc(it.head)}</div>
     ${mMedia(it,true)}
     <p class="prompt">${it.prompt}</p>
     ${mOpts(it,M.ans[it.id])}
@@ -2316,7 +2348,7 @@ function mResult(){
   const {res,lb,rb,gb,overall,correct,xp,timeUp,secs}=M.res,n=M.items.length;
   const order=["listen","read","vocab","grammar"],pct=k=>res[k].n?res[k].c/res[k].n:1;
   const weak=order.reduce((a,b)=>pct(b)<pct(a)?b:a),allGood=pct(weak)>=.8;
-  const row=(k,extra)=>{const p=pct(k);return `<span>${M_SK[k].ic} ${M_SK[k].name}</span><div class="bar"><i class="${p<.5?"lo":p>=.8?"hi":""}" style="width:${Math.round(p*100)}%"></i></div><span class="v">${res[k].c}/${res[k].n}${extra?` · ~${extra.toFixed(1)}`:""}</span>`};
+  const row=(k,extra)=>{const p=pct(k);return `<span>${ic(M_SK[k].ic,15)} ${M_SK[k].name}</span><div class="bar"><i class="${p<.5?"lo":p>=.8?"hi":""}" style="width:${Math.round(p*100)}%"></i></div><span class="v">${res[k].c}/${res[k].n}${extra?` · ~${extra.toFixed(1)}`:""}</span>`};
   const msg=overall>=6.5?"Chạm ngưỡng 6.5 rồi đấy mày, giữ phong độ này!":overall>=6?"Band 6 trong tầm tay rồi, đẩy thêm chút nữa là tới 6.5.":overall>=5?"Có nền rồi nhưng còn hở nhiều. Cày đúng chỗ yếu là lên nhanh.":"Đề này còn khó với mày lúc này. Không sao, ôn chỗ yếu rồi quay lại thi tiếp.";
   const wrongN=n-correct;
   $("main").innerHTML=`<section class="card stack">
@@ -2341,7 +2373,7 @@ function mResult(){
   $("mAgain2").onclick=()=>mockIntro(M.t);
 }
 function mReviewHTML(){
-  return M.items.map((it,k)=>it.ok?"":`<details class="rule"><summary>Câu ${k+1} · ${M_SK[it.sk].ic} ${M_SK[it.sk].name}${M.ans[it.id]==null?" · bỏ trống":""}</summary>
+  return M.items.map((it,k)=>it.ok?"":`<details class="rule"><summary>Câu ${k+1} · ${ic(M_SK[it.sk].ic,15)} ${M_SK[it.sk].name}${M.ans[it.id]==null?" · bỏ trống":""}</summary>
     <div class="stack" style="gap:6px;font-size:15px">
       <div>${it.prompt}</div>
       <div>Mày chọn: <b style="color:var(--bad)">${M.ans[it.id]==null?"chưa chọn":esc(M.ans[it.id])}</b></div>
@@ -2400,7 +2432,7 @@ function revRender(){
   const it=R.qs[R.i],sk=M_SK[it.sk];it.tries=0;it.revealed=false;it.done=false;it.peek=false;
   $("main").innerHTML=`<section class="card stack">
     <div class="qhead"><button class="btn sm" id="qBack">← Menu</button>${dots()}<span class="chip">${R.i+1}/${R.qs.length}</span></div>
-    <div class="eyebrow">${sk.ic} ${sk.name}${it.was?" · câu mày từng sai":""} · ${esc(it.head)}</div>
+    <div class="eyebrow">${ic(sk.ic,15)} ${sk.name}${it.was?" · câu mày từng sai":""} · ${esc(it.head)}</div>
     ${mMedia(it,false)}
     ${it.prompt?`<p class="prompt">${it.prompt}</p>`:""}
     ${mOpts(it)}
@@ -2504,7 +2536,7 @@ function vWait(left){vPlay("wait");if(left>1)vWaitT=setTimeout(()=>{const f=$("f
 {const _rs=recStart;recStart=function(){vStop();return _rs()}}
 document.addEventListener("visibilitychange",()=>{if(document.hidden)vStop()});
 $("tabs").addEventListener("click",()=>{if(P.tab==="listening")vStop()});
-function vUI(){const b=$("voiceT");b.innerHTML=(vOn?"🔊":"🔇")+'<span class="vtx"> Giọng</span>';b.setAttribute("aria-pressed",vOn?"true":"false")}
+function vUI(){const b=$("voiceT");b.innerHTML=ic(vOn?"volOn":"volOff",15)+'<span class="vtx"> Giọng</span>';b.setAttribute("aria-pressed",vOn?"true":"false")}
 $("voiceT").onclick=()=>{vOn=!vOn;try{localStorage.setItem(VKEY,vOn?"1":"0")}catch(e){}vUI();
   if(vOn){vPlay("good");heroSay("Elaina sẽ nói tiếng Nhật nha!",pick(MASC.happy))}else{vStop();heroSay("Tao im đây.","10")}};
 vUI();
