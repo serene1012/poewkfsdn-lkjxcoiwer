@@ -2293,9 +2293,48 @@ function mockMenu(){
     <span>${nw?`Bốc ${REV_N} câu từ cả 6 phần, ưu tiên ${nw} câu mày hay sai`:`Bốc ngẫu nhiên ${REV_N} câu từ cả 6 phần. Chưa có câu sai nào, ngon`}</span></button></section>
   ${P.mhist.length?`<section class="card stack"><div class="eyebrow">Mấy lần thi gần đây</div><div class="hist">${P.mhist.slice(0,5).map(h=>{const t=MOCK_TESTS.find(x=>x.id===h.t);
     return `<div><span>${esc(t?t.name:"Đề "+h.t)} · ${new Date(h.d).toLocaleDateString("vi-VN")}</span><b style="font-family:var(--f-mono)">~${(+h.b).toFixed(1)} · ${h.c}/${h.n}</b></div>`}).join("")}</div></section>`:""}
+  <section class="card stack"><div class="row"><div><b>${ic("target",17)} Hồ sơ điểm yếu</b><div class="muted" style="font-size:14px">${weakSummary()}</div></div>
+    <button class="btn ${nw?"pri":""}" id="weakOpen" style="white-space:nowrap;flex:none">Mở hồ sơ</button></div></section>
   <section class="card"><p class="muted" style="font-size:14px">Thi thử: mỗi câu đúng +10 XP, nộp bài (làm ít nhất nửa đề) thưởng thêm +30. Không báo đúng sai từng câu, nộp xong mới chấm. Ôn tổng: đúng ngay +20 · lần hai +15 · xem đáp án +5; câu sai sẽ vào lại mục ôn của phần chứa nó.</p></section>`;
   document.querySelectorAll(".mode[data-t]").forEach(b=>b.onclick=()=>mockIntro(MOCK_TESTS.find(t=>t.id===b.dataset.t)));
-  $("mMixBtn").onclick=startRev;
+  $("mMixBtn").onclick=()=>startRev();
+  $("weakOpen").onclick=weakView;
+}
+/* ===== Hồ sơ điểm yếu: gom câu sai còn nợ theo skill + sổ lỗi viết + số liệu Speaking ===== */
+function weakTally(){
+  const E=revEntries(),sk=["vocab","grammar","listen","read","speak"];
+  return {E,sk,n:sk=>E.filter(e=>e.sk===sk&&wCount(e)>0).length};
+}
+function weakSummary(){
+  const w=weakTally(),tot=w.sk.reduce((a,s)=>a+w.n(s),0);
+  if(!tot)return "Chưa có câu sai nào đang chờ ôn. Luyện đều là hồ sơ trống — ngon.";
+  const worst=w.sk.reduce((a,b)=>w.n(b)>w.n(a)?b:a);
+  return `${tot} câu sai đang chờ ôn · nặng nhất: ${M_SK[worst].name} (${w.n(worst)} câu)`;
+}
+function weakView(){
+  mStop();stopSpeak();
+  const w=weakTally(),tot=w.sk.reduce((a,s)=>a+w.n(s),0);
+  const L=P.wlog||[],tally=errTally(L);
+  const smet=Array.isArray(P.smet)?P.smet:[],wpms=smet.filter(x=>x.wpm>0);
+  const wpmAvg=wpms.length?Math.round(wpms.reduce((a,x)=>a+x.wpm,0)/wpms.length):0;
+  const fillAvg=wpms.length?(wpms.reduce((a,x)=>a+(x.fill||0),0)/wpms.length).toFixed(1):null;
+  $("main").innerHTML=`<section class="card stack">
+    <div class="qhead"><button class="btn sm" id="qBack">← Menu</button><span class="chip">${tot} câu chờ ôn</span></div>
+    <div><div class="eyebrow">Số liệu đếm từ câu sai còn trong danh sách ôn + sổ lỗi viết + mic</div>
+    <h2>Hồ sơ điểm yếu</h2>
+    <p class="muted">${tot?"Đứng đầu là chỗ rò điểm nhiều nhất. Bấm Luyện để bốc đúng chỗ đó.":"Chưa có câu sai nào đang chờ ôn. Muốn hồ sơ có nội dung thì đi làm bài, sai mới có data."}</p></div>
+    <div class="skrow">${w.sk.map(sk=>{const n=w.n(sk);
+      return `<span>${ic(M_SK[sk].ic,15)} ${M_SK[sk].name}</span><span class="muted" style="font-size:14px">${n?`${n} câu sai còn nợ`:"sạch"}</span>${n?`<button class="btn sm" data-sk="${sk}">Luyện</button>`:`<span class="v">✓</span>`}`}).join("")}</div>
+    <div class="stack" style="gap:6px"><div class="row" style="justify-content:flex-start;gap:8px"><b>${ic("pen",15)} Viết</b>
+      <span class="muted" style="font-size:14px">${L.length?`${L.length} câu yếu đã ghi${tally.length?` · hay dính: ${tally.slice(0,3).map(([k,n])=>esc(k)+" ×"+n).join(", ")}`:""}`:"chưa có câu nào bị chấm dưới 8 điểm"}</span></div>
+      <div class="btns"><button class="btn sm" id="weakLog" ${L.length?"":"disabled"}>Mở sổ lỗi viết</button></div></div>
+    <div class="stack" style="gap:4px"><div class="row" style="justify-content:flex-start;gap:8px"><b>${ic("mic",15)} Speaking</b>
+      <span class="muted" style="font-size:14px">${smet.length?`${smet.length} lần nói đã chấm${wpmAvg?` · WPM trung bình ~${wpmAvg} (đo thật)${fillAvg?` · filler ~${fillAvg}/lần`:""}`:" · chưa có lần nào đủ 10 giây mic để tính WPM"}`:"chưa có lần nói nào được chấm"}</span></div></div>
+    <p class="muted" style="font-size:13px">Câu sai phải ôn đúng hai lần mới gỡ khỏi hồ sơ, nên số ở đây là phần còn nợ chứ không phải tổng lỗi từng mắc. Speaking chỉ đếm khi app chấm được lần nói đó.</p>
+  </section>`;
+  $("qBack").onclick=mockMenu;
+  document.querySelectorAll("[data-sk]").forEach(b=>b.onclick=()=>startRev(b.dataset.sk));
+  if($("weakLog"))$("weakLog").onclick=()=>renderLog(weakView);
 }
 function mockIntro(t){
   mStop();stopSpeak();
@@ -2405,7 +2444,7 @@ function mResult(){
   $("qBack").onclick=mockMenu;
   if($("mGo"))$("mGo").onclick=()=>{P.tab=M_SK[weak].tab;save();renderTabs();route();try{scrollTo({top:0})}catch(e){}};
   if($("mRev"))$("mRev").onclick=()=>{const L=$("mList");L.hidden=!L.hidden;if(!L.hidden&&!L.innerHTML)L.innerHTML=mReviewHTML()};
-  $("mMix").onclick=startRev;
+  $("mMix").onclick=()=>startRev();
   $("mAgain2").onclick=()=>mockIntro(M.t);
 }
 function mReviewHTML(){
@@ -2445,19 +2484,19 @@ function revPhrase(q){const s=SSIT[q.sit];
     opts:shuffle([q.a,...q.o]),a:q.a,why:`<div class="ex">${esc(q.a)} ${sayBtn(q.a)}</div><div>💡 ${esc(q.why)}</div>`,layout:"opts"}}
 function revEntries(){
   const E=[];
-  ALLW.forEach(w=>E.push({id:w.id,map:"wrong",make:()=>revVocab(w)}));
-  GRAMMAR_UNITS.forEach(u=>u.qs.forEach(q=>E.push({id:q.id,map:"gwrong",make:()=>revGram(q)})));
-  LISTENING_SETS.forEach(s=>s.qs.forEach(q=>E.push({id:q.id,map:"lwrong",make:()=>revListen(q)})));
-  READING_PASSAGES.forEach(p=>p.qs.forEach(q=>{if(q.t!=="comp")E.push({id:q.id,map:"rwrong",make:()=>revRead(q)})}));
-  PHRASES.forEach(s=>s.qs.forEach(q=>E.push({id:q.id,map:"swrong",make:()=>revPhrase(q)})));
-  MOCK_TESTS.forEach(t=>mockItems(t).forEach(it=>E.push({id:it.id,map:"mwrong",make:()=>it})));
+  ALLW.forEach(w=>E.push({id:w.id,map:"wrong",sk:"vocab",make:()=>revVocab(w)}));
+  GRAMMAR_UNITS.forEach(u=>u.qs.forEach(q=>E.push({id:q.id,map:"gwrong",sk:"grammar",make:()=>revGram(q)})));
+  LISTENING_SETS.forEach(s=>s.qs.forEach(q=>E.push({id:q.id,map:"lwrong",sk:"listen",make:()=>revListen(q)})));
+  READING_PASSAGES.forEach(p=>p.qs.forEach(q=>{if(q.t!=="comp")E.push({id:q.id,map:"rwrong",sk:"read",make:()=>revRead(q)})}));
+  PHRASES.forEach(s=>s.qs.forEach(q=>E.push({id:q.id,map:"swrong",sk:"speak",make:()=>revPhrase(q)})));
+  MOCK_TESTS.forEach(t=>mockItems(t).forEach(it=>E.push({id:it.id,map:"mwrong",sk:it.sk,make:()=>it})));
   return E;
 }
 const wCount=e=>(P[e.map]&&P[e.map][e.id])||0;
 function revWrongCount(){return revEntries().filter(e=>wCount(e)>0).length}
-function startRev(){
+function startRev(skill){
   mStop();stopSpeak();
-  const E=revEntries(),wrong=shuffle(E.filter(e=>wCount(e)>0)).sort((a,b)=>wCount(b)-wCount(a)).slice(0,7);
+  const E=revEntries().filter(e=>!skill||e.sk===skill),wrong=shuffle(E.filter(e=>wCount(e)>0)).sort((a,b)=>wCount(b)-wCount(a)).slice(0,7);
   const rest=shuffle(E.filter(e=>!wrong.includes(e))).slice(0,REV_N-wrong.length);
   const qs=shuffle([...wrong,...rest]).map(e=>Object.assign(e.make(),{id:e.id,map:e.map,was:wCount(e)>0}));
   R={rv:true,qs,i:0,earned:0,correct:0,fixed:0};
