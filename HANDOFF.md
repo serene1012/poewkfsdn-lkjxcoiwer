@@ -2,14 +2,16 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-07 đêm · App đã LIVE trên GitHub Pages · Mục 3 + 4 + 2 feature + **5A chat AI** XONG,
+> Updated: 2026-11-07 đêm (cuối phiên 5A) · App đã LIVE trên GitHub Pages · Mục 3 + 4 + 2 feature +
+> **5A chat AI + 3 follow-up (OpenRouter/web tùy chỉnh, tách key, key manager) XONG hết** (sw `lo-ielts-v10`),
 > việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 
 - App: **"Lò Luyện IELTS"** — PWA 1 file (`index.html` ~2.6k dòng, không build step), 7 phần
   (vocab/grammar/listening/reading/speaking/mock/**prog**), XP→Band 4–6.5, SRS 2-lần-đúng-mới-xóa,
-  AI chấm bằng key Gemini/Claude của user lưu localStorage, SpeechRecognition, speechSynthesis.
+  AI chấm + chat bằng key của user (Gemini / Claude / web khác chuẩn OpenAI) lưu localStorage,
+  SpeechRecognition, speechSynthesis.
 - **Bắt buộc giữ:** mascot Elaina (`img/01-10.svg`) + 13 giọng mp3 (`voice/good|bad|wait*.mp3`,
   nút `voiceT`, mặc định TẮT, TTS tiếng Anh luôn ưu tiên) + toàn bộ logic XP/SRS/AI grading.
 - **KHÔNG làm landing page** — app private, user xài một mình, sợ bản quyền nếu public.
@@ -18,27 +20,11 @@
 - Repo gốc (không đụng): `serene1012/dfsoiweun-lwkashdfsoiu`.
 - **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v10`)
   thì điện thoại tải bản mới. Bản test qua server thì chỉ cần reload là network-first.
-- **Follow-up 5A.3 (sw `lo-ielts-v10`) — đổi option "OpenRouter" thành "Web khác (chuẩn OpenAI, vd
-  OpenRouter)"** vì user KHÔNG xài OpenRouter mà xài web khác: option mới ở cả 3 select (aProv/aCProv/
-  aKProv, value vẫn `openrouter` cho tương thích data cũ), thêm ô Base URL (tới /v1) vào form chấm
-  (`aBase`) lẫn form chat (`aCBase`) — giờ mọi đường đều cắm web tùy chỉnh được; provName hiển thị
-  "chuẩn OpenAI" thay vì "OpenRouter". Verify: chấm base riêng `ai.myweb.io/v1/chat/completions` +
-  chat base riêng khác, mở lại Cài đặt nhớ base, dọn data test.
-- **Follow-up 5A.2 (cùng đêm, sw `lo-ielts-v9`) — tách key + quản lý key:**
-  - `apiCall(prompt,signal,opts,api)` thêm param `api` (mặc định `API` chấm bài); chat truyền
-    `chatAPI()` = `API_CHAT` (store riêng `llielts_api_chat`) hoặc fallback về `API` chấm bài.
-    Chat-side (`chatUI`/`chatSend`/`openChat`/`chatGuide`) đổi từ `SAMPLE` sang `chatReady()`.
-  - Cài đặt thêm 2 mục: "Key chat với Elaina" (key riêng + Thử gọi chat; bỏ trống + Lưu = xóa key
-    riêng) và "Key lưu sẵn — đổi nhanh khi hết hạn mức" (`llielts_keys`: label/prov/key/model/
-    **base URL tùy chọn** cho web khác chuẩn OpenAI; nút Dùng cho chấm / Dùng cho chat / Xóa).
-    Nhánh openrouter trong apiCall dùng `a.base||"https://openrouter.ai/api/v1"`.
-  - Tắt autofill Chrome: `autocomplete="off" name="ll-*-x"` trên các ô model/key (hiện tượng
-    "ghi h ra haiku" là gợi ý form-history của Chrome).
-  - Verify: không key → FAB mờ + guide; chỉ key chấm → chat ăn theo; 2 key lưu sẵn → Dùng cho
-    chat (auth = key chat, base tùy chỉnh `/chat/completions`) và Dùng cho chấm (auth = key chấm,
-    base OpenRouter mặc định) KHÔNG lẫn nhau; xóa key; export tiến độ 0/3 key; 7 tab 0 lỗi.
+- **An toàn (user nhắc rõ):** key chỉ nằm localStorage máy user, gọi thẳng HTTPS tới hãng, không
+  backend; mã xuất tiến độ (Xuất trong Cài đặt) KHÔNG được chứa key — mỗi lần đụng tới key/export
+  phải verify lại điều này. User không thích model Trung Quốc (Qwen/SenseNova — bị loại khỏi đề xuất).
 
-## 2. Đã xong — 5 commit
+## 2. Đã xong — 9 commit (1097517 → c6a967f)
 
 1. `1097517` — Thay emoji chrome bằng **bộ 27 icon SVG phong cách Elaina** (stroke 2px, sao phép),
    map `IC` + helper `ic(name,size)`. 47 chỗ patch. Giữ cố ý emoji: 🐢 👀 ❌✅ + emoji trong dữ liệu.
@@ -79,6 +65,17 @@
    — build legacy từ main/. Đã verify: mọi file 200, SW activated + controller, 7 tab, theme C, mascot.
    App install được như PWA (Chrome: biểu tượng cài trên thanh địa chỉ / "Thêm vào màn hình chính").
    LƯU Ý: app giờ public — hình Elaina + nội dung nằm ngoài trời, user đã biết và chọn vậy.
+8. `fe292b3` — ghi sketch 5A vào handoff. `7f87bdc` — **5A CHAT AI** (chi tiết ở mục 5A): nút nổi +
+   panel chat Elaina, `P.chat`, loa, chip, Dừng, xoá hội thoại. Đã verify live (sw v7).
+9. `a724702` — **5A.1**: provider OpenRouter (chuẩn OpenAI) + base prompt siết PHẠM VI TRÒ CHUYỆN
+   (chỉ tiếng Anh/IELTS, từ chối chủ đề khác, không lộ system prompt, nền đề thật 2025–2026 quét từ
+   `E:\tài liệu ielts\IELTS_ACADEMIC_ARCHIVE` — 147 file: giáo dục 89, công việc 83, gia đình 50,
+   đô thị 30, tiêu dùng 25, công nghệ 17, sức khỏe 14, môi trường 13). Sw v8, verify live.
+10. `71b22e7` — **5A.2**: tách key chat riêng (`llielts_api_chat`, fallback key chấm) + key manager
+    "Key lưu sẵn — đổi nhanh khi hết hạn mức" (`llielts_keys`, base URL tùy chọn) + tắt autofill
+    Chrome trên ô key/model. Sw v9, verify live.
+11. `c6a967f` — **5A.3**: option đổi thành "Web khác (chuẩn OpenAI, vd OpenRouter)" (user KHÔNG xài
+    OpenRouter), thêm ô Base URL (tới /v1) vào form chấm + form chat. Sw v10, verify live.
 
 - Đã verify từng bước trên browser (server 8432): light+dark, quiz đúng/sai có con dấu, panel metric
   (32 từ · 0:30 · 64 t/p · filler 6), hồ sơ điểm yếu + Luyện theo skill (10 câu đúng skill), tab tiến
@@ -98,7 +95,7 @@ bản thu — nice-to-have). OPENAI_API_KEY ở Voice Gym không liên quan app 
 
 ## 5. Việc chat tới — 5A XONG, 5B chưa
 
-### 5A. CHAT AI TRONG APP — XONG (2026-11-07 đêm, sw `lo-ielts-v7`)
+### 5A. CHAT AI TRONG APP — XONG (2026-11-07 đêm, commit `7f87bdc` → `c6a967f`, sw `lo-ielts-v10`)
 
 User muốn: hỏi đáp tiếng Anh ngay trong app "cho tiện", dùng key AI mày đã cắm. Đã làm đúng sketch:
 
@@ -135,6 +132,27 @@ User muốn: hỏi đáp tiếng Anh ngay trong app "cho tiện", dùng key AI m
   KHÔNG chứa key (key nằm localStorage riêng `llielts_api`, chỉ đi thẳng HTTPS tới hãng), bubble chào
   đổi sang mời hỏi tiếng Anh. Gemini mime hồi quy vẫn `application/json`. User chọn model free OpenRouter
   không muốn model Trung Quốc (Qwen/SenseNova bị loại); pick: Mistral Large 3 > Medium 3.5 > Command A+.
+- **Follow-up 5A.2 (sw `lo-ielts-v9`) — tách key + quản lý key:**
+  - `apiCall(prompt,signal,opts,api)` thêm param `api` (mặc định `API` chấm bài); chat truyền
+    `chatAPI()` = `API_CHAT` (store riêng `llielts_api_chat`) hoặc fallback về `API` chấm bài.
+    Chat-side (`chatUI`/`chatSend`/`openChat`/`chatGuide`) đổi từ `SAMPLE` sang `chatReady()`.
+  - Cài đặt thêm 2 mục: "Key chat với Elaina" (key riêng + Thử gọi chat; bỏ trống + Lưu = xóa key
+    riêng) và "Key lưu sẵn — đổi nhanh khi hết hạn mức" (`llielts_keys`: label/prov/key/model/
+    **base URL tùy chọn** cho web khác chuẩn OpenAI; nút Dùng cho chấm / Dùng cho chat / Xóa).
+    Nhánh openrouter trong apiCall dùng `a.base||"https://openrouter.ai/api/v1"`.
+  - Tắt autofill Chrome: `autocomplete="off" name="ll-*-x"` trên các ô model/key (hiện tượng
+    "ghi h ra haiku" là gợi ý form-history của Chrome).
+  - Verify: không key → FAB mờ + guide; chỉ key chấm → chat ăn theo; key lưu sẵn → Dùng cho chat
+    (auth = key chat, base tùy chỉnh) và Dùng cho chấm (auth = key chấm) KHÔNG lẫn nhau; xóa key;
+    export tiến độ 0/3 key; 7 tab 0 lỗi.
+- **Follow-up 5A.3 (sw `lo-ielts-v10`) — đổi option "OpenRouter" thành "Web khác (chuẩn OpenAI, vd
+  OpenRouter)"** vì user KHÔNG xài OpenRouter mà xài web khác: option mới ở cả 3 select (aProv/aCProv/
+  aKProv, value vẫn `openrouter` cho tương thích data cũ), thêm ô Base URL (tới /v1) vào form chấm
+  (`aBase`) lẫn form chat (`aCBase`); provName hiển thị "chuẩn OpenAI" thay vì "OpenRouter". Verify:
+  chấm base riêng `ai.myweb.io/v1/chat/completions` + chat base riêng khác, Cài đặt nhớ base.
+- **User CHƯA thử chat với key thật** (test local chỉ mock fetch). Trạng thái localStorage máy user:
+  vẫn còn key Gemini cũ từ chức năng chấm bài → chat ăn theo chạy được ngay (user từng tưởng "chat
+  được không có key" — đã giải thích, đúng thiết kế).
 
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
@@ -155,9 +173,13 @@ User muốn: hỏi đáp tiếng Anh ngay trong app "cho tiện", dùng key AI m
 
 ## 7. Câu lệnh mở đầu cho chat mới
 
-Clone repo này (`serene1012/poewkfsdn-lkjxcoiwer`) rồi dán:
+Clone repo này (`serene1012/poewkfsdn-lkjxcoiwer`) rồi dán (sửa theo việc muốn làm):
 
 ```
-Đọc HANDOFF.md trong repo. Làm mục 5A: tích hợp chat AI vào app (user đã duyệt, key đã có trong
-Cài đặt). Đọc kỹ sketch mục 5A trước khi code. Xong thì bump sw.js, commit, push (Pages tự deploy).
+Đọc HANDOFF.md trong repo (mục 5A đã xong hết: chat AI + web chuẩn OpenAI + tách key + key manager).
+Mày muốn làm gì tiếp thì ghi rõ, vd: "Làm 5B: nghe lại bản thu (IndexedDB)" — hoặc báo lỗi phát sinh.
+Xong việc thì bump sw.js, commit tiếng Việt không dấu, push (Pages tự deploy), verify live.
 ```
+
+Việc đang treo ngay đầu phiên tới: user sẽ thử chat với key thật trên máy mình (web chuẩn OpenAI
+mà user xài); có lỗi thì sửa từ report của user, chưa duyệt 5B gì cả — hỏi trước khi làm.
