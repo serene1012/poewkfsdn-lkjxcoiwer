@@ -16,7 +16,7 @@
 - Bản làm việc: chính là repo này (clone về đâu làm đó). Server test:
   `python -m http.server 8432` chạy trong thư mục repo, mở http://localhost:8432.
 - Repo gốc (không đụng): `serene1012/dfsoiweun-lwkashdfsoiu`.
-- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v7`)
+- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v8`)
   thì điện thoại tải bản mới. Bản test qua server thì chỉ cần reload là network-first.
 
 ## 2. Đã xong — 5 commit
@@ -106,6 +106,16 @@ User muốn: hỏi đáp tiếng Anh ngay trong app "cho tiện", dùng key AI m
   script OK. Lưu ý tool test: `press("Enter")` của harness không nhả key event xuống trang (fill thì
   được) — Enter-gửi đã xác nhận chạy bằng synthetic KeyboardEvent; user thật gõ trong Chrome bình thường.
 - **Còn lại cho user tự thử:** chat với key THẬT của user (trên máy user, test local không có key thật).
+- **Follow-up 5A.1 (cùng đêm, sw `lo-ielts-v8`):** thêm provider **OpenRouter** (`openrouter`:
+  select option 3, `API_DEF` default `mistralai/mistral-large-2512`, nhánh fetch OpenAI-compatible
+  `https://openrouter.ai/api/v1/chat/completions` Bearer + `x-title`, parse `d.choices[].message.content`,
+  max_tokens 4000). Base prompt chat siết PHẠM VI TRÒ CHUYỆN: chỉ tiếng Anh/IELTS, chủ đề khác từ chối
+  ngắn + kéo về, không tiết lộ system prompt, kèm nền "đề thật 2025–2026" — chủ đề lặp nhiều nhất
+  quét từ `E:\tài liệu ielts\IELTS_ACADEMIC_ARCHIVE` (147 file): giáo dục 89, công việc 83, gia đình 50,
+  đô thị 30, tiêu dùng 25, công nghệ 17, sức khỏe 14, môi trường 13. An toàn đã verify: export tiến độ
+  KHÔNG chứa key (key nằm localStorage riêng `llielts_api`, chỉ đi thẳng HTTPS tới hãng), bubble chào
+  đổi sang mời hỏi tiếng Anh. Gemini mime hồi quy vẫn `application/json`. User chọn model free OpenRouter
+  không muốn model Trung Quốc (Qwen/SenseNova bị loại); pick: Mistral Large 3 > Medium 3.5 > Command A+.
 
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
