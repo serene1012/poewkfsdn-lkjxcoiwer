@@ -15,9 +15,8 @@
 - Bản làm việc: chính là repo này (clone về đâu làm đó). Server test:
   `python -m http.server 8432` chạy trong thư mục repo, mở http://localhost:8432.
 - Repo gốc (không đụng): `serene1012/dfsoiweun-lwkashdfsoiu`.
-- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v5`
-  — đã bump sau phiên này) thì điện thoại mới tải bản mới. Bản test qua server thì chỉ cần reload
-  là network-first.
+- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v6`)
+  thì điện thoại tải bản mới. Bản test qua server thì chỉ cần reload là network-first.
 
 ## 2. Đã xong — 5 commit
 
@@ -48,6 +47,18 @@
    bắt đầu ghi = trống, ngày 0 XP = cọc nhạt 3px; **band thi thử** — SVG chấm + nét đứt từ `P.mhist`
    (nhãn "ước lượng", chênh <1 band coi là ngang, không khen/chê); **WPM Speaking** — SVG chấm từ
    `P.smet` (chỉ lần mic ≥10 giây). SVG inline dùng `var(--accent)` nên ăn theme.
+6. `d1ee4f7` — manifest đổi màu theo theme C. `3d448bd` — **2 tính năng user duyệt thêm**:
+   - **Ghi lỗi Speaking vào sổ lỗi**: prompt chấm Speaking có thêm trường `err`; gradeSpeak thành công
+     gọi `logWeak("speaking", ...)` (điểm <8 mới ghi, như bài viết). Sổ lỗi giờ chứa cả lỗi nói.
+   - **AI drill từ câu đã sửa**: nút "Sinh bài luyện từ câu đã sửa" trong sổ lỗi (cần key AI + ≥3 câu
+     có bản sửa) → `analyzeDrill()` nhờ AI dựng 4–6 câu điền từ (`___` đúng chỗ hay sai, 3 nhiễu) →
+     lưu **`P.drillQs`** (thay mỗi lần sinh) → `startDrill()` chơi luôn theo flow revRender; drill
+     nằm trong `revEntries` (id `dq{i}`, map `drill`) nên sai là vào Ôn tổng + Hồ sơ điểm yếu (skill
+     Ngữ pháp). `R.back` mới: revRender/revEnd dùng `R.back||mockMenu` để drill back về sổ lỗi.
+7. **GitHub Pages đã BẬT** (user duyệt public): `https://serene1012.github.io/poewkfsdn-lkjxcoiwer/`
+   — build legacy từ main/. Đã verify: mọi file 200, SW activated + controller, 7 tab, theme C, mascot.
+   App install được như PWA (Chrome: biểu tượng cài trên thanh địa chỉ / "Thêm vào màn hình chính").
+   LƯU Ý: app giờ public — hình Elaina + nội dung nằm ngoài trời, user đã biết và chọn vậy.
 
 - Đã verify từng bước trên browser (server 8432): light+dark, quiz đúng/sai có con dấu, panel metric
   (32 từ · 0:30 · 64 t/p · filler 6), hồ sơ điểm yếu + Luyện theo skill (10 câu đúng skill), tab tiến
@@ -67,12 +78,11 @@ bản thu — nice-to-have). OPENAI_API_KEY ở Voice Gym không liên quan app 
 
 ## 5. Ý tưởng tiếp theo (chưa ai duyệt, đừng tự làm)
 
-- **AI drill từ câu sửa được**: `gradeWithClaude` trả `corrected` → dùng câu đó sinh bài luyện riêng
-  (cần key AI; hiện hồ sơ điểm yếu mới ôn lại câu sai có sẵn).
-- **Điểm ngữ pháp/lỗi trong Speaking**: AI trả band nhưng chưa ghi `err` vào wlog; có thể logWeak
-  cả speaking feedback.
-- **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn.
+- **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn. (AI drill + logWeak Speaking đã xong ở `3d448bd`.)
+- **Xuất/nhập tiến độ đã gồm data mới**: `P` giờ có thêm `xplog`, `smet`, `drillQs`, `drill` — mã xuất
+  cũ vẫn import được (Object.assign), chỉ là thiếu phần mới.
 - Nếu thêm mock đề mới: chỉ thêm phần tử vào `MOCK_TESTS` (hồ sơ điểm yếu + ôn tổng tự ăn theo).
+- Pages tự deploy mỗi lần push main — không cần làm gì thêm. Muốn custom domain thì bật trong Settings.
 
 ## 6. Tooling máy này
 
