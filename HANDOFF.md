@@ -2,9 +2,10 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-07 đêm (cuối phiên 5A) · App đã LIVE trên GitHub Pages · Mục 3 + 4 + 2 feature +
-> **5A chat AI + 3 follow-up (OpenRouter/web tùy chỉnh, tách key, key manager) XONG hết** (sw `lo-ielts-v10`),
-> việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
+> Updated: 2026-11-07 đêm (phiên sau 5A) · App đã LIVE trên GitHub Pages · 5A xong + **phiên này thêm
+> 6 bài học mới (3 Reading + 3 Listening) + bộ đếm thời gian 6 phần (commit `07363b7`, sw `lo-ielts-v11`)**.
+> Đề xuất tài liệu tiếp theo nằm ở `DE_XUAT_TAILIEU.md` NGOÀI repo — chờ user duyệt, chưa merge gì.
+> Việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 
@@ -154,6 +155,35 @@ User muốn: hỏi đáp tiếng Anh ngay trong app "cho tiện", dùng key AI m
   vẫn còn key Gemini cũ từ chức năng chấm bài → chat ăn theo chạy được ngay (user từng tưởng "chat
   được không có key" — đã giải thích, đúng thiết kế).
 
+### 5A+. PHIÊN SAU 5A (2026-11-07 đêm) — THÊM BÀI HỌC + BỘ ĐẾM THỜI GIAN (commit `07363b7`, sw `lo-ielts-v11`)
+
+User học hết Reading + Listening trong app, chỉ đạo: thêm bài học (chất liệu từ
+`E:\tài liệu ielts\IELTS_ACADEMIC_ARCHIVE`) + tạo bộ đếm thời gian chống lấn sâu 1 phần bỏ bê phần kia.
+Cào web IELTS VN chỉ để ĐỀ XUẤT — `DE_XUAT_TAILIEU.md` (ngoài repo) chờ duyệt.
+
+- **3 Reading mới** (viết lại 100% từ facts archive, giữ format 14 câu: 5 tfng + 5 head + 4 comp):
+  - `duned` — One Thousand Lives, Followed for a Lifetime (Dunedin Study; sức khỏe & tâm lý) 🩺
+  - `buy` — The Way the Brain Buys (tâm lý tiêu dùng) 🛒
+  - `sgplan` — Planning a City with No Room to Grow (quy hoạch Singapore; đô thị) 🏙️
+- **3 Listening mới** (Section 2, 6 segs + 6 câu, TTS qua who A/B):
+  - `zoo` — Tham quan sở thú (Melbourne Zoo welcome talk, monologue 1 vai — who chỉ cần A)
+  - `mufs` — Trồng rau trong phố (2 vai Host/Chris)
+  - `shop` — Ngày đầu ở siêu thị (monologue)
+- **Bộ đếm thời gian**: `tBeat()` ghi `P.tlog["YYYY-MM-DD"][tabId]` +15s/nhịp mỗi 15 giây khi tab mở
+  (`visibilityState==="visible"` mới đếm); `tHeartbeat()` được gọi trong `route()` (interval mới mỗi lần
+  chuyển tab, `let tTick`). Card "Thời gian học mỗi phần" trong `progView()` (icon `clock` mới thêm vào
+  `IC`): 6 hàng skill + bar % hôm nay + tổng 7 ngày + gợi ý phần mỏng nhất trong 7 ngày. `P.tlog` prune
+  30 ngày. Tab Tiến bộ không tính vào 6 skill. Export tiến độ tự gồm tlog (nằm trong P).
+- Verify: 8433 local (8432 bị SW cũ của session trước kẹt cache — đổi port là sạch; lưu ý IAB của ZCode
+  giữ SW qua các phiên). 6/6 câu zoo, 6/6 đầu duned, 1 câu mỗi bài/bộ còn lại đều fb good, highlight
+  `data-s` đúng, XP +20/câu, 7 tab 0 lỗi, card thời gian render đẹp (screenshot), data test đã dọn.
+  Live verified: caches chỉ còn `lo-ielts-v11`, 7 tab 0 lỗi.
+- Icon `clock` thêm vào `IC` (circle + kim giờ, stroke 2px đúng bộ).
+- **Khảo sát web IELTS VN** (chỉ đề xuất, file ngoài repo `DE_XUAT_TAILIEU.md`): DOL English, IELTS
+  Fighter (Cloudflare chặn reader — đọc qua hướng khác), IELTS Online Tests. Candidate còn dư từ
+  archive: R1 teaching styles, R2 American businesses, R3 Flynn effect; L1 Beach Clean-up, L2
+  Pre-school S1, L3 Gamification S4. Chờ user duyệt từng mục.
+
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
 - **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn.
@@ -183,3 +213,5 @@ Xong việc thì bump sw.js, commit tiếng Việt không dấu, push (Pages t�
 
 Việc đang treo ngay đầu phiên tới: user sẽ thử chat với key thật trên máy mình (web chuẩn OpenAI
 mà user xài); có lỗi thì sửa từ report của user, chưa duyệt 5B gì cả — hỏi trước khi làm.
+Phiên sau 5A thêm: user duyệt `DE_XUAT_TAILIEU.md` (ngoài repo) mục nào thì merge mục đó;
+user cũng chưa chạy thử 6 bài học mới + bộ đếm thời gian trên máy thật.
