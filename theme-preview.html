@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thử theme — Lò Luyện IELTS</title>
+<style>
+  body{margin:0;font-family:system-ui,"Segoe UI",sans-serif;background:#14121C;color:#EDEAF6;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px}
+  h1{font-size:16px;margin:4px 0 0;font-weight:700}
+  p{margin:0;font-size:12.5px;color:#A9A3BC}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  button{font:inherit;font-weight:700;font-size:14px;padding:9px 16px;border-radius:12px;border:2px solid #3A3547;border-bottom-width:4px;background:#211E29;color:#EDEAF6;cursor:pointer}
+  button.on{border-color:currentColor}
+  #bA.on{color:#E7A9C6}#bB.on{color:#7FA1E0}#bC.on{color:#E3B9D2}#bCur.on{color:#9D88FF}
+  #bW{margin-left:6px}
+  iframe{width:420px;height:820px;border:0;border-radius:18px;background:#000}
+</style>
+</head>
+<body>
+<h1>Thử 4 giao diện trên app thật</h1>
+<p>Bấm nút là đổi palette tức thì — chưa commit gì, chỉ xem chơi.</p>
+<div class="bar">
+  <button id="bCur" class="on">Hiện tại (đen tím)</button>
+  <button id="bA">A · Hoàng hôn du hành</button>
+  <button id="bB">B · Đen choàng xanh chàm</button>
+  <button id="bC">C · Kem sáp manga</button>
+  <button id="bW">Rộng / Mỏng</button>
+</div>
+<iframe id="frame" src="index.html" title="App preview"></iframe>
+<script>
+const THEMES={
+  A:{label:"A · Hoàng hôn du hành",v:{
+    "--bg":"#EEF1F5","--panel":"#FFFFFF","--ink":"#2A2438","--muted":"#6E6886","--line":"#DCE0EA","--head":"#F2F4F9",
+    "--accent":"#C06FA8","--accent-d":"#A54E8D","--accent-ink":"#FFFFFF","--accent-soft":"#F7E7F1",
+    "--night":"#2A2438","--night-ink":"#F5F1E8","--gold":"#D9A94E","--gold-d":"#B8862F","--pink":"#F3DCEA","--tip":"#FFF3D6",
+    "--good":"#2FA46B","--good-d":"#21854F","--good-soft":"#E2F3E8","--good-ink":"#1B6B41",
+    "--bad":"#D95570","--bad-d":"#B93A55","--bad-soft":"#FBE4E9","--bad-ink":"#96283F"}},
+  B:{label:"B · Đen choàng xanh chàm",v:{
+    "--bg":"#191621","--panel":"#211E29","--ink":"#F1EEFF","--muted":"#A9A3BC","--line":"#3A3547","--head":"#282430",
+    "--accent":"#5C82D4","--accent-d":"#4A6FB5","--accent-ink":"#0F1320","--accent-soft":"#26314B",
+    "--night":"#151219","--night-ink":"#F1EEFF","--gold":"#E0B54C","--gold-d":"#C09433","--pink":"#413248","--tip":"#3A3040",
+    "--good":"#45CC82","--good-d":"#2B9A5C","--good-soft":"#1B3A28","--good-ink":"#8FF0B8",
+    "--bad":"#FF7088","--bad-d":"#C9445E","--bad-soft":"#43202B","--bad-ink":"#FFB3C1"}},
+  C:{label:"C · Kem sáp manga",v:{
+    "--bg":"#F7EFF3","--panel":"#FFFDFC","--ink":"#3A2F3C","--muted":"#8A7A88","--line":"#EAD9E4","--head":"#F3E6EE",
+    "--accent":"#A9639B","--accent-d":"#8C4E80","--accent-ink":"#FFFFFF","--accent-soft":"#F3E2EF",
+    "--night":"#3A2F3C","--night-ink":"#FBEFF7","--gold":"#D9A94E","--gold-d":"#B8862F","--pink":"#F3DCEA","--tip":"#FFF0DC",
+    "--good":"#2FA46B","--good-d":"#21854F","--good-soft":"#E2F3E8","--good-ink":"#1B6B41",
+    "--bad":"#D95570","--bad-d":"#B93A55","--bad-soft":"#FBE4E9","--bad-ink":"#96283F"}}
+};
+const frame=document.getElementById("frame");
+let wide=false;
+function apply(key){
+  const doc=frame.contentDocument;
+  if(!doc)return;
+  const root=doc.documentElement;
+  root.removeAttribute("data-theme");
+  for(const k of Array.from(root.style))root.style.removeProperty(k);
+  const t=THEMES[key];
+  if(t)for(const[k,v]of Object.entries(t.v))root.style.setProperty(k,v);
+  document.querySelectorAll(".bar button").forEach(b=>b.classList.toggle("on",b.id==="b"+key));
+}
+window.applyTheme=apply;
+document.getElementById("bCur").onclick=()=>apply("Cur");
+document.getElementById("bA").onclick=()=>apply("A");
+document.getElementById("bB").onclick=()=>apply("B");
+document.getElementById("bC").onclick=()=>apply("C");
+document.getElementById("bW").onclick=()=>{
+  wide=!wide;
+  frame.style.width=wide?"960px":"420px";
+  frame.style.height=wide?"760px":"820px";
+};
+frame.addEventListener("load",()=>apply(document.querySelector(".bar button.on")?document.querySelector(".bar button.on").id.slice(1):"Cur"));
+</script>
+</body>
+</html>
