@@ -16,8 +16,14 @@
 - Bản làm việc: chính là repo này (clone về đâu làm đó). Server test:
   `python -m http.server 8432` chạy trong thư mục repo, mở http://localhost:8432.
 - Repo gốc (không đụng): `serene1012/dfsoiweun-lwkashdfsoiu`.
-- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v9`)
+- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v10`)
   thì điện thoại tải bản mới. Bản test qua server thì chỉ cần reload là network-first.
+- **Follow-up 5A.3 (sw `lo-ielts-v10`) — đổi option "OpenRouter" thành "Web khác (chuẩn OpenAI, vd
+  OpenRouter)"** vì user KHÔNG xài OpenRouter mà xài web khác: option mới ở cả 3 select (aProv/aCProv/
+  aKProv, value vẫn `openrouter` cho tương thích data cũ), thêm ô Base URL (tới /v1) vào form chấm
+  (`aBase`) lẫn form chat (`aCBase`) — giờ mọi đường đều cắm web tùy chỉnh được; provName hiển thị
+  "chuẩn OpenAI" thay vì "OpenRouter". Verify: chấm base riêng `ai.myweb.io/v1/chat/completions` +
+  chat base riêng khác, mở lại Cài đặt nhớ base, dọn data test.
 - **Follow-up 5A.2 (cùng đêm, sw `lo-ielts-v9`) — tách key + quản lý key:**
   - `apiCall(prompt,signal,opts,api)` thêm param `api` (mặc định `API` chấm bài); chat truyền
     `chatAPI()` = `API_CHAT` (store riêng `llielts_api_chat`) hoặc fallback về `API` chấm bài.

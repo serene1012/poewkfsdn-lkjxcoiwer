@@ -330,16 +330,18 @@ body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
   <p class="muted" id="aNow"></p>
   <p class="muted" id="aMsg" aria-live="polite"></p>
   <b>AI chấm bài</b>
-  <p class="muted">Key chỉ lưu trong máy này, không gửi đi đâu ngoài Google/Anthropic/OpenRouter, và không bao giờ nằm trong mã xuất tiến độ. Gemini có gói miễn phí: lấy key ở aistudio.google.com/apikey. OpenRouter: lấy key ở openrouter.ai/keys rồi dán model muốn dùng (vd mistralai/mistral-large-2512).</p>
-  <label>Dùng<select id="aProv" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"><option value="gemini">Google Gemini (miễn phí)</option><option value="claude">Claude (Anthropic, trả phí)</option><option value="openrouter">OpenRouter (model miễn phí)</option></select></label>
+  <p class="muted">Key chỉ lưu trong máy này, không gửi đi đâu ngoài đúng hãng bạn chọn, và không bao giờ nằm trong mã xuất tiến độ. Gemini có gói miễn phí: lấy key ở aistudio.google.com/apikey. Web khác chuẩn OpenAI (OpenRouter, gateways...): chọn "Web khác", dán Base URL tới /v1, key và model của web đó. OpenRouter thì bỏ trống Base URL, lấy key ở openrouter.ai/keys.</p>
+  <label>Dùng<select id="aProv" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"><option value="gemini">Google Gemini (miễn phí)</option><option value="claude">Claude (Anthropic, trả phí)</option><option value="openrouter">Web khác (chuẩn OpenAI, vd OpenRouter)</option></select></label>
   <label>API key<input id="aKey" type="password" autocomplete="off" spellcheck="false" placeholder="Dán key vào đây"></label>
   <label>Model<input id="aModel" spellcheck="false" autocomplete="off" name="ll-model-x"></label>
+  <label>Base URL (tùy chọn, ghi tới /v1)<input id="aBase" autocomplete="off" spellcheck="false" placeholder="Bỏ trống nếu dùng OpenRouter"></label>
   <div class="btns"><button class="btn pri" id="aSave">Lưu key</button><button class="btn" id="aTest">Thử gọi</button><button class="btn" id="aDel">Xóa key</button></div>
   <b>Key chat với Elaina</b>
   <p class="muted">Mặc định chat dùng chung key chấm bài ở trên. Muốn riêng thì dán key vào đây. Bỏ trống key rồi bấm Lưu = xóa key riêng, dùng lại chung.</p>
-  <label>Dùng<select id="aCProv" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"><option value="gemini">Google Gemini</option><option value="claude">Claude (Anthropic)</option><option value="openrouter">OpenRouter (miễn phí)</option></select></label>
+  <label>Dùng<select id="aCProv" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"><option value="gemini">Google Gemini</option><option value="claude">Claude (Anthropic)</option><option value="openrouter">Web khác (chuẩn OpenAI, vd OpenRouter)</option></select></label>
   <label>API key riêng cho chat<input id="aCKey" type="password" autocomplete="off" spellcheck="false" placeholder="Bỏ trống = dùng chung key chấm bài"></label>
   <label>Model<input id="aCModel" spellcheck="false" autocomplete="off" name="ll-cmodel-x"></label>
+  <label>Base URL (tùy chọn, ghi tới /v1)<input id="aCBase" autocomplete="off" spellcheck="false" placeholder="Bỏ trống nếu dùng OpenRouter"></label>
   <div class="btns"><button class="btn pri" id="aCSave">Lưu key chat</button><button class="btn" id="aCTest">Thử gọi chat</button></div>
   <p class="muted" id="aCMsg" aria-live="polite"></p>
   <b>Key lưu sẵn — đổi nhanh khi hết hạn mức</b>
@@ -347,7 +349,7 @@ body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
   <label>Chọn key đã lưu<select id="aKPick" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"></select></label>
   <div class="btns"><button class="btn sm" id="aKUseG">Dùng cho chấm</button><button class="btn sm" id="aKUseC">Dùng cho chat</button><button class="btn sm" id="aKDel">Xóa</button></div>
   <label>Tên gợi nhớ<input id="aKLabel" autocomplete="off" placeholder="vd OpenRouter free 1"></label>
-  <label>Dùng<select id="aKProv" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"><option value="openrouter">OpenRouter (chuẩn OpenAI)</option><option value="gemini">Google Gemini</option><option value="claude">Claude (Anthropic)</option></select></label>
+  <label>Dùng<select id="aKProv" style="font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--ink)"><option value="openrouter">Web khác (chuẩn OpenAI, vd OpenRouter)</option><option value="gemini">Google Gemini</option><option value="claude">Claude (Anthropic)</option></select></label>
   <label>API key<input id="aKVal" type="password" autocomplete="off" spellcheck="false" placeholder="Dán key vào đây"></label>
   <label>Model<input id="aKModel" spellcheck="false" autocomplete="off" name="ll-kmodel-x"></label>
   <label>Base URL (tùy chọn, cho web khác chuẩn OpenAI)<input id="aKBase" autocomplete="off" spellcheck="false" placeholder="Bỏ trống nếu là OpenRouter"></label>
@@ -558,11 +560,11 @@ async function apiCall(prompt,signal,opts,api){
 let SAMPLE=null;
 function apiInit(){SAMPLE=API.key?{json:async(p,o={})=>pickJSON(await apiCall(p,o.signal))}:null}
 apiInit();
-const provName=()=>API.prov==="openrouter"?"OpenRouter":API.prov==="claude"?"Claude":"Gemini";
-function apiForm(){$("aProv").value=API.prov;$("aKey").value=API.key;$("aModel").value=API.model||API_DEF[API.prov]}
+const provName=()=>API.prov==="openrouter"?"chuẩn OpenAI":API.prov==="claude"?"Claude":"Gemini";
+function apiForm(){$("aProv").value=API.prov;$("aKey").value=API.key;$("aModel").value=API.model||API_DEF[API.prov];$("aBase").value=API.base||""}
 $("aProv").onchange=()=>{$("aModel").value=API_DEF[$("aProv").value]};
 $("aSave").onclick=()=>{const p=$("aProv").value,m=$("aModel").value.trim();
-  API={prov:p,key:$("aKey").value.trim(),model:m===API_DEF[p]?"":m};
+  API={prov:p,key:$("aKey").value.trim(),model:m===API_DEF[p]?"":m,base:$("aBase").value.trim()};
   try{localStorage.setItem(API_KEY_STORE,JSON.stringify(API))}catch(e){}
   apiInit();chatUI();$("aNow").textContent=SAMPLE?`Đang chấm bằng ${provName()}.`:"Chưa có key: đang tự chấm theo checklist.";
   $("aMsg").textContent=API.key?"Đã lưu. Bấm \"Thử gọi\" để kiểm tra.":"Đã xóa key."};
@@ -577,7 +579,7 @@ let API_CHAT=null;
 try{const c=JSON.parse(localStorage.getItem(CHAT_STORE)||"null");if(c&&c.key)API_CHAT={prov:c.prov||"gemini",key:String(c.key),model:c.model||"",base:c.base||""}}catch(e){}
 const chatAPI=()=>API_CHAT&&API_CHAT.key?API_CHAT:API;
 const chatReady=()=>!!(chatAPI()&&chatAPI().key);
-const provNameOf=p=>p==="openrouter"?"OpenRouter":p==="claude"?"Claude":"Gemini";
+const provNameOf=p=>p==="openrouter"?"chuẩn OpenAI":p==="claude"?"Claude":"Gemini";
 const chatProvName=()=>provNameOf(chatAPI().prov);
 function chatErrText(e){const c=e&&e.code;return c==="not_granted"?"Key chat sai hoặc chưa được cấp quyền.":c==="rate_limited"?"Key chat hết hạn mức, đổi key khác trong Cài đặt nhé.":c==="network"?"Không kết nối được, kiểm tra mạng.":"Lỗi: "+((e&&e.message)||c)}
 function apiErrText(e){const c=e&&e.code;return c==="not_granted"?"Key sai hoặc chưa được cấp quyền.":c==="rate_limited"?"Gọi nhiều quá, đợi chút rồi thử lại.":c==="network"?"Không kết nối được, kiểm tra mạng.":"Lỗi: "+(e.message||e.code)}
@@ -586,7 +588,7 @@ $("aCSave").onclick=()=>{const key=$("aCKey").value.trim();
   if(!key){API_CHAT=null;try{localStorage.removeItem(CHAT_STORE)}catch(e){}
     $("aCMsg").textContent="Đã xóa key riêng — chat dùng chung key chấm bài.";chatUI();return}
   const p=$("aCProv").value,m=$("aCModel").value.trim();
-  API_CHAT={prov:p,key,model:m===API_DEF[p]?"":m,base:""};
+  API_CHAT={prov:p,key,model:m===API_DEF[p]?"":m,base:$("aCBase").value.trim()};
   try{localStorage.setItem(CHAT_STORE,JSON.stringify(API_CHAT))}catch(e){}
   chatUI();$("aCMsg").textContent=`Đã lưu. Chat giờ dùng ${chatProvName()}. Bấm "Thử gọi chat" để kiểm tra.`};
 $("aCTest").onclick=async()=>{if(!chatReady()){$("aCMsg").textContent="Chưa có key chat (dùng chung chấm bài thì cũng gọi thử được luôn)."}
@@ -622,11 +624,13 @@ $("aKUseC").onclick=()=>{const k=KEYS.find(x=>x.id===$("aKPick").value);
   if(!k){$("aKMsg").textContent="Chưa chọn key nào.";return}
   API_CHAT={prov:k.prov,key:k.key,model:k.model||"",base:k.base||""};
   try{localStorage.setItem(CHAT_STORE,JSON.stringify(API_CHAT))}catch(e){}
-  chatUI();$("aCProv").value=k.prov;$("aCModel").value=k.model||API_DEF[k.prov];$("aCKey").value="";
+  chatUI();$("aCProv").value=k.prov;$("aCModel").value=k.model||API_DEF[k.prov];$("aCBase").value=k.base||"";$("aCKey").value="";
   $("aKMsg").textContent=`Đã dùng cho chat (${provNameOf(k.prov)}).`};
 /* Bảng cài đặt: AI chấm + xuất/nhập tiến độ */
 $("apiT").onclick=()=>{$("aNow").textContent=SAMPLE?`Đang chấm bằng ${provName()}.`:"Chưa có key: đang tự chấm theo checklist.";
   $("aCMsg").textContent=API_CHAT?`Chat đang dùng key riêng ${chatProvName()}.`:"Chat đang dùng chung key chấm bài.";
+  if(API_CHAT){$("aCProv").value=API_CHAT.prov;$("aCModel").value=API_CHAT.model||API_DEF[API_CHAT.prov];$("aCBase").value=API_CHAT.base||""}
+  else{$("aCProv").value="gemini";$("aCModel").value=API_DEF.gemini;$("aCBase").value=""}
   apiForm();$("aMsg").textContent="";$("aData").value="";renderKeys();$("apiM").hidden=false};
 $("aClose").onclick=()=>{$("apiM").hidden=true};
 $("aExp").onclick=()=>{$("aData").value=JSON.stringify(P);$("aData").select();$("aMsg").textContent=""};
