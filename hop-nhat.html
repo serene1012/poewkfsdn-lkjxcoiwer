@@ -198,7 +198,7 @@ code,.mono{font-family:var(--f-mono);font-size:13px}
         <div id="fb" hidden></div>
         <div class="hintline" id="tipline"></div>
       </section>
-      <p class="foot">Số liệu lấy từ slide Phần 1–4 và bài tập chương 2, chương 4 trong thư mục môn học. Đề không nói thuế suất thì dùng 20% như các ví dụ trên lớp. Bài 11 rút gọn số liệu Thí dụ 6 (bỏ chi phí thanh lý) cho dễ tính. Phần 5 lấy số liệu ngày mua và KQKD từ bài giải mẫu M-A-B của lớp; giao dịch B bán cho M là số tự đặt, không có cổ tức cho gọn. Gõ số kiểu nào cũng được: <code>6.560</code>, <code>6560</code>, <code>94,44</code> hay <code>94.44</code>.</p>
+      <p class="foot">Số liệu lấy từ slide Phần 1–4 và bài tập chương 2, chương 4 trong thư mục môn học. Đề không nói thuế suất thì dùng 20% như các ví dụ trên lớp. Bài 11 dùng đúng số liệu Thí dụ 6 của slide. Phần 5 lấy số liệu ngày mua và KQKD từ bài giải mẫu M-A-B của lớp; giao dịch B bán cho M là số tự đặt, không có cổ tức cho gọn. Gõ số kiểu nào cũng được: <code>6.560</code>, <code>6560</code>, <code>94,44</code> hay <code>94.44</code>.</p>
     </main>
   </div>
 </div>
@@ -539,25 +539,26 @@ const L=[
    why:"Lỗ không thu hồi được nên không loại trừ. Đứng ở góc tập đoàn thì HTK đằng nào cũng phải ghi xuống 4.900."}
  ]},
 {p:3,t:"Bán TSCĐ nội bộ",
- story:"Rút gọn từ Thí dụ 6: ngày 1/1/X1, M bán cho C (con 100%) một thiết bị quản lý, nguyên giá 50.000 triệu, hao mòn lũy kế 41.000, giá bán 15.000. C khấu hao đường thẳng trong 3 năm, không có giá trị thu hồi. Thuế 20%.",
+ story:"Thí dụ 6 (slide Phần 4): ngày 1/1/X1, M bán cho C (con 100%) một thiết bị quản lý giá 15.000 triệu. Tại ngày bán thiết bị có nguyên giá 50.000, hao mòn lũy kế 40.000, chi phí thanh lý 1.000. C khấu hao đường thẳng trong 3 năm, không có giá trị thu hồi. Thuế 20%.",
  c:[["Loại thu nhập khác và chi phí khác của giao dịch, đưa TSCĐ về như chưa bán: nguyên giá và hao mòn lũy kế cũ của bên bán. Ghi tài sản thuế hoãn lại cho lãi chưa thực hiện.","Nợ TN khác, Nợ NG / Có CP khác, Có HMLK"],
     ["Bên mua khấu hao trên giá đã có lãi, nên chi phí khấu hao cao hơn góc nhìn tập đoàn. Mỗi năm ghi giảm khấu hao, tài sản thuế hoãn lại hoàn nhập dần. Nếu bên bán là công ty con có CĐKKS thì phân bổ lãi chưa thực hiện cho cả NCI.","KH chênh lệch = lãi ÷ số năm"]],
  tasks:[
-  {k:"num",ask:"Lãi chưa thực hiện từ giao dịch là bao nhiêu?",a:6000,unit:"triệu đồng",
-   hint:"Giá trị còn lại = 50.000 − 41.000.",
-   why:"15.000 − 9.000 = 6.000 triệu."},
+  {k:"num",ask:"Lãi chưa thực hiện từ giao dịch (phần phải loại trừ) là bao nhiêu?",a:5000,unit:"triệu đồng",
+   traps:[[4000,"Chi phí thanh lý 1.000 là chi phí thật trả cho bên ngoài, tập đoàn vẫn chịu. Không trừ nó khi tính lãi chưa thực hiện."],[6000,"Hao mòn lũy kế là 40.000, không phải 41.000. Đừng gộp chi phí thanh lý vào hao mòn."]],
+   hint:"Giá trị còn lại = 50.000 − 40.000. Chi phí thanh lý thì để yên.",
+   why:"15.000 − 10.000 = 5.000 triệu. Chi phí thanh lý 1.000 là chi phí thật nên không loại trừ (lời giải lớp)."},
   {k:"entry",ask:"Bút toán loại trừ giao dịch bán TSCĐ năm X1 (chưa tính khấu hao, thuế):",
-   rows:[["Thu nhập khác","d",15000],["TSCĐ hữu hình – nguyên giá","d",35000],["Chi phí khác","c",9000],["Hao mòn lũy kế TSCĐ","c",41000]],
+   rows:[["Thu nhập khác","d",15000],["TSCĐ hữu hình – nguyên giá","d",35000],["Chi phí khác","c",10000],["Hao mòn lũy kế TSCĐ","c",40000]],
    x:["Doanh thu bán hàng và CCDV","Giá vốn hàng bán"],unit:"triệu đồng",
-   hint:"Nguyên giá phải từ 15.000 (sổ C) về 50.000. Hao mòn về lại 41.000.",
-   why:"Nợ TN khác 15.000, Nợ NG 35.000 / Có CP khác 9.000, Có HMLK 41.000. Hai bên đều 50.000."},
-  {k:"num",ask:"Mỗi năm chi phí khấu hao hợp nhất phải ghi giảm bao nhiêu?",a:2000,unit:"triệu đồng",
-   hint:"C khấu hao 15.000 / 3. Tập đoàn chỉ khấu hao 9.000 / 3.",
-   why:"5.000 − 3.000 = 2.000 triệu, cũng bằng 6.000 / 3."},
-  {k:"num",ask:"Tài sản thuế hoãn lại còn lại cuối X1 là bao nhiêu?",a:800,unit:"triệu đồng",
-   traps:[[1200,"Đó là số ban đầu. Trong X1 đã hoàn nhập 2.000 × 20% = 400."]],
-   hint:"Lãi chưa thực hiện còn lại cuối X1 = 6.000 − 2.000.",
-   why:"(6.000 − 2.000) × 20% = 800 triệu."},
+   hint:"Nguyên giá phải từ 15.000 (sổ C) về 50.000. Hao mòn về lại 40.000. Chi phí khác chỉ loại phần giá trị còn lại 10.000.",
+   why:"Nợ TN khác 15.000, Nợ NG 35.000 / Có CP khác 10.000, Có HMLK 40.000. Hai bên đều 50.000. Bài chữa của lớp ghi gộp thành Nợ TN khác 5.000 (15.000 − 10.000) theo mẫu slide trang 29, cũng đúng."},
+  {k:"num",ask:"Mỗi năm chi phí khấu hao hợp nhất phải ghi giảm bao nhiêu?",a:1666.67,tol:0.5,unit:"triệu đồng",
+   hint:"C khấu hao 15.000 / 3. Tập đoàn chỉ khấu hao 10.000 / 3.",
+   why:"5.000 − 3.333,33 = 1.666,67 triệu (lớp làm tròn 1.667), cũng bằng 5.000 / 3."},
+  {k:"num",ask:"Tài sản thuế hoãn lại còn lại cuối X1 là bao nhiêu?",a:666.67,tol:0.5,unit:"triệu đồng",
+   traps:[[1000,"Đó là số ban đầu (5.000 × 20%). Trong X1 đã hoàn nhập 1.666,67 × 20% ≈ 333."]],
+   hint:"Lãi chưa thực hiện còn lại cuối X1 = 5.000 − 1.666,67.",
+   why:"(5.000 − 1.666,67) × 20% ≈ 666,67 triệu (lớp ghi 667)."},
   {k:"mcq",ask:"Nếu bên <b>bán</b> TSCĐ là công ty con có cổ đông không kiểm soát (bán ngược lên mẹ) thì khác gì?",
    o:["Không khác gì","Lãi chưa thực hiện được phân bổ một phần cho CĐKKS theo tỷ lệ lợi ích","Không loại trừ giao dịch","Chỉ loại trừ phần của mẹ"],a:1,
    hint:"Lãi đó nằm trong lợi nhuận của con, mà con thì có cả CĐKKS.",
