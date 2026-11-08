@@ -2,9 +2,9 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-08 sáng · App đã LIVE trên GitHub Pages · **phiên này duyệt + merge thêm: Reading
-> `fam` (A Kinder Kind of Boss), Listening `gamif` (Gamification S4), TIN NÓNG mỗi ngày 8 tin xoay
-> vòng trong tab Đọc (commit mới nhất, sw `lo-ielts-v12`)**.
+> Updated: 2026-11-08 sáng · App đã LIVE trên GitHub Pages · **phiên này duyệt + merge: Reading
+> `fam`, Listening `gamif`, TIN NÓNG mỗi ngày (sw v12) + PHÁT ÂM KHẢ NGHI trong chấm Speaking,
+> AI suy từ transcript (sw `lo-ielts-v13`)**.
 > `DE_XUAT_TAILIEU.md` NGOÀI repo: user đã duyệt R2/L3/Tin nóng (đã làm); R1/R3/L1/L2/L4 + VOCAB
 > +2 topics + Tips S2 CHƯA duyệt. Việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
 
@@ -212,6 +212,30 @@ L4 + VOCAB +2 topics + Tips S2 chưa duyệt — đừng tự làm.
   (localStorage.clear). Lưu ý tool: click tab trong evaluate bấm không ăn — dùng Playwright locator
   hoặc `P.tab=…;save();route()` fallback.
 - **Chờ user chạy thử trên máy thật:** 2 bài mới (fam + gamif) + tin nóng + 6 bài phiên trước.
+
+### 5A+++. PHIÊN 2026-11-08 (tiếp) — PHÁT ÂM KHẢ NGHI TRONG CHẤM SPEAKING (sw `lo-ielts-v13`)
+
+User duyệt "bản 1" (AI suy lỗi phát âm từ transcript, KHÔNG Azure): **gộp vào prompt chấm Speaking
+hiện có — không tốn thêm lần gọi API nào**.
+
+- **Prompt chấm Speaking:** context giải thích bài làm là recognition giọng nói — từ vô nghĩa/lệch
+  ngữ cảnh khả năng phát âm sai, liệt kê field `pron` (tối đa 4, không dấu hiệu rõ thì `[]`, đừng bịa).
+  `fields` thêm `"pron": [{"w": "từ bị nhận sai NGUYÊN dạng trong bài", "ipa": "/đọc đúng/", "tip": "mẹo 1 câu TV xưng tao gọi mày"}]`.
+- **UI phản hồi chấm:** row "Pronunciation" đổi từ `"?"` sang `"~"` + ghi chú khi có pron; thêm mục
+  **"🗣️ Phát âm khả nghi"** — mỗi từ: `<b>từ</b>` + loa `sayBtn(từ)` + IPA + mẹo. Không có pron thì
+  row giữ `"?"` như cũ.
+- **`pLog(list)`** cạnh `sLog`: ghi `P.plog` (cap 40: t/w/ipa/tip, w lowercase) mỗi lần chấm có pron.
+- **Hồ sơ điểm yếu (weakView):** phần Speaking thêm "🗣️ Phát âm bị AI báo nhiều nhất: từ ×n, …" top 3
+  (tally từ P.plog) + note honest "AI suy từ chỗ recognition nghe nhầm — dấu hiệu để nghe lại,
+  không phải điểm phát âm".
+- Giới hạn phải nhớ khi nói với user: là **dấu hiệu khả nghi**, recognition hay tự sửa theo ngữ
+  cảnh nên lỗi nhẹ bị nuốt, nói đúng cũng có thể bị báo oan — từ bị báo LẶP LẠI nhiều mới đáng tin.
+  Bản nặng (Azure, score từng âm) vẫn chờ nếu user muốn nâng cấp sau.
+- Verify (browser 8433, key giả `llielts_api` + mock fetch trả grades có `pron`): fb có Band ~7 +
+  row "~" + mục phát âm 2 từ (loa + IPA + mẹo), `P.plog` ghi đúng; chấm lần 2 → usually ×2;
+  Hồ sơ điểm yếu hiện "usually ×2, freetime ×1"; smoke 7 tab 0 lỗi; data test + key giả đã dọn.
+  Chấm tự (không key) vẫn rơi `sSelf` như cũ, không đụng pron. Nếu AI cũ không trả field pron →
+  `Array.isArray(x.pron)` là false → UI hiện như cũ, không vỡ gì.
 
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
