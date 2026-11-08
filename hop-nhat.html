@@ -1344,7 +1344,7 @@ function renderChat(){
     if(m.refs&&m.refs.length){const r=document.createElement("div");r.className="refs";r.textContent="📎 kèm: "+m.refs.join(", ");$("aiLog").appendChild(r)}});
   scrollLog();
 }
-function setBusy(b){const s=$("aiSend");s.textContent=b?"Dừng":"Gửi";s.classList.toggle("pri",!b);$("aiQuick").querySelectorAll("button").forEach(x=>x.disabled=b)}
+function setBusy(b){$("aiFab").textContent=b?"⏳ Gia sư đang trả lời…":$("ai").hidden?"✅ Gia sư trả lời xong":"💬 Hỏi gia sư AI";const s=$("aiSend");s.textContent=b?"Dừng":"Gửi";s.classList.toggle("pri",!b);$("aiQuick").querySelectorAll("button").forEach(x=>x.disabled=b)}
 function aiErr(e){
   const c=e&&e.code;
   if(c==="not_granted")return "Mày chưa cho app dùng Claude. Tải lại trang rồi bấm Cho phép khi được hỏi, hoặc vào ⚙ chuyển sang API riêng.";
@@ -1443,8 +1443,9 @@ function addProvRow(p){
   $("aiProvs").appendChild(d);
 }
 $("aiAddP").onclick=()=>{addProvRow({});const n=$("aiProvs").lastElementChild.querySelector(".pN");n.focus()};
-function openAi(){$("ai").hidden=false;$("aiFab").hidden=true;renderChat();updEng();setTimeout(()=>$("aiIn").focus({preventScroll:true}),0)}
-function closeAi(){if(aiCtl)aiCtl.abort();$("ai").hidden=true;$("aiFab").hidden=false;$("aiFab").focus({preventScroll:true})}
+function openAi(){$("ai").hidden=false;if(!aiCtl)$("aiFab").textContent="💬 Hỏi gia sư AI";$("aiFab").hidden=true;renderChat();updEng();setTimeout(()=>$("aiIn").focus({preventScroll:true}),0)}
+// Closing only hides the panel: a running answer keeps streaming and the button shows its state.
+function closeAi(){$("ai").hidden=true;$("aiFab").hidden=false;$("aiFab").focus({preventScroll:true})}
 $("aiFab").onclick=openAi;$("aiX").onclick=closeAi;
 $("aiSet").onclick=()=>{if($("aiCfg").hidden)openCfg();else $("aiCfg").hidden=true};
 $("aiCancel").onclick=()=>{$("aiCfg").hidden=true};
