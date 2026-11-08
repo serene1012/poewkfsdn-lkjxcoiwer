@@ -250,6 +250,20 @@ hiện có — không tốn thêm lần gọi API nào**.
 - Gom `apiErrText` / `provNameOf` / `NO_AI` (danh sách mã lỗi rơi về tự chấm) — hết lặp 3 chỗ.
 - Nút toàn màn hình: đổi icon SVG `expand`/`shrink` (trước bấm vào thì thành ký tự ⛶/⤡ lệch bộ icon).
 
+### 5A+++++. PHIÊN 2026-11-08 (proxy xkiro + chat đọc dữ liệu app, sw `lo-ielts-v15`)
+
+- **xkiro (`api.xkiro.com`) không bật CORS** → trình duyệt chặn, app báo "kiểm tra mạng". User dựng
+  **Cloudflare Worker** `https://lo-ielts-proxy.tuanminh1012.workers.dev/v1` (tài khoản Cloudflare của
+  user, 2FA, Logs tắt). Worker chỉ chuyển POST `/v1/chat/completions` → xkiro, chỉ nhận Origin
+  `https://serene1012.github.io` (test local phải thêm origin vào `ALLOW` trong Worker), không lưu key.
+  Đây là ngoại lệ có duyệt cho luật "không backend". App: Web khác + Base URL proxy — đã chạy.
+- **Chat lấy dữ liệu app theo yêu cầu** (`chatCtx(user)`): dò từ khóa trong tin nhắn HIỆN TẠI (bỏ dấu),
+  chỉ kèm phần được nhắc, tổng ≤ `CTX_MAX` 1800 ký tự: "sổ lỗi/câu sai/hay sai…" → 6 câu wlog gần nhất
+  Sai→Sửa + loại lỗi; "phát âm" → top 6 từ P.plog; "điểm yếu/nên luyện gì" (hoặc nút Kèm hồ sơ điểm
+  yếu) → chatWeakCtx; tên bài ngữ pháp → tips bài đó (≤2 bài); từ có trong VOCAB → w/ipa/vi/ex/tip
+  (≤4 từ); "từ vựng" + tên chủ đề → list từ chủ đề. Tin nhắn hiện "📎 kèm: …" (lưu `m.ctx`).
+  Không nhắc gì → không kèm gì. Chip mới "Coi sổ lỗi giúp tao, tao hay sai gì?". Persona giữ nguyên.
+
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
 - **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn.
