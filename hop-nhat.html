@@ -147,6 +147,8 @@ code,.mono{font-family:var(--f-mono);font-size:13px}
 .aiCfg textarea{width:100%;font:13px var(--f-mono);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);resize:vertical}
 .aiProvs{display:flex;flex-direction:column;gap:10px}
 .aiProv{display:flex;flex-direction:column;gap:6px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.aiProv .fld[hidden]{display:none}
+.aiProv select{width:100%;font:13px var(--f-mono);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink)}
 .aiProv .row{display:flex;gap:6px;align-items:flex-end}.aiProv .row .fld{flex:1}
 .aiBar{display:flex;justify-content:flex-end;padding:0 12px 8px}
 .aiPickW{position:relative;display:inline-flex}
@@ -1293,6 +1295,9 @@ let AI={eng:"auto",provs:[],cur:{p:0,m:""}},chat=[];
     AI.provs=[p];AI.cur={p:0,m:o.model||p.models[0]||""};
   }}
 AI.provs.forEach(p=>{if(!Array.isArray(p.models))p.models=[]});
+// Offer Puter once (keyless, user signs in to Puter); deleting it in ⚙ keeps it gone.
+if(!AI.puterSeeded){AI.puterSeeded=true;if(!AI.provs.some(p=>p.type==="puter"))AI.provs.push({name:"Puter",type:"puter",base:"",key:"",
+  models:["openrouter:cohere/command-a-plus","mistralai/mistral-large-4","mistralai/mistral-medium-3-5","mistralai/mistral-small-2603"]})}
 const curP=()=>AI.provs[AI.cur.p]||null;
 function fixCur(){const p=curP();if(!p||!p.models.includes(AI.cur.m)){const i=AI.provs.findIndex(q=>q.models.length);AI.cur=i<0?{p:0,m:""}:(p&&p.models.length?{p:AI.cur.p,m:p.models[0]}:{p:i,m:AI.provs[i].models[0]})}}
 fixCur();
@@ -1313,13 +1318,13 @@ let sampleFn=null,aiCtl=null;
 const claudeReady=(window.claude&&typeof window.claude.use==="function")
   ?window.claude.use("sample").then(s=>{sampleFn=s||null;updEng();return sampleFn}).catch(()=>null)
   :Promise.resolve(null);
-const apiOk=()=>{const p=curP();return !!(p&&p.base&&p.key&&AI.cur.m)};
+const apiOk=()=>{const p=curP();return !!(p&&AI.cur.m&&(p.type==="puter"||(p.base&&p.key)))};
 function engine(){
   if(AI.eng==="claude")return sampleFn?"claude":null;
   if(AI.eng==="api")return apiOk()?"api":null;
   return sampleFn?"claude":apiOk()?"api":null;
 }
-function updEng(){const e=engine();$("aiEng").textContent=e==="claude"?"Claude":e==="api"?"API · "+curP().name+" · "+AI.cur.m:"chưa cài";$("aiEng").title=e==="api"?curP().base:"";renderPick()}
+function updEng(){const e=engine();$("aiEng").textContent=e==="claude"?"Claude":e==="api"?"API · "+curP().name+" · "+AI.cur.m:"chưa cài";$("aiEng").title=e==="api"?(curP().type==="puter"?"Puter":curP().base):"";renderPick()}
 const QUICK=[
   ["Giải thích câu này","Giải thích cho tao câu đang làm: đề hỏi gì, dùng công thức hay bút toán nào. Đừng nói đáp án cuối, để tao tự bấm."],
   ["Sao tao sai?","Tao làm câu này mà app báo sai. Chỉ ra mấy lỗi hay gặp ở dạng này để tao tự soát lại, đừng nói đáp án."],
@@ -1349,12 +1354,28 @@ function aiErr(e){
   if(c==="prompt_too_large")return "Đoạn chat dài quá. Bấm 🗑 xóa bớt rồi hỏi lại.";
   if(c==="refused")return "Câu này AI không trả lời. Hỏi kiểu khác thử.";
   if(c==="http")return "API báo lỗi: "+e.message;
-  if(e instanceof TypeError&&curP()&&curP().base.replace(/\/+$/,"")!==PROXY0)return `Không gọi được ${curP().name}. Đang mở trên claude.ai thì vào ⚙ chọn Claude có sẵn. Ở github.io thì nhiều khả năng web này chặn CORS (không cho trình duyệt gọi thẳng): cần dựng proxy riêng (kiểu Cloudflare Worker như xkiro) rồi điền địa chỉ proxy vào Base URL.`;
+  if(c==="puter")return "Puter báo lỗi: "+e.message+". Hết credit Puter thì đổi sang model khác ở dưới khung chat.";
+  if(c==="puter_load")return "Không tải được Puter. Mở trên claude.ai thì không dùng được Puter; ở github.io thì kiểm tra mạng rồi thử lại.";
+  if(e instanceof TypeError&&curP()&&curP().type!=="puter"&&curP().base.replace(/\/+$/,"")!==PROXY0)return `Không gọi được ${curP().name}. Đang mở trên claude.ai thì vào ⚙ chọn Claude có sẵn. Ở github.io thì nhiều khả năng web này chặn CORS (không cho trình duyệt gọi thẳng): cần dựng proxy riêng (kiểu Cloudflare Worker như xkiro) rồi điền địa chỉ proxy vào Base URL.`;
   if(e instanceof TypeError)return "Không gọi được API. Nếu đang mở trên claude.ai thì trang bị chặn gọi mạng ra ngoài: vào ⚙ chọn Claude có sẵn. Nếu đang ở github.io thì kiểm tra Base URL đã là địa chỉ proxy chưa.";
   return "Lỗi kết nối, bấm gửi lại thử.";
 }
+// Puter.js loads only on first use, so the page never pulls it otherwise.
+let puterP=null;
+const loadPuter=()=>puterP||(puterP=new Promise((ok,no)=>{if(window.puter)return ok(window.puter);
+  const s=document.createElement("script");s.src="https://js.puter.com/v2/";s.onload=()=>window.puter?ok(window.puter):no();s.onerror=()=>{puterP=null;no()};document.head.appendChild(s)}));
+async function callPuter(msgs,onText,signal){
+  let pz;try{pz=await loadPuter()}catch(e){throw{code:"puter_load"}}
+  let res;try{res=await pz.ai.chat(msgs,Object.assign({model:AI.cur.m,stream:true},thinkOn()?{reasoning_effort:"high"}:{}))}
+  catch(e){throw{code:"puter",message:(e&&(e.message||(e.error&&e.error.message)))||String(e)}}
+  let out="";
+  for await(const part of res){if(signal.aborted)throw{code:"cancelled"};
+    if(part&&part.text){out+=part.text;onText(out)}else if(part&&part.reasoning&&!out)onText("_Đang suy luận…_")}
+  return out;
+}
 async function callApi(msgs,onText,signal){
   const p=curP();
+  if(p.type==="puter")return callPuter(msgs,onText,signal);
   const r=await fetch(p.base.replace(/\/+$/,"")+"/chat/completions",{method:"POST",signal,
     headers:{"Content-Type":"application/json","Authorization":"Bearer "+p.key},
     body:JSON.stringify(Object.assign({model:AI.cur.m,messages:msgs,stream:true},thinkOn()?{reasoning_effort:"high"}:{}))});
@@ -1411,10 +1432,13 @@ function openCfg(){
 function addProvRow(p){
   const d=document.createElement("div");d.className="aiProv";
   d.innerHTML=`<div class="row"><div class="fld">Tên<input type="text" class="pN" placeholder="xkiro, Kira…" autocomplete="off" spellcheck="false"></div><button class="btn pDel" type="button" title="Xóa nhà cung cấp này" aria-label="Xóa nhà cung cấp này">🗑</button></div>
-<div class="fld">Base URL<input type="text" class="pB" placeholder="https://ten-proxy.ten-may.workers.dev/v1" autocomplete="off" spellcheck="false"></div>
-<div class="fld">API key<input type="password" class="pK" placeholder="sk-..." autocomplete="off"></div>
+<div class="fld">Loại<select class="pT"><option value="api">API kiểu OpenAI (Base URL + key)</option><option value="puter">Puter (không cần key, đăng nhập Puter khi dùng)</option></select></div>
+<div class="fld pApi">Base URL<input type="text" class="pB" placeholder="https://ten-proxy.ten-may.workers.dev/v1" autocomplete="off" spellcheck="false"></div>
+<div class="fld pApi">API key<input type="password" class="pK" placeholder="sk-..." autocomplete="off"></div>
 <div class="fld">Các model (mỗi dòng 1 model)<textarea class="pM" rows="3" placeholder="claude-opus-5.5&#10;claude-sonnet-5.5" autocomplete="off" spellcheck="false"></textarea></div>`;
   d.querySelector(".pN").value=p.name||"";d.querySelector(".pB").value=p.base||"";d.querySelector(".pK").value=p.key||"";d.querySelector(".pM").value=(p.models||[]).join("\n");
+  const t=d.querySelector(".pT");t.value=p.type==="puter"?"puter":"api";
+  const syncT=()=>d.querySelectorAll(".pApi").forEach(e=>e.hidden=t.value==="puter");t.onchange=syncT;syncT();
   d.querySelector(".pDel").onclick=()=>d.remove();
   $("aiProvs").appendChild(d);
 }
@@ -1429,11 +1453,11 @@ $("aiThink").onclick=()=>{AI.think=AI.think||{};const k=thinkKey();if(AI.think[k
 $("aiSave").onclick=()=>{
   const r=document.querySelector('input[name="aiEngR"]:checked');
   const old=curP(),oldM=AI.cur.m;
-  const provs=[...$("aiProvs").children].map((d,i)=>({name:d.querySelector(".pN").value.trim()||("Nhà cung cấp "+(i+1)),base:d.querySelector(".pB").value.trim(),key:d.querySelector(".pK").value.trim(),
-    models:[...new Set(d.querySelector(".pM").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean))]})).filter(p=>p.base||p.key||p.models.length);
+  const provs=[...$("aiProvs").children].map((d,i)=>({name:d.querySelector(".pN").value.trim()||("Nhà cung cấp "+(i+1)),type:d.querySelector(".pT").value,base:d.querySelector(".pB").value.trim(),key:d.querySelector(".pK").value.trim(),
+    models:[...new Set(d.querySelector(".pM").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean))]})).filter(p=>p.type==="puter"||p.base||p.key||p.models.length);
   // Keep the picked model if its provider (matched by name) still has it.
   let p=old?provs.findIndex(q=>q.name===old.name&&q.models.includes(oldM)):-1;
-  AI={eng:r?r.value:"auto",provs,think:AI.think||{},cur:p<0?{p:0,m:""}:{p,m:oldM}};fixCur();
+  AI={eng:r?r.value:"auto",provs,think:AI.think||{},puterSeeded:true,cur:p<0?{p:0,m:""}:{p,m:oldM}};fixCur();
   saveAI();
   updEng();$("aiCfg").hidden=true;
   aiNote(engine()?"":AI.eng==="api"?"API riêng còn thiếu Base URL, key hoặc Model.":"Ở đây không có Claude sẵn, phải mở app trên claude.ai.");
