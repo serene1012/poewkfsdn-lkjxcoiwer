@@ -1406,6 +1406,23 @@ qs:[
  {seg:3,t:"gap",label:"Wet floors can be mopped without asking the ___ first.",a:"manager",o:["customer","cleaner","supervisor"],why:"'you don't need to ask the manager first'. Chỗ nào không cần xin phép thường đi với straight away / don't need to — ghi đúng chức danh được nhắc."},
  {seg:4,t:"mc",q:"Why does the supervisor ask staff to smile?",a:"it keeps the team positive",o:["customers photograph the staff","the company records smiles","it hides tiredness"],why:"'smiling keeps you positive and keeps the whole team cheerful'. Ba phương án còn lại là thoại đề hay bịa — bài không nói tới."},
  {seg:5,t:"mc",q:"Where is the staff relaxation area?",a:"between the frozen goods aisle and the exit",o:["next to the bakery","behind the manager's office","opposite the tills"],why:"Địa điểm trong bài induction thường cho theo vị trí tương đối: 'between the frozen goods aisle and the exit'. Chi tiết phụ (microwave, drinks dispenser) giúp xác nhận lại."}
+]},
+{key:"gamif",sec:4,name:"Gamification trong kinh doanh",en:"Business lecture · Gamification",intro:"Section 4: một bài giảng đại học về cách dùng yếu tố trò chơi trong kinh doanh. Lecture dài hơn Section 2 — đọc đề trước, nghe ý chính từng đoạn. Bẫy: cái nói đầu hay bị sửa, đáp án nằm sau but / however.",who:{A:"Lecturer"},
+segs:[
+ [["A","Today I want to talk about gamification — a word you have probably seen in the news. In simple terms, it means applying the logic of games to situations that are not games at all, and in the business world its most common job by far is marketing. Think of badges, points or virtual coins: these little rewards exist because people love winning something, even something with no real value."]],
+ [["A","Now, although the word sounds modern, the idea is not new. The very first incentive schemes were launched by airlines, which gave frequent flyers points they could exchange for tickets, purely to keep those customers loyal. Technology has simply made the trick far easier to run — and far easier to copy."]],
+ [["A","So what do companies actually want from it? The first answer is fast feedback: attach a game to a product and comments flood in through social media within hours. The second, more ambitious aim is persuasion — designers build fun challenges hoping people will change their behaviour, from recycling more rubbish to walking to work."]],
+ [["A","Training is another growth area, especially where practising on the real thing would be dangerous or impossible. The clearest examples are the flight simulators used by pilots, and the city models that town planners explore on screen before a single brick is laid."]],
+ [["A","Governments have joined in too. Australia built a phone app designed to nudge people to exercise more, and it did reasonably well. In one overseas city, officials tried something different with speeding: instead of only fining bad drivers, they entered careful drivers into a prize draw, and speeding fell by about a fifth."]],
+ [["A","Health projects have followed the same logic. A station turned its staircase into a giant piano, and suddenly almost everybody took the stairs instead of the escalator. A medical company adapted a fruit-smashing game for elderly patients: since the hand is the part most often injured in a fall, patients play to rebuild their fine motor skills. Two warnings before I finish. First, if the game is not fun, it may backfire completely. Second, these games collect personal data, so companies must respect the law on privacy."]]
+],
+qs:[
+ {seg:0,t:"gap",label:"In business, gamification is most often used for: ___",a:"marketing",o:["training","recruitment","accounting"],why:"'its most common job by far is marketing'. Lecture hay mở đầu bằng định nghĩa rồi gọi tên luôn chức năng chính — nghe câu thứ hai kỹ."},
+ {seg:1,t:"gap",label:"The first incentive schemes were started by: ___",a:"airlines",o:["supermarkets","banks","railways"],why:"'launched by airlines, which gave frequent flyers points'. Bẫy kinh điển: 'not new' báo hiệu sẽ có ví dụ lịch sử, và ví dụ nào cũng có tên một loại doanh nghiệp."},
+ {seg:2,t:"mc",q:"What is the lecturer's second, more ambitious aim for gamification?",a:"to persuade people to change their behaviour",o:["to collect feedback within hours","to make social media more popular","to sell more products at lower prices"],why:"'The second, more ambitious aim is persuasion… people will change their behaviour'. Chú ý: collecting feedback là mục đích ĐẦU TIÊN, câu hỏi hỏi mục đích thứ hai."},
+ {seg:3,t:"gap",label:"Flight simulators are used to train: ___",a:"pilots",o:["planners","engineers","doctors"],why:"'flight simulators used by pilots'. Town planners có được nhắc nhưng họ dùng city models, không phải flight simulators — nghe cho rõ cái nào đi với cái nào."},
+ {seg:4,t:"mc",q:"How did the overseas local authority deal with speeding?",a:"careful drivers were entered into a prize draw",o:["fines were doubled for bad drivers","cars were banned from the city","drivers received free fuel"],why:"'instead of only fining bad drivers, they entered careful drivers into a prize draw'. Instead of là tín hiệu: cách cũ bị bỏ, cách mới phía sau mới là đáp án."},
+ {seg:5,t:"gap",label:"The lecturer's second warning: companies must respect the law on: ___",a:"privacy",o:["advertising","safety","copyright"],why:"'these games collect personal data, so companies must respect the law on privacy'. Câu hỏi có 'second warning' — warning đầu là fun, đáp án nằm sau nó."}
 ]}
 ];
 LISTENING_SETS.forEach(s=>s.qs.forEach((q,i)=>{q.id="l"+s.key+i;q.set=s.key}));
@@ -1511,7 +1528,7 @@ function listenMenu(){
   const s=lSet(),nw=lWrongIds().length;
   $("main").innerHTML=`
   <section class="card stack">
-    <div><div class="eyebrow">Phần 3 · Nghe IELTS Section 1–2</div>
+    <div><div class="eyebrow">Phần 3 · Nghe IELTS Section 1–4</div>
     <h2>${esc(s.name)} <span class="muted" style="font-weight:500">· Section ${s.sec}</span></h2>
     <p class="muted">${esc(s.intro)}</p></div>
     <div class="topics" id="lsets">${LISTENING_SETS.map(x=>`<button data-k="${x.key}" class="${x.key===s.key?"on":""}">${esc(x.name)}<small>S${x.sec} · ${P.lbest[x.key]!=null?`tốt nhất ${P.lbest[x.key]}/${x.qs.length}`:`${x.qs.length} câu`}</small></button>`).join("")}</div>
@@ -1802,6 +1819,31 @@ const READING_PASSAGES=[
   {t:"comp",q:"Marina Bay was extended into the sea through land ___ covering 667 hectares.",a:["reclamation"],ev:[[2,1]],why:"'through land <b>reclamation</b> covering 667 hectares'."},
   {t:"comp",q:"The 'beautification' programme planted green corridors along ___ routes.",a:["transport"],ev:[[3,1]],why:"'planted green corridors along <b>transport</b> routes'."},
   {t:"comp",q:"Rules against eating outdoors were relaxed in ___.",a:["1996"],ev:[[4,1]],why:"'relaxed in <b>1996</b>'. Đừng ghi nhầm 1998 — năm đó là khu giải trí."}
+ ]},
+{id:"fam",title:"A Kinder Kind of Boss",topic:"Công việc & gia đình",emoji:"🧑‍💼",
+ paras:[
+  {l:"A",s:["Companies across the United States are rethinking how they treat their employees, and much of the credit goes to a generation of bosses who put people first.","Jennifer West, managing director of a non-profit research centre in Ohio, says many of these entrepreneurs went into business precisely because they had been treated badly as workers elsewhere.","In her view, caring about staff is not simply kindness: it helps a company attract good people and keep them.","She adds that bosses who think this way plan openly around the outside pressures their workers face."]},
+  {l:"B",s:["Stephen Harper, head of a California firm that makes custom plastic parts for medical devices, is a clear example.","Every second week, the moment staff receive their pay, they also receive an update on the company: who the new customers are, what has gone well and what problems lie ahead.","A coaching section deals with the gossip exchanged near the water cooler, because rumour damages morale.","Harper pays at least part of the cost of courses and textbooks so his people can keep studying, and his monthly, invitation-only seminar on practical business skills is so popular that employees queue for a place.","The firm also holds a regular open house where workers' children can try out the machines, and its low turnover speaks for itself: many staff stay for most of their careers."]},
+  {l:"C",s:["In Vermont, the Margaret Mills Corporation, a third-generation family business that sells wooden toys worldwide, holds similar values.","Its founder knew from her own experience how hard it is to raise children while running a company.","Employees receive generous leave, flexible hours, health and retirement packages, and children can be dropped at the office once school has finished.","Christmas and summer parties are fixtures on the calendar.","After one especially profitable year, the whole staff and their families were flown to Montreal for two days — and this year the firm will celebrate six five-year work anniversaries and one twenty-five-year one."]},
+  {l:"D",s:["Hazel Gibbs, chief executive of a waste-disposal and environmental consultancy in Houston, takes a blunter line.","'I am not acting out of pure kindness,' she says, 'but when everybody understands what keeps a company alive, that is good for all of us.'","She works hard to make sure everyone, from managers to workers, knows that they count, and insists there is no 'us' and 'them'.","Success has not removed every barrier: she admits that mothers — both employees and business owners — still have to fight to be taken seriously, a view she shares as a parent of two."]},
+  {l:"E",s:["The movement is spreading internationally.","Where employers are slow to change, West notes, staff drift away to firms that treat families better, and the shrinking workforces of the slow ones are easy to document.","Parents are also powerful shoppers and investors, capable of changing buying habits, while governments and aid agencies have started to weave social concerns into economic policy.","All of this, West argues, is building pressure that can only end in new business practices — and when that happens, as Gibbs puts it, the system is finally working."]}
+ ],
+ heads:["Why caring bosses went out on their own","A firm where staff also study the business","Family life built into company rules","A tough boss who still meets prejudice","Pressure that reaches beyond one workplace","The falling price of wooden toys","How to start a waste-disposal company"],
+ qs:[
+  {t:"tfng",q:"Some bosses founded their companies after bad experiences as employees.",a:"T",ev:[[0,1]],why:"'went into business <b>precisely because</b> they had been treated badly as workers elsewhere'. 'Treated badly' = 'bad experiences', khớp ý.",trap:"'Some' khớp với 'many of these entrepreneurs'. Bài có câu nói thẳng lý do lập nghiệp thì là TRUE."},
+  {t:"tfng",q:"Plastic Solutions covers part of the cost of its staff's further education.",a:"T",ev:[[1,3]],why:"'Harper <b>pays at least part of the cost</b> of courses and textbooks'. 'Pays at least part of the cost' = 'covers part of the cost'."},
+  {t:"tfng",q:"The Margaret Mills Corporation has offices in more than one country.",a:"NG",ev:[],why:"Bài chỉ nói bán đồ gỗ <b>worldwide</b>. Bán hàng ra nước ngoài là một chuyện, còn <b>văn phòng</b> ở đâu thì bài không nhắc.",trap:"'Sells internationally' không đồng nghĩa 'has offices abroad'. Bài không nói tới văn phòng thì chọn NOT GIVEN."},
+  {t:"tfng",q:"Mills staff are flown to Montreal every summer.",a:"F",ev:[[2,4]],why:"Chuyến Montreal xảy ra <b>một lần</b> sau một năm kinh doanh cực tốt ('After one especially profitable year'), không phải thường niên.",trap:"Bẫy tần suất: bài kể một sự kiện có một không hai, câu hỏi biến nó thành 'every summer' — có câu chứng minh là sai nên FALSE."},
+  {t:"tfng",q:"Gibbs believes working mothers no longer have to prove themselves.",a:"F",ev:[[3,3]],why:"Bài nói các bà mẹ '<b>still have to fight</b> to be taken seriously' — vẫn phải cố chứng minh, ngược với 'no longer have to'."},
+  {t:"head",p:0,a:0,why:"Đoạn A: bị chủ cũ đối xử tệ nên tự mở công ty kiểu người trước việc trước — 'why caring bosses went out on their own'."},
+  {t:"head",p:1,a:1,why:"Đoạn B: cập nhật tin công ty mỗi 2 tuần, seminar kỹ năng, học tiếp — nhân viên vừa làm vừa 'study the business'."},
+  {t:"head",p:2,a:2,why:"Đoạn C: nghỉ phép rộng rãi, giờ linh hoạt, đón con sau giờ học, tiệc gia đình — 'family life built into company rules'."},
+  {t:"head",p:3,a:3,why:"Đoạn D: nói thẳng 'không phải vì lòng tốt', nhưng vẫn gặp định kiến về các bà mẹ — 'a tough boss who still meets prejudice'."},
+  {t:"head",p:4,a:4,why:"Đoạn E: nhân viên bỏ đi, người mua đổi thói quen, chính sách công thay đổi — áp lực lan ra ngoài một công ty."},
+  {t:"comp",q:"At Plastic Solutions, employees hear company news every ___ weeks.",a:["two","2"],ev:[[1,1]],why:"'Every second week' = mỗi hai tuần. Điền số hay chữ đều được, miễn đúng."},
+  {t:"comp",q:"Staff queue for a place at Harper's monthly ___ on practical business skills.",a:["seminar"],ev:[[1,3]],why:"'his monthly, invitation-only <b>seminar</b> on practical business skills'. Danh từ đã có sẵn trong bài."},
+  {t:"comp",q:"After a very profitable year, Mills employees and their families were flown to ___.",a:["Montreal"],ev:[[2,4]],why:"'flown to <b>Montreal</b> for two days'. Tên riêng nơi chốn, chép đúng chính tả."},
+  {t:"comp",q:"Gibbs admits that ___ still have to fight for respect in business.",a:["mothers","working mothers"],ev:[[3,3]],why:"'she admits that <b>mothers</b> — both employees and business owners — still have to fight'. Hai từ cũng được, miễn không quá hai."}
  ]}
 ];
 const READING_TIPS=[
@@ -1813,12 +1855,115 @@ const READING_TIPS=[
 ];
 
 READING_PASSAGES.forEach(p=>p.qs.forEach((q,i)=>{q.id="r"+p.id+i;q.pass=p.id}));
+/* ===== Tin nóng mỗi ngày: kho viết sẵn xoay vòng theo ngày máy (không cần key AI) =====
+   Mỗi tin {id, emoji, topic, title, s:[câu], qs:[3 câu MC]} — tin viết lại ngắn gọn cho luyện đọc,
+   KHÔNG chép nguyên bài báo nào; q.si = số thứ tự câu chứa đáp án (để tô vàng). Không vào SRS. */
+const NEWS_ITEMS=[
+{id:"bus",emoji:"🚌",topic:"Giao thông & đô thị",title:"Free Bus Rides for Children Spread Across Europe",s:[
+ "Several European cities are extending free public transport to children and teenagers, and the idea is spreading quickly.",
+ "Tallinn, the capital of Estonia, has offered free rides to all its residents since 2013, and other towns have followed with cheaper versions of the same policy.",
+ "Supporters say the goal is simple: get families out of their cars, cut traffic and clean the air.",
+ "Early results are mixed but encouraging.",
+ "Passenger numbers usually rise after the change, although buses can become crowded during school hours.",
+ "Critics point out that free tickets cost money, and some cities have had to raise parking fees to pay for the scheme.",
+ "Even so, transport experts believe the benefits — quieter streets, fewer accidents and lower pollution — outweigh the cost in most places."],
+ qs:[
+ {q:"What do supporters say is the main goal of free transport?",a:"to reduce traffic and clean the air",o:["to sell more bus tickets","to help bus companies earn more","to keep children at school longer"],si:2,why:"'get families out of their cars, cut traffic and clean the air' — ba cụm cùng một ý: bớt xe riêng, đỡ tắc, sạch không khí."},
+ {q:"Since which year have all Tallinn residents ridden for free?",a:"2013",o:["2003","2018","2020"],si:1,why:"'since 2013'. Số năm là chi tiết hay xuất hiện trong câu hỏi — khi đọc đề, khoanh sẵn các con số để tai mắt tự lọc."},
+ {q:"What problem do critics mention?",a:"free tickets cost money",o:["buses become too slow","people stop walking entirely","children prefer cars"],si:5,why:"'free tickets cost money, and some cities have had to raise parking fees' — chi phí là mối lo chính của phe phản đối."}]},
+{id:"sugar",emoji:"🥤",topic:"Kinh tế & tiêu dùng",title:"Sugar Taxes Push Companies to Change Recipes",s:[
+ "Since the United Kingdom introduced a tax on sugary drinks in 2018, many soft-drink recipes have quietly changed.",
+ "The tax charges companies extra for every gram of sugar above a set limit, so rather than accept higher prices, producers cut the sugar itself.",
+ "Some drinks were reformulated; others shrank their bottles or replaced sugar with sweeteners.",
+ "Health researchers report that the average drink now contains noticeably less sugar than before the tax.",
+ "The money raised goes partly into school sports and breakfast clubs.",
+ "Not everyone is happy, of course: some fans complain that their favourite sodas taste different, and a few companies argue that the tax threatens jobs in smaller factories.",
+ "Even so, several other countries are studying the UK model, and the World Health Organization has encouraged governments to try similar measures."],
+ qs:[
+ {q:"Why did producers cut sugar instead of raising prices?",a:"the tax charges extra for sugar",o:["sweeteners are cheaper than sugar","customers preferred smaller bottles","the law bans price increases"],si:1,why:"'charges companies extra for every gram of sugar… so rather than accept higher prices, producers cut the sugar itself'. Vế so đi với vế nên là nguyên nhân."},
+ {q:"Where does part of the tax money go?",a:"school sports and breakfast clubs",o:["new bus lines","hospitals for children","research on sweeteners"],si:4,why:"'goes partly into school sports and breakfast clubs'. Hai cụm đi cặp — ghi nhớ ý bằng cặp từ là mẹo làm MC."},
+ {q:"Who complains that their sodas taste different?",a:"fans of the drinks",o:["health researchers","factory owners","government advisers"],si:5,why:"'some fans complain that their favourite sodas taste different'. Companies ARGUE about jobs — khác người PHÀN NÀN về vị; đọc kỹ ai nói gì."}]},
+{id:"bots",emoji:"🤖",topic:"Công nghệ & việc làm",title:"Robots Take Over the Most Boring Office Work",s:[
+ "Office robots are no longer science fiction.",
+ "Companies increasingly use software 'bots' to copy data between systems, fill in invoices and check reports for obvious mistakes — the tasks that employees describe as the most boring parts of their week.",
+ "A recent survey of large firms suggests the technology saves each office worker a few hours per month.",
+ "Managers are quick to add that the bots are not replacing people: staff move on to talking with customers and planning new products instead.",
+ "Workers themselves seem calmer than the headlines suggest.",
+ "In the survey, most employees said they welcome help with repetitive work, although a minority worry about their long-term job security.",
+ "Training is the key, the report concludes: companies that teach new skills see far less anxiety about automation than those that simply install the software."],
+ qs:[
+ {q:"Which task do the bots take over?",a:"copying data and filling in invoices",o:["talking with customers","planning new products","training new employees"],si:1,why:"'copy data between systems, fill in invoices and check reports'. Còn talking với customers là việc con người NHẬN LÀM THÊM sau khi bot lo việc nhàm."},
+ {q:"What do most employees say in the survey?",a:"they welcome help with repetitive work",o:["they plan to leave their jobs","they refuse to use software","they want longer holidays"],si:5,why:"'most employees said they welcome help with repetitive work, although a minority worry'. Most ≠ minority — nghe đọc kỹ chủ ngữ số nhiều này."},
+ {q:"What makes workers less anxious about automation?",a:"learning new skills",o:["higher salaries","shorter working hours","new office buildings"],si:6,why:"'companies that teach new skills see far less anxiety'. Training là chìa khóa — câu kết luận của báo cáo thường là đáp án câu hỏi cuối."}]},
+{id:"sit",emoji:"🪑",topic:"Sức khỏe",title:"Health Experts: Sitting Less Matters More Than You Think",s:[
+ "Standing desks, walking meetings and lunchtime strolls are appearing in offices around the world, and health researchers say the change is justified.",
+ "Their message is not that exercise is unimportant — an active lifestyle remains the goal — but that long hours in a chair carry risks of their own.",
+ "Studies following thousands of office workers link sitting time with back pain, weight gain and poor sleep, even among people who exercise in the evening.",
+ "The advice that follows is surprisingly practical.",
+ "Experts suggest standing up for a few minutes every half hour, taking phone calls on foot and treating short walks as normal, not lazy.",
+ "Employers are listening: some firms now hold meetings in corridors, while others have moved their printers far from the desks.",
+ "Nobody claims a chair is dangerous by itself. The problem, researchers repeat, is the total number of chair-hours in a day."],
+ qs:[
+ {q:"What is the researchers' main message?",a:"sitting for long hours has its own risks",o:["exercise is not important","everyone should buy a standing desk","chairs are dangerous objects"],si:1,why:"'not that exercise is unimportant… but that long hours in a chair carry risks of their own'. Cấu trúc not X but Y — ý thật nằm sau but."},
+ {q:"How often do experts suggest standing up?",a:"every half hour",o:["every five minutes","once a day","only during meetings"],si:4,why:"'standing up for a few minutes every half hour'. Chi tiết tần suất — loại câu hỏi đọc phải soi số."},
+ {q:"What have some firms done to their printers?",a:"moved them far from the desks",o:["removed them completely","replaced them with robots","given one to every worker"],si:5,why:"'others have moved their printers far from the desks' — mục đích ngầm: bắt nhân viên đứng dậy đi bộ. Meetings in corridors là ví dụ của nhóm firms khác."}]},
+{id:"garden",emoji:"🌱",topic:"Giáo dục",title:"School Gardens Grow More Than Vegetables",s:[
+ "Behind a primary school in the suburbs, thirty children are watering lettuces, measuring sunflowers and arguing about snails.",
+ "The garden is part of a programme that now runs in hundreds of schools, and teachers say it feeds more than the school kitchen.",
+ "Lessons in mathematics move outdoors — how much has a row of carrots grown in a week? — while writing classes produce plant diaries.",
+ "The children eat more vegetables, several studies confirm, and not only the ones they grew themselves.",
+ "Teachers also report calmer, more patient classrooms, though they admit that evidence is harder to measure.",
+ "The main obstacle is maintenance: gardens need watering during the long summer holidays, and some schools rely entirely on parent volunteers.",
+ "Programme organisers are now training older students to take over, arguing that responsibility is the most valuable crop of all."],
+ qs:[
+ {q:"What does 'it feeds more than the school kitchen' mean?",a:"the garden also supports lessons",o:["the garden produces too much food","the kitchen buys vegetables cheaply","children eat two lunches"],si:1,why:"Câu sau giải thích ngay: maths ra ngoài tính củ cà rốt, writing viết nhật ký cây — tức vườn 'nuôi' luôn bài học, không chỉ bữa ăn."},
+ {q:"What do studies confirm?",a:"children eat more vegetables",o:["schools save money","classrooms become quieter","parents visit more often"],si:3,why:"'The children eat more vegetables, several studies confirm'. Lớp lớp calm là TRÒNG GIÁO VIÊN BÁO — và bài nói ngay là 'harder to measure', đừng nhầm."},
+ {q:"What is the main obstacle for the programme?",a:"watering during the holidays",o:["finding land in cities","buying seeds and tools","training the teachers"],si:5,why:"'The main obstacle is maintenance: gardens need watering during the long summer holidays'. Nếu lớp tình nguyện viên phụ huynh là chi tiết kèm theo."}]},
+{id:"river",emoji:"🌊",topic:"Môi trường",title:"One Weekend, One River: Volunteers Remove Tons of Rubbish",s:[
+ "On Saturday morning, two hundred volunteers gathered on the banks of the city's old river with gloves, boots and an unusual goal: clean the whole two-kilometre stretch in a single weekend.",
+ "By Sunday evening they had pulled out more than four tons of rubbish, including bicycle frames, shopping trolleys and thousands of plastic bottles.",
+ "The event was organised by a fishing club that had grown tired of catching litter.",
+ "'We did not start as environmentalists,' the club's chairman joked, 'but the fish kept voting with their fins.'",
+ "The city council provided waste trucks and agreed to install ten new bins along the path.",
+ "Local shops paid for gloves and refreshments, and a nearby university sent students to sort and weigh every bag so the final numbers could be trusted.",
+ "The club now plans a spring edition and hopes neighbouring towns will copy the idea — the river, as one volunteer put it, does not recognise city borders."],
+ qs:[
+ {q:"Who organised the clean-up?",a:"a fishing club",o:["the city council","a university","an environmental group"],si:2,why:"'organised by a fishing club that had grown tired of catching litter'. Council chỉ CHO xe chở rác, university gửi sinh viên — đừng lẫn vai trò."},
+ {q:"How much rubbish did volunteers pull out?",a:"more than four tons",o:["about two kilograms","four hundred bags","ten truckloads"],si:1,why:"'more than four tons'. Bẫy số: two kilometres là chiều dài bờ sông, four tons là rác — hai con số đứng gần nhau."},
+ {q:"What did the city council agree to do?",a:"provide trucks and install new bins",o:["ban fishing in the river","pay all the volunteers","clean the river themselves"],si:4,why:"'provided waste trucks and agreed to install ten new bins'. Câu hỏi với ORGANISER thì đáp án là hành động của council, đừng lấy hành động của shops hay university."}]},
+{id:"lang",emoji:"🗣️",topic:"Học tập & cuộc sống",title:"More Adults Are Learning Languages After Work",s:[
+ "Language schools report a quiet boom that has little to do with holidays.",
+ "The fastest-growing group of new students is adults in their thirties and forties who want to speak with colleagues, customers or in-laws — not to pass an exam.",
+ "Evening and online classes fill up first, and short conversation sessions of twenty minutes are now more popular than traditional ninety-minute lessons.",
+ "Schools have adapted quickly.",
+ "Many now send recorded feedback after each class and let students skip grammar chapters they will never need.",
+ "Employers are joining in as well: some companies pay for lessons when the language is useful for work, and a few give small bonuses to staff who reach a speaking milestone.",
+ "Teachers note that older learners make more mistakes but worry less about them — and that confidence, not perfection, keeps a conversation alive."],
+ qs:[
+ {q:"Why do most new adult students learn a language?",a:"to talk with people at work and at home",o:["to pass an official exam","to move abroad for study","to become teachers"],si:1,why:"'speak with colleagues, customers or in-laws — not to pass an exam'. Vế NOT là cái đề hay bẫy: học để nói chuyện, không phải để thi."},
+ {q:"Which kind of class is most popular now?",a:"short twenty-minute conversations",o:["traditional ninety-minute lessons","weekend grammar workshops","full-day immersion courses"],si:2,why:"'short conversation sessions of twenty minutes are now more popular than traditional ninety-minute lessons'. More than chỉ ai hơn ai — popularity thuộc về cái ngắn."},
+ {q:"When do companies pay for lessons?",a:"when the language is useful for their work",o:["for every employee once a year","only for managers","after five years of service"],si:5,why:"'pay for lessons when the language is useful for work'. Bonus nhỏ cho mốc nói được là chi tiết khác — câu hỏi hỏi điều kiện trả tiền học."}]},
+{id:"hybrid",emoji:"🏠",topic:"Công việc",title:"Two Days at Home: The New Shape of the Working Week",s:[
+ "Five years after large-scale remote work began, the argument has moved on: the question is no longer whether people work from home, but how many days.",
+ "In many companies the answer has settled at two.",
+ "Staff usually come in on the same days as their team, so offices stay lively in the middle of the week and quiet on Mondays and Fridays.",
+ "The pattern has changed city centres: cafés near stations are busiest from Tuesday to Thursday, while some have started closing at lunchtime on Mondays.",
+ "Employers report mixed effects.",
+ "Recruiting has become easier, because candidates value flexibility, but some managers complain that training new staff is harder when everyone is rarely together.",
+ "The compromise most firms have chosen is simple: home days are for focused work, office days are for meetings — and the calendar, not a rulebook, settles every exception."],
+ qs:[
+ {q:"How many days at home has the answer settled at, in many companies?",a:"two",o:["one","three","five"],si:1,why:"'the answer has settled at two'. Câu hỏi chính là câu đầu bài paraphrase lại — đọc kỹ số ngay từ câu dẫn."},
+ {q:"When are offices busiest?",a:"Tuesday to Thursday",o:["Monday and Friday","every weekday morning","only on Fridays"],si:2,why:"'lively in the middle of the week and quiet on Mondays and Fridays' — midweek = thứ Ba đến thứ Năm. Nhóm ngày vào cụm, đừng đếm lẻ."},
+ {q:"What do some managers complain about?",a:"training new staff is harder",o:["rent is too expensive","team meetings take too long","candidates refuse offers"],si:5,why:"'managers complain that training new staff is harder when everyone is rarely together'. Recruiting thì DỄ hơn (flexibility) — mixed effects nghĩa là có mặt tốt mặt xấu."}]}
+];
+const newsToday=()=>NEWS_ITEMS[Math.floor(Date.parse(dayKey())/86400000)%NEWS_ITEMS.length];
 const RQ=Object.fromEntries(READING_PASSAGES.flatMap(p=>p.qs).map(q=>[q.id,q]));
 const RPASS=Object.fromEntries(READING_PASSAGES.map(p=>[p.id,p]));
 const ROMAN=["i","ii","iii","iv","v","vi","vii","viii","ix","x"];
 const TFNG_LABEL={T:"TRUE",F:"FALSE",NG:"NOT GIVEN"};
 const R_TIMES=[0,10,15,20];
 if(!P.rwrong)P.rwrong={};if(!P.rpass)P.rpass="myco";if(!P.rbest)P.rbest={};if(P.rtime==null)P.rtime=0;
+if(!P.news)P.news={};if(!P.news.done)P.news.done={};
 
 /* ---------- Menu và lượt chơi phần 4 ---------- */
 const R_MODES=[
@@ -1848,10 +1993,12 @@ function readMenu(){
   </section>
   <section class="modes">${R_MODES.map(m=>`<button class="mode ${m.id==="review"&&nw?"hot":""}" data-m="${m.id}" ${m.id==="review"?'style="grid-column:1/-1"':""}><span class="ic">${ic(m.ic,30)}</span><b>${m.name}</b>
     <span>${m.id==="review"?(nw?`${nw} câu đang chờ mày`:"Chưa sai câu nào, ngon"):m.d}</span></button>`).join("")}</section>
+  ${newsCardHTML()}
   <section class="card"><p class="muted" style="font-size:14px">Đúng ngay lần đầu +20 XP · đúng lần hai +15 · xem đáp án +5. Trả lời xong, câu chứa đáp án trong bài được tô vàng. Thi thật mỗi passage dài gấp ba và có 20 phút; bài ở đây ngắn hơn nên 10–15 phút là vừa.</p></section>`;
   $("rpass").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.rpass=b.dataset.k;save();readMenu()};
   $("rtime").onclick=e=>{const b=e.target.closest("button");if(!b)return;P.rtime=+b.dataset.t;save();readMenu()};
   document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>startR(b.dataset.m));
+  if($("newsGo"))$("newsGo").onclick=newsStart;
 }
 function startR(m){
   const p=rPass();let qs;
@@ -1968,6 +2115,68 @@ function rEnd(){
   const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
   const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
   a.onclick=()=>{restore();startR(m)};b.onclick=()=>{restore();readMenu()};
+}
+
+/* ---------- Tin nóng mỗi ngày: đọc bản tin ngắn + 3 câu MC (đọc thêm, không vào SRS) ---------- */
+function newsCardHTML(){
+  const n=newsToday(),done=P.news.done[dayKey()];
+  return `<section class="card stack">
+    <div><div class="eyebrow">Tin nóng · mỗi ngày một bài mới</div>
+    <h2>${n.emoji} ${esc(n.title)}</h2>
+    <p class="muted">${esc(n.topic)} · 3 câu hỏi · tin được viết lại ngắn gọn cho luyện đọc, không phải bài báo gốc</p></div>
+    <div class="btns" style="justify-content:flex-start"><button class="btn pri" id="newsGo">${done!=null?`Đọc lại · lần trước đúng ${done}/3`:"Đọc tin · trả lời 3 câu"}</button></div>
+  </section>`;
+}
+function newsStart(){
+  const n=newsToday();
+  R={news:1,qs:n.qs.map(q=>({q})),i:0,earned:0,correct:0,n};
+  renderNews();
+}
+function newsHTML(n){return n.s.map((s,si)=>`<p><span data-s="${si}">${esc(s)}</span></p>`).join("")}
+function renderNews(){
+  stopTimer();
+  const it=R.qs[R.i],q=it.q,n=R.n;it.tries=0;it.revealed=false;it.done=false;
+  it.opts=shuffle([q.a,...q.o]);
+  $("main").innerHTML=`<section class="card stack">
+    <div class="qhead"><button class="btn sm" id="qBack">← Menu</button>${dots()}<span class="chip">${R.i+1}/${R.qs.length}</span></div>
+    <div class="eyebrow">${n.emoji} ${esc(n.title)}</div>
+    <div class="passage full" id="newsPass" tabindex="0" aria-label="Bản tin">${newsHTML(n)}</div>
+    <p class="prompt">${esc(q.q)}</p>
+    <div class="opts" id="opts">${it.opts.map((o,k)=>`<button class="opt" data-k="${k}">${esc(o)}</button>`).join("")}</div>
+    <div id="fb" hidden></div>
+    <div class="btns"><button class="btn" id="qReveal">Xem đáp án (chỉ +5)</button><button class="btn pri" id="qNext" hidden>Câu tiếp →</button></div>
+  </section>`;
+  $("qBack").onclick=readMenu;
+  $("opts").onclick=e=>{const b=e.target.closest(".opt");if(b&&!b.disabled)newsPick(it,b)};
+  $("qReveal").onclick=()=>{it.revealed=true;P.streak=0;save();renderStats();
+    document.querySelectorAll("#opts .opt").forEach(b=>{if(it.opts[b.dataset.k]===q.a)b.classList.add("right")});
+    fb("tip","Đáp án đã tô xanh. Chạm vào nó để nhận 5 XP và đọc giải thích.")};
+  $("qNext").onclick=()=>{R.i++;R.i<R.qs.length?renderNews():newsEnd()};
+}
+function newsPick(it,b){
+  if(it.done)return;
+  const q=it.q;
+  if(it.opts[b.dataset.k]!==q.a){
+    it.tries++;b.classList.add("wrong");b.disabled=true;P.streak=0;save();renderStats();
+    fb("bad",pick(NUDGE)+" Đọc lại bản tin đi — câu chứa thông tin này nằm ngay trong đó.");return}
+  it.done=true;b.classList.add("right");document.querySelectorAll("#opts .opt").forEach(x=>x.disabled=true);
+  const first=!it.revealed&&it.tries===0,g=it.revealed?5:first?20:15;
+  if(first){P.streak++;P.best=Math.max(P.best,P.streak);R.correct++}
+  R.earned+=g;gain(g);
+  const sp=document.querySelector(`#newsPass [data-s="${q.si}"]`);if(sp)sp.classList.add("hl");
+  fb("good",`<div><b>${pick(PRAISE)}</b> +${g} XP${P.streak>=3?` · chuỗi ${P.streak} 🔥`:""}</div><div>💡 ${esc(q.why)}</div><div class="muted" style="font-size:14px">📍 Câu chứa đáp án đã tô vàng trong bản tin.</div>`);
+  $("qReveal").hidden=true;$("qNext").hidden=false;$("qNext").focus({preventScroll:true});
+}
+function newsEnd(){
+  const n=R.qs.length;
+  P.news.done[dayKey()]=R.correct;save();
+  $("mT").textContent=R.correct===n?"Đọc tin giỏi!":R.correct>=n/2?"Xong rồi!":"Ngày mai lại có tin mới";
+  $("mXP").textContent="+"+R.earned+" XP";
+  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu. Tin nóng để luyện thêm nên không vào ôn tổng.`;
+  $("modal").hidden=false;if(R.correct>=n/2)confetti();
+  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
+  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
+  a.onclick=()=>{restore();newsStart()};b.onclick=()=>{restore();readMenu()};
 }
 
 /* ===== PHẦN 5: GIAO TIẾP + SPEAKING — dữ liệu ===== */

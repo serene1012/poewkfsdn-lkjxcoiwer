@@ -2,10 +2,11 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-07 đêm (phiên sau 5A) · App đã LIVE trên GitHub Pages · 5A xong + **phiên này thêm
-> 6 bài học mới (3 Reading + 3 Listening) + bộ đếm thời gian 6 phần (commit `07363b7`, sw `lo-ielts-v11`)**.
-> Đề xuất tài liệu tiếp theo nằm ở `DE_XUAT_TAILIEU.md` NGOÀI repo — chờ user duyệt, chưa merge gì.
-> Việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
+> Updated: 2026-11-08 sáng · App đã LIVE trên GitHub Pages · **phiên này duyệt + merge thêm: Reading
+> `fam` (A Kinder Kind of Boss), Listening `gamif` (Gamification S4), TIN NÓNG mỗi ngày 8 tin xoay
+> vòng trong tab Đọc (commit mới nhất, sw `lo-ielts-v12`)**.
+> `DE_XUAT_TAILIEU.md` NGOÀI repo: user đã duyệt R2/L3/Tin nóng (đã làm); R1/R3/L1/L2/L4 + VOCAB
+> +2 topics + Tips S2 CHƯA duyệt. Việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 
@@ -184,6 +185,34 @@ Cào web IELTS VN chỉ để ĐỀ XUẤT — `DE_XUAT_TAILIEU.md` (ngoài repo
   archive: R1 teaching styles, R2 American businesses, R3 Flynn effect; L1 Beach Clean-up, L2
   Pre-school S1, L3 Gamification S4. Chờ user duyệt từng mục.
 
+### 5A++. PHIÊN 2026-11-08 — DUYỆT R2 + L3 + TIN NÓNG, ĐÃ MERGE (sw `lo-ielts-v12`)
+
+User duyệt từng mục từ `DE_XUAT_TAILIEU.md` (ngoài repo): chọn **R2 (American Businesses/family)**,
+**L3 (Gamification S4)**, **Tin nóng mỗi ngày** (kho sẵn xoay vòng, KHÔNG phải AI sinh). R1/R3/L1/L2/
+L4 + VOCAB +2 topics + Tips S2 chưa duyệt — đừng tự làm.
+
+- **Reading `fam` — "A Kinder Kind of Boss"** (Công việc & gia đình, 🧑‍💼): viết lại 100% từ
+  `2026\Reading\reading_2026-06-3.txt` P2, giữ facts (Jennifer West/BRC Ohio, Stephen Harper/Plastic
+  Solutions California, Margaret Mills Corporation Vermont, Victor Davies, Hazel Gibbs/Houston,
+  Montreal trip, anniversaries). 14 câu (5 TFNG + 5 head + 4 comp), ev đã map đúng theo câu mới.
+- **Listening `gamif` — "Gamification trong kinh doanh"** (Section 4, who A = Lecturer): viết lại
+  100% từ `2026\Listening\listening_2026-q2-21.txt` S4. 6 segs monologue dài hơn S2 + 6 câu (3 gap +
+  3 mc): marketing, airlines, behaviour, pilots, prize draw, privacy. Menu nghe đổi nhãn
+  "Section 1–2" → "Section 1–4" (sec hiển thị động nên S4 ăn luôn, không sửa logic gì).
+- **TIN NÓNG mỗi ngày** (trong tab Đọc, không tạo tab mới): `NEWS_ITEMS` 8 tin (bus/sugar/bots/sit/
+  garden/river/lang/hybrid — giao thông, thuế đường, robot văn phòng, ngồi ít đi, vườn trường, dọn
+  sông, học ngoại ngữ, hybrid work), mỗi tin ~120–170 từ + 3 câu MC (`q.si` = câu chứa đáp án để tô
+  vàng). Xoay vòng theo ngày máy: `newsToday()` = `floor(Date.parse(dayKey())/864e5) % 8`. Flow:
+  `newsCardHTML()` (card trong readMenu) → `newsStart/renderNews/newsPick/newsEnd` — XP 20/15/5 như
+  Reading, **không vào SRS** (ghi chú honest "không vào ôn tổng"), `P.news.done["YYYY-MM-DD"]` = số
+  câu đúng ngay lần đầu. Tin viết lại từ tin công khai, không chép bài báo nào.
+- Verify (browser 8433, SW dọn sạch trước): fam 14/14 +280 XP (rbest lưu), gamif 6/6 +120 XP
+  (lbest lưu), tin nóng 2/3 (1 sai cố ý → fb bad đúng) + done state "Đọc lại · lần trước đúng 2/3",
+  smoke 7 tab 0 lỗi, card thời gian + XP chart ở Tiến bộ vẫn nguyên, data test đã dọn
+  (localStorage.clear). Lưu ý tool: click tab trong evaluate bấm không ăn — dùng Playwright locator
+  hoặc `P.tab=…;save();route()` fallback.
+- **Chờ user chạy thử trên máy thật:** 2 bài mới (fam + gamif) + tin nóng + 6 bài phiên trước.
+
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
 - **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn.
@@ -213,8 +242,9 @@ Xong việc thì bump sw.js, commit tiếng Việt không dấu, push (Pages t�
 
 Việc đang treo ngay đầu phiên tới: user sẽ thử chat với key thật trên máy mình (web chuẩn OpenAI
 mà user xài); có lỗi thì sửa từ report của user, chưa duyệt 5B gì cả — hỏi trước khi làm.
-Phiên sau 5A thêm: user duyệt `DE_XUAT_TAILIEU.md` (ngoài repo) mục nào thì merge mục đó;
-user cũng chưa chạy thử 6 bài học mới + bộ đếm thời gian trên máy thật.
+Phiên sau 5A thêm: user duyệt `DE_XUAT_TAILIEU.md` mục R2/L3/Tin nóng — đã merge xong (5A++, sw v12);
+user cũng chưa chạy thử trên máy thật: 6 bài phiên trước + 2 bài mới (fam/gamif) + tin nóng + bộ đếm
+thời gian. Còn trong DE_XUAT chờ duyệt: R1/R3, L1/L2/L4, VOCAB +2 topics, Tips S2.
 
 ## 8. Web free user sưu tầm (2026-11-08 — CHỈ GHI LẠI, chưa duyệt làm gì)
 
