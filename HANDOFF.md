@@ -321,7 +321,18 @@ Phiên sau 5A thêm: user duyệt `DE_XUAT_TAILIEU.md` mục R2/L3/Tin nóng —
 user cũng chưa chạy thử trên máy thật: 6 bài phiên trước + 2 bài mới (fam/gamif) + tin nóng + bộ đếm
 thời gian. Còn trong DE_XUAT chờ duyệt: R1/R3, L1/L2/L4, VOCAB +2 topics, Tips S2.
 
-## 9. VIỆC KẾ — Giám khảo Speaking giọng ElevenLabs (ĐỀ XUẤT, user chưa chốt)
+## 9. Giám khảo Speaking giọng ElevenLabs — ĐÃ LÀM (sw `lo-ielts-v18`)
+
+- Cài đặt → "Giọng giám khảo": danh sách nhiều key (`llielts_el`, ngoài P → không vào mã xuất, đã verify),
+  kiểm tra credit (`/v1/user/subscription`), key hết credit/sai tự xoay sang key kế (`elFetch`), key hết
+  credit thử lại sau 24h. Model `eleven_flash_v2_5`, giọng mặc định George `JBFqnCBsd6RMkjVDRZzb`, Voice ID đổi được.
+- `examSay(text)`: cache IndexedDB `llielts_tts` → ElevenLabs → fallback `speak()`. Nút loa câu hỏi Part 1/3 +
+  cue card dùng `examBtn`; tự đọc khi mở câu mới nếu bật "Tự đọc".
+- Hỏi vặn: sau khi chấm Part 1/3, nút "🎯 Giám khảo hỏi vặn" (cần key chat) → `sFollow()` gọi `chatAPI()`
+  sinh 1 câu ≤20 từ, đặt `S.fq` (sQuestion trả về câu này để chấm), giám khảo đọc. Tùy chọn, không bấm = không tốn.
+- Chat Elaina (sw v17): prompt thêm mục "NGHE LỜI HỌC VIÊN" (xin lý thuyết thì giảng, xin bài thì ra đề rõ, bị chê thì làm lại, không từ chối nhầm là ngoài lề).
+
+Ghi chú cũ khi còn là đề xuất:
 
 User có tài khoản ElevenLabs 10.000 credit, muốn làm tính năng "trò chuyện Speaking".
 - Đã kiểm tra: `api.elevenlabs.io` **bật CORS** (`access-control-allow-origin: *`, allow-headers `*`) →
