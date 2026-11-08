@@ -251,6 +251,7 @@ textarea:focus{border-color:var(--accent)}
 .crit .b{font-weight:900;color:var(--accent-d);text-align:right;font-size:18px}
 .crit .n{grid-column:1/-1;color:var(--muted);font-size:14px;margin-bottom:6px}
 /* Panel số liệu đo thật trong Speaking: app tự đo từ transcript + đồng hồ, không qua AI */
+.rulehint{border:2px dashed var(--line);border-radius:14px;padding:8px 12px;font-size:14px;display:flex;flex-direction:column;gap:2px}
 .met{border:2px dashed var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
 .met .t{font-size:12px;font-weight:900;letter-spacing:.05em;color:var(--muted)}
 .met .t small{font-weight:600;letter-spacing:0;font-size:12px}
@@ -672,7 +673,10 @@ Chỉ trả về đúng một JSON, không thêm chữ nào khác:
    Câu tự viết bị dưới 8 điểm được ghi vào P.wlog (giữ 60 câu gần nhất). Bấm "Phân tích" để nhờ AI tìm lỗi lặp lại. */
 const ERR_FIELD=`, "err": ["0 đến 3 loại lỗi chính, mỗi loại 1–3 chữ tiếng Việt, chọn trong: giới từ, thì động từ, chia động từ, mạo từ, số ít/số nhiều, dạng từ, collocation, trật tự từ, cấu trúc câu, dùng sai nghĩa, chính tả, thiếu chủ ngữ/động từ; [] nếu không lỗi"]`;
 function logWeak(src,task,ans,r){
-  if(r.score>=8)return;
+  /* P.wtry: số lần được AI chấm mỗi ngày (cả câu tốt) — để biết tuần này có viết đủ mà kết luận "đã sửa được" */
+  const dk=dayKey();P.wtry=P.wtry||{};P.wtry[dk]=(P.wtry[dk]||0)+1;
+  const ks=Object.keys(P.wtry).sort();if(ks.length>30)ks.slice(0,ks.length-30).forEach(k=>delete P.wtry[k]);
+  if(r.score>=8){save();return}
   const err=Array.isArray(r.raw&&r.raw.err)?r.raw.err.map(x=>String(x).trim().toLowerCase()).filter(Boolean).slice(0,3):[];
   P.wlog=(P.wlog||[]).concat({t:Date.now(),src,task:String(task).slice(0,160),ans:ans.slice(0,400),fix:(r.corrected||"").slice(0,400),score:r.score,err,seen:0}).slice(-60);
   save();
@@ -682,12 +686,27 @@ function logCard(){const L=P.wlog||[],nNew=L.filter(e=>!e.seen).length;
   return `<section class="card stack"><div class="row"><div><b>${ic("notebook",17)} Sổ lỗi viết</b><div class="muted" style="font-size:14px">${L.length?`${L.length} câu yếu đã ghi${nNew?` · <b>${nNew} câu mới chưa phân tích</b>`:""}`:"Câu tự viết hoặc lời nói Speaking nào dưới 8 điểm sẽ được ghi vào đây"}</div></div>
     <button class="btn ${nNew>=3?"pri":""}" id="logOpen" ${L.length?"":"disabled"}>Mở sổ</button></div></section>`}
 function bindLogCard(back){const b=$("logOpen");if(b)b.onclick=()=>renderLog(back)}
-let LOGRES=null;
+/* Xu hướng từng loại lỗi: 7 ngày gần nhất so với 7 ngày trước đó. "Đã sửa được" = tuần trước ≥2 lần,
+   tuần này 0 lần, và tuần này được chấm ≥5 câu (không viết thì không tính là sửa được). */
+function errTrend(){
+  const now=Date.now(),W=7*864e5,L=P.wlog||[],cur={},prev={};
+  L.forEach(e=>{const m=e.t>now-W?cur:e.t>now-2*W?prev:null;if(m)e.err.forEach(k=>m[k]=(m[k]||0)+1)});
+  let tries=0;for(let i=0;i<7;i++)tries+=(P.wtry||{})[dayKey(new Date(now-i*864e5))]||0;
+  const ks=[...new Set([...Object.keys(cur),...Object.keys(prev)])].sort((a,b)=>((cur[b]||0)+(prev[b]||0))-((cur[a]||0)+(prev[a]||0)));
+  return {has:Object.keys(prev).length>0,tries,rows:ks.map(k=>{const c=cur[k]||0,p=prev[k]||0;return {k,c,p,fixed:p>=2&&c===0&&tries>=5}})};
+}
+/* Luật của mày: 2–3 quy tắc từ lần phân tích gần nhất, nhắc ngay trên ô viết (không tốn lượt gọi AI) */
+function ruleHint(){
+  const rs=((P.logRes&&P.logRes.patterns)||[]).map(p=>p&&p.rule).filter(Boolean).slice(0,3);
+  return rs.length?`<div class="rulehint"><b>📌 Luật của mày (từ sổ lỗi):</b>${rs.map(r=>`<div>• ${esc(r)}</div>`).join("")}</div>`:"";
+}
 function renderLog(back){
-  const L=P.wlog||[],tally=errTally(L);
+  const L=P.wlog||[],tally=errTally(L),tr=errTrend();
   $("main").innerHTML=`<section class="card stack">
     <div class="qhead"><button class="btn sm" id="qBack">← Menu</button><span class="chip">${ic("notebook",15)} Sổ lỗi viết · ${L.length} câu</span></div>
     ${tally.length?`<div><div class="eyebrow">Lỗi mày hay mắc</div><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">${tally.map(([k,n])=>`<span class="chip">${esc(k)} ×${n}</span>`).join("")}</div></div>`:""}
+    ${tr.has?`<div><div class="eyebrow">Tuần trước → tuần này</div><div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">${tr.rows.map(x=>`<span class="chip">${x.fixed?"✓ ":""}${esc(x.k)} ${x.p}→${x.c}${x.fixed?" · đã sửa được":x.c<x.p?" ↓":x.c>x.p?" ↑":""}</span>`).join("")}</div>
+      <div class="muted" style="font-size:13px">Tuần này AI chấm ${tr.tries} câu. "Đã sửa được" khi tuần trước dính ≥2 lần, tuần này viết ≥5 câu mà không dính lần nào.</div></div>`:""}
     <div class="btns"><button class="btn pri" id="logAna" ${SAMPLE?"":"disabled"}>${SAMPLE?"Nhờ AI phân tích cả sổ":"Cần API key trong Cài đặt để phân tích"}</button>
     <button class="btn" id="logDrill" ${SAMPLE&&L.length>=3?"":"disabled"}>${SAMPLE?"Sinh bài luyện từ câu đã sửa":"Cần API key để sinh bài luyện"}</button></div>
     <div id="fb" hidden></div>
@@ -697,10 +716,11 @@ function renderLog(back){
     <button class="btn" id="logClr">Xóa sạch sổ</button>
   </section>`;
   $("qBack").onclick=()=>{gradeCtl?.abort();back()};
-  $("logClr").onclick=()=>{if(!confirm("Xóa hết các câu trong sổ lỗi?"))return;P.wlog=[];LOGRES=null;save();back()};
+  $("logClr").onclick=()=>{if(!confirm("Xóa hết các câu trong sổ lỗi?"))return;P.wlog=[];P.logRes=null;save();back()};
   $("logAna").onclick=()=>analyzeLog();
   if($("logDrill"))$("logDrill").onclick=()=>analyzeDrill();
-  if(LOGRES)showLogRes(LOGRES);
+  $("logRes").onclick=e=>{const b=e.target.closest("[data-dr]");if(b)drillOpen(b.dataset.dr)};
+  if(P.logRes&&Array.isArray(P.logRes.patterns))showLogRes(P.logRes);
 }
 async function analyzeLog(){
   const L=(P.wlog||[]).slice(-25);if(!L.length||!SAMPLE)return;
@@ -719,8 +739,12 @@ Chỉ trả về đúng một JSON, không thêm chữ nào khác:
   try{
     const r=await SAMPLE.json(prompt,{...SOPTS,signal:gradeCtl.signal});
     if(!r||!Array.isArray(r.patterns))throw {code:"invalid_json"};
-    LOGRES=r;(P.wlog||[]).forEach(e=>e.seen=1);save();
-    $("fb").hidden=true;showLogRes(r);
+    P.logRes={t:Date.now(),summary:String(r.summary||""),focus:String(r.focus||""),done:{},
+      patterns:r.patterns.slice(0,3).map(p=>({name:String(p.name||""),count:p.count,why:String(p.why||""),rule:String(p.rule||""),
+        examples:(Array.isArray(p.examples)?p.examples:[]).slice(0,3).map(x=>({wrong:String(x.wrong||""),fix:String(x.fix||"")})),
+        drill:(Array.isArray(p.drill)?p.drill:[]).slice(0,3).map(String)}))};
+    (P.wlog||[]).forEach(e=>e.seen=1);save();
+    $("fb").hidden=true;showLogRes(P.logRes);
   }catch(e){const c=e&&e.code;
     if(c==="cancelled")$("fb").hidden=true;
     else fb("bad",c==="rate_limited"?"Đang bị giới hạn lượt gọi, lát nữa thử lại.":"Phân tích bị lỗi, bấm thử lại sau nhé.");
@@ -730,15 +754,53 @@ function showLogRes(r){
   const P_=r.patterns.slice(0,3);
   $("logRes").innerHTML=`<div class="stack">
     ${r.summary?`<p><b>${esc(r.summary)}</b></p>`:""}
-    ${P_.map(p=>`<div class="src stack">
+    ${P_.map((p,pi)=>`<div class="src stack">
       <div><b>⚠️ ${esc(p.name||"")}</b>${p.count?` <span class="muted">· ${esc(String(p.count))} câu</span>`:""}</div>
       ${p.why?`<div>${esc(p.why)}</div>`:""}
       ${p.rule?`<div>📌 <b>${esc(p.rule)}</b></div>`:""}
       ${(p.examples||[]).slice(0,3).map(x=>`<div>❌ ${esc(x.wrong||"")}<br>✅ <span class="ex">${esc(x.fix||"")}</span></div>`).join("")}
-      ${(p.drill||[]).length?`<div><b>Luyện ngay (dịch sang tiếng Anh):</b><ol style="margin:4px 0 0;padding-left:20px">${p.drill.slice(0,3).map(d=>`<li>${esc(d)}</li>`).join("")}</ol></div>`:""}
+      ${(p.drill||[]).length?`<div><b>Luyện ngay (dịch sang tiếng Anh, bấm Viết):</b><ol style="margin:4px 0 0;padding-left:20px">${p.drill.slice(0,3).map((d,j)=>{const k=pi+"_"+j,s=(r.done||{})[k];
+        return `<li style="margin-bottom:6px"><div>${esc(d)}</div><button class="btn sm" data-dr="${k}">${s!=null?`✓ ${s}/10 · Viết lại`:"Viết"}</button><div id="dr${k}"></div></li>`}).join("")}</ol></div>`:""}
     </div>`).join("")}
     ${r.focus?`<p>🎯 <b>Buổi tới:</b> ${esc(r.focus)}</p>`:""}
+    ${r.t?`<p class="muted" style="font-size:13px">Phân tích lúc ${new Date(r.t).toLocaleString("vi-VN")} · lưu lại, mở app lại vẫn còn. Có thêm câu sai mới thì bấm phân tích lại.</p>`:""}
   </div>`;
+}
+/* Câu luyện dịch: mở ô viết ngay dưới câu, AI chấm (ghi vào sổ lỗi nếu còn sai) hoặc tự chấm khi không có key */
+function drillOpen(k){
+  const [pi,j]=k.split("_").map(Number),p=P.logRes.patterns[pi],vi=p.drill[j];
+  document.querySelectorAll('[id^="dr"]').forEach(x=>{if(/^dr\d+_\d+$/.test(x.id))x.innerHTML=""});
+  $("dr"+k).innerHTML=`<div class="stack" style="margin-top:6px"><textarea id="drA" spellcheck="false" placeholder="Viết bản tiếng Anh ở đây…"></textarea>
+    <div class="btns"><button class="btn pri" id="drGo">${SAMPLE?"Nhờ AI chấm":"Tự chấm"}</button></div><div id="drFb"></div></div>`;
+  $("drA").focus();
+  $("drGo").onclick=()=>drillGrade(k,pi,j,p,vi);
+}
+async function drillGrade(k,pi,j,p,vi){
+  const ans=$("drA").value.trim(),out=$("drFb"),btn=$("drGo");
+  if(ans.split(/\s+/).length<3){out.innerHTML=`<p class="muted">Viết hẳn một câu đi mày.</p>`;return}
+  const mark=s=>{P.logRes.done[k]=s;save();const b=document.querySelector(`[data-dr="${k}"]`);if(b)b.textContent=`✓ ${s}/10 · Viết lại`};
+  if(!SAMPLE){
+    out.innerHTML=`<div class="src stack"><div>📌 <b>${esc(p.rule)}</b></div>${p.examples.map(x=>`<div>✅ <span class="ex">${esc(x.fix)}</span></div>`).join("")}
+      <div class="btns"><button class="btn" id="drNo">Vẫn dính lỗi</button><button class="btn pri" id="drOk">Đúng luật rồi (+10 XP)</button></div></div>`;
+    $("drOk").onclick=()=>{gain(10);mark(8);out.innerHTML=`<p><b>+10 XP.</b> Ngon, câu tiếp.</p>`};
+    $("drNo").onclick=()=>{mark(4);out.innerHTML=`<p>Ghi nhận. Đọc lại luật ở trên rồi viết lại nha.</p>`};
+    return;
+  }
+  gradeCtl?.abort();gradeCtl=new AbortController();btn.disabled=true;
+  out.innerHTML=`<p class="muted">AI đang chấm… <button class="btn sm" id="drStop">Dừng</button></p>`;$("drStop").onclick=()=>gradeCtl.abort();
+  try{
+    const r=await gradeWithClaude({task:`Dịch câu tiếng Việt sang tiếng Anh tự nhiên: "${vi}"`,
+      context:`Câu này để luyện tránh lỗi "${p.name}". Quy tắc: ${p.rule}`,
+      rubric:"Chấm trước hết xem đã tránh đúng lỗi này chưa, sau đó tới ngữ pháp và độ tự nhiên. 8–10: đúng và tự nhiên; 5–7: đúng ý còn lỗi nhỏ; dưới 5: vẫn dính lỗi này hoặc sai nặng.",
+      answer:ans,signal:gradeCtl.signal,fields:ERR_FIELD});
+    logWeak("grammar",`Luyện lỗi ${p.name}: dịch "${vi}"`,ans,r);
+    const g=r.score>=8?20:r.score>=5?15:5;gain(g);mark(r.score);if(r.score>=8)confetti();
+    out.innerHTML=`<div class="src stack"><div><span class="score">${r.score}/10</span> <b>+${g} XP</b></div><div>${esc(r.feedback)}</div>
+      ${r.corrected&&r.corrected.trim()!==ans?`<div><b>Sửa lại:</b> <span class="ex">${esc(r.corrected)}</span></div>`:""}
+      ${r.better?`<div><b>Câu band 7:</b> <span class="ex">${esc(r.better)}</span> ${sayBtn(r.better)}</div>`:""}</div>`;
+  }catch(e){const c=e&&e.code;
+    out.innerHTML=c==="cancelled"?"":`<p class="muted">${c==="rate_limited"?"Đang bị giới hạn lượt gọi, lát nữa thử lại.":"Chấm bị lỗi, thử lại sau nhé."}</p>`;
+  }finally{btn.disabled=false}
 }
 /* ===== AI drill: từ các câu đã sửa trong sổ lỗi, nhờ AI dựng câu điền từ nhắm đúng chỗ hay sai ===== */
 function startDrill(){
@@ -965,7 +1027,7 @@ function renderWrite(){
     <div class="row" style="justify-content:flex-start"><div class="big">${esc(w.w)}</div>${sayBtn(w.w)}</div>
     <div class="ipa">${esc(w.ipa)} · ${esc(w.vi)}</div>
     <p class="muted" style="font-size:14px">Mẹo: viết câu về chính mày (học kế toán, đi làm thêm, sống ở Việt Nam) để dễ dùng lại khi thi Speaking.</p>
-    <textarea id="wAns" placeholder="Ví dụ: As an accounting student, I..." spellcheck="false">${esc(draft)}</textarea>
+    ${ruleHint()}<textarea id="wAns" placeholder="Ví dụ: As an accounting student, I..." spellcheck="false">${esc(draft)}</textarea>
     <div class="btns"><button class="btn" id="wSkip">Đổi từ khác</button><button class="btn pri" id="wGrade">${SAMPLE?"Nhờ AI chấm":"Chấm bài"}</button></div>
     <div id="fb" hidden></div>
   </section>`;
@@ -1227,7 +1289,7 @@ function renderGWrite(){
     <div class="eyebrow">Tự viết</div>
     <p class="prompt">${esc(w.task)}</p>
     <div class="src">${esc(w.src)}</div>
-    <textarea id="wAns" placeholder="Viết câu của mày ở đây…" spellcheck="false">${esc(draft)}</textarea>
+    ${ruleHint()}<textarea id="wAns" placeholder="Viết câu của mày ở đây…" spellcheck="false">${esc(draft)}</textarea>
     <div class="btns"><button class="btn" id="wSkip">Đổi bài khác</button><button class="btn pri" id="wGrade">${SAMPLE?"Nhờ AI chấm":"Chấm bài"}</button></div>
     <div id="fb" hidden></div>
   </section>`;
@@ -2406,7 +2468,7 @@ function answerBox(ph){
   return `<div class="row"><span class="chip" id="sClock">⏱ 0:00</span><span class="muted" id="sWc" style="font-size:14px">0 từ</span></div>
     ${MIC_OK?`<button class="btn pri mic" id="sMic">🎙️ Bấm để nói (chuyển giọng thành chữ)</button>`:""}
     <p class="muted" id="sInterim" style="font-size:14px" hidden></p>
-    <textarea id="sAns" lang="en" spellcheck="false" placeholder="${esc(ph)}"></textarea>
+    ${ruleHint()}<textarea id="sAns" lang="en" spellcheck="false" placeholder="${esc(ph)}"></textarea>
     <p class="muted" style="font-size:13px">${MIC_OK?"Micro bị chặn? ":""}Chạm vào ô trên, bấm 🎤 trên bàn phím điện thoại để đọc. Gõ cũng được.</p>
     <div id="fb" hidden></div>
     <div class="btns" id="sBtns"><button class="btn" id="sOther">Câu khác</button><button class="btn pri" id="sGrade">${SAMPLE?"Nhờ AI chấm":"Chấm bài"}</button></div>`;

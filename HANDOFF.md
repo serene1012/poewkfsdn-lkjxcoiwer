@@ -264,6 +264,21 @@ hiện có — không tốn thêm lần gọi API nào**.
   (≤4 từ); "từ vựng" + tên chủ đề → list từ chủ đề. Tin nhắn hiện "📎 kèm: …" (lưu `m.ctx`).
   Không nhắc gì → không kèm gì. Chip mới "Coi sổ lỗi giúp tao, tao hay sai gì?". Persona giữ nguyên.
 
+### 5A++++++. PHIÊN 2026-11-08 — SỔ LỖI KHÉP VÒNG (sw `lo-ielts-v16`)
+
+- **Kết quả phân tích lưu lại**: `P.logRes` {t, summary, focus, patterns[≤3] (name/count/why/rule/
+  examples/drill), done{"pi_j": điểm}} thay cho biến tạm `LOGRES` (trước reload là mất). Xóa sổ thì xóa luôn.
+- **Câu "Luyện ngay" viết được**: mỗi câu có nút Viết → ô nhập ngay dưới (`drillOpen`/`drillGrade`). Có key:
+  `gradeWithClaude` + `logWeak` (còn sai thì vào sổ lại), XP 20/15/5. Không key: hiện luật + bản đúng, tự
+  chấm (+10). Nút đổi thành "✓ điểm/10 · Viết lại".
+- **Luật của mày** (`ruleHint()`): 2–3 `rule` từ P.logRes hiện khung nét đứt `.rulehint` trên ô viết
+  Đặt câu (wAns), Ngữ pháp tự viết (wAns), Speaking (sAns). Không tốn API.
+- **Xu hướng lỗi** (`errTrend()`): 7 ngày gần nhất vs 7 ngày trước theo `err` của wlog; "✓ đã sửa được"
+  khi tuần trước ≥2, tuần này 0 và tuần này chấm ≥5 câu. `logWeak` giờ đếm `P.wtry[ngày]` mọi lần AI
+  chấm (cả câu ≥8), prune 30 ngày.
+- Verify (fetch giả): phân tích lưu + render lại sau khi mở lại sổ, chấm câu luyện 9/10 → nút ✓, luật
+  hiện trên ô Đặt câu, trend "chia động từ 2→0 · đã sửa được", 0 lỗi JS.
+
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
 - **Nghe lại bản thu** (IndexedDB) — chỉ khi user muốn.
