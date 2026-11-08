@@ -62,9 +62,20 @@ Làm môn mới thì đưa file này cho Claude đọc trước, kèm tài liệ
 ## 6. Giao diện
 
 - Làm cho **điện thoại trước** (bề ngang ~400px), nút to, chữ ≥16px để iOS không tự zoom ô nhập.
-- Có theme sáng/tối, bộ icon SVG vẽ tay dùng chung một hàm `ic(name,size)`.
+- **Chọn theme bằng bệ thử**: làm 1 file `theme-preview.html` dựng vài phương án (A/B/C) trên cùng màn hình mẫu,
+  người dùng bấm qua lại rồi chốt 1. Có moodboard theo phong cách mascot thì đưa vào làm gốc.
+- **Màu = token trong `:root`** (nền, panel, chữ, viền, accent…), có bộ sáng và bộ tối (tối thì hạ 1 bậc, accent
+  sáng hơn cho đủ tương phản). Áp theme xong **quét mã hex** để chắc không còn màu cứng sót lại, kể cả
+  `theme-color` trong meta/manifest, nền modal, keyframes, confetti.
+- **Thay emoji ở khung app bằng bộ icon SVG** cùng nét (stroke 2px), gom vào map `IC` + hàm `ic(name,size)`.
+  Emoji nằm trong nội dung bài thì giữ.
+- **Chi tiết cho có chất riêng** theo mascot, nhưng nhẹ: hoa văn nền mờ ~5%, viền kép khung chính, con dấu
+  "Đúng!/Sai!" xoay nghiêng trên ô phản hồi, gạch đôi dưới tiêu đề. Nút dày kiểu Duolingo giữ nguyên vì dễ bấm.
+- **Số liệu phải thật**: chỉ vẽ cái đo được, thiếu dữ liệu thì để trống chứ không vẽ số 0, ghi rõ "app tự đo,
+  không phải AI phán" hay "ước lượng".
 - Mascot có hình theo tâm trạng (đúng/sai/chờ) và giọng mp3 riêng, mặc định TẮT.
 - Lời trong app xưng "tao/mày", thân, ngắn, giọng gia sư.
+- Kiểm tra giao diện bằng ảnh chụp cả sáng lẫn tối, ở bề ngang điện thoại, trước khi push.
 
 ## 7. Quy trình làm việc với Claude
 
