@@ -144,6 +144,12 @@ code,.mono{font-family:var(--f-mono);font-size:13px}
 .aiCfg label{display:flex;gap:8px;align-items:flex-start}
 .aiCfg .fld{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--muted)}
 .aiCfg input[type=text],.aiCfg input[type=password]{width:100%;font:13px var(--f-mono);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink)}
+.aiCfg textarea{width:100%;font:13px var(--f-mono);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);resize:vertical}
+.aiBar{display:flex;justify-content:flex-end;padding:0 12px 8px}
+.aiPickW{position:relative;display:inline-flex}
+.aiPickW::after{content:"▾";position:absolute;right:9px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);font-size:11px}
+.aiPickW select{appearance:none;-webkit-appearance:none;font:12.5px var(--f-mono);color:var(--ink);background:var(--head);border:1px solid var(--line);border-radius:7px;padding:5px 24px 5px 10px;max-width:240px;cursor:pointer}
+.aiPickW select:focus-visible{outline:2px solid var(--pri,#2563eb);outline-offset:1px}
 .aiLog{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:92%;padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
 .msg.user{align-self:flex-end;background:var(--accent);color:var(--accent-ink);white-space:pre-wrap}
@@ -217,13 +223,14 @@ code,.mono{font-family:var(--f-mono);font-size:13px}
     <label><input type="radio" name="aiEngR" value="api"><span><b>API riêng</b> (kiểu OpenAI, ví dụ xkiro qua proxy Cloudflare): chỉ chạy khi mở app từ github.io hoặc file HTML. Trang trên claude.ai bị chặn gọi mạng ra ngoài.</span></label>
     <div class="fld">Base URL<input type="text" id="aiBase" placeholder="https://ten-proxy.ten-may.workers.dev/v1" autocomplete="off" spellcheck="false"></div>
     <div class="fld">API key<input type="password" id="aiKey" placeholder="sk-..." autocomplete="off"></div>
-    <div class="fld">Model<input type="text" id="aiModel" placeholder="tên model mà xkiro cho dùng" autocomplete="off" spellcheck="false"></div>
+    <div class="fld">Các model (mỗi dòng 1 model, chọn ở dưới khung chat)<textarea id="aiModels" rows="4" placeholder="claude-opus-5.5&#10;claude-sonnet-5.5&#10;claude-haiku-5.5" autocomplete="off" spellcheck="false"></textarea></div>
     <span class="hintline">Key chỉ lưu trong trình duyệt này, không nằm trong code app.</span>
     <div class="btns"><button class="btn pri" id="aiSave">Lưu</button><button class="btn" id="aiCancel">Đóng</button></div>
   </div>
   <div class="aiLog" id="aiLog" aria-live="polite"></div>
   <div class="aiQuick" id="aiQuick"></div>
   <form class="aiForm" id="aiForm"><textarea id="aiIn" rows="2" placeholder="Hỏi gì cũng được. Enter để gửi, Shift+Enter xuống dòng"></textarea><button class="btn pri" id="aiSend" type="submit">Gửi</button></form>
+  <div class="aiBar" id="aiBar" hidden><label class="aiPickW" title="Đổi model"><select id="aiPick" aria-label="Chọn model"></select></label></div>
   <div class="aiNote" id="aiNote" hidden></div>
 </aside>
 
@@ -1271,6 +1278,16 @@ try{Object.assign(AI,JSON.parse(localStorage.getItem(AIK)||"{}"))}catch(e){}
 if(!AI.key){try{const src=["llielts_api_chat","llielts_api"].map(k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}})
   .find(a=>a&&a.key&&a.prov==="openrouter"&&a.base);if(src)Object.assign(AI,{base:src.base,key:src.key,model:AI.model||src.model||""})}catch(e){}}
 if(!AI.base)AI.base="https://lo-ielts-proxy.tuanminh1012.workers.dev/v1";
+// Several saved models; AI.model is the one picked under the chat box.
+if(!Array.isArray(AI.models))AI.models=AI.model?[AI.model]:[];
+if(AI.model&&!AI.models.includes(AI.model))AI.models.unshift(AI.model);
+if(!AI.model&&AI.models.length)AI.model=AI.models[0];
+const saveAI=()=>{try{localStorage.setItem(AIK,JSON.stringify(AI))}catch(e){}};
+function renderPick(){
+  const s=$("aiPick");s.innerHTML="";
+  AI.models.forEach(m=>{const o=document.createElement("option");o.value=o.textContent=m;s.appendChild(o)});
+  s.value=AI.model;$("aiBar").hidden=!(engine()==="api"&&AI.models.length>0);
+}
 try{const c=JSON.parse(localStorage.getItem(CHK)||"[]");if(Array.isArray(c))chat=c.filter(m=>m&&m.content)}catch(e){}
 const saveChat=()=>{try{localStorage.setItem(CHK,JSON.stringify(chat.slice(-40)))}catch(e){}};
 let sampleFn=null,aiCtl=null;
@@ -1283,7 +1300,7 @@ function engine(){
   if(AI.eng==="api")return apiOk()?"api":null;
   return sampleFn?"claude":apiOk()?"api":null;
 }
-function updEng(){const e=engine();$("aiEng").textContent=e==="claude"?"Claude":e==="api"?"API · "+AI.model:"chưa cài";$("aiEng").title=e==="api"?AI.base:""}
+function updEng(){const e=engine();$("aiEng").textContent=e==="claude"?"Claude":e==="api"?"API · "+AI.model:"chưa cài";$("aiEng").title=e==="api"?AI.base:"";renderPick()}
 const QUICK=[
   ["Giải thích câu này","Giải thích cho tao câu đang làm: đề hỏi gì, dùng công thức hay bút toán nào. Đừng nói đáp án cuối, để tao tự bấm."],
   ["Sao tao sai?","Tao làm câu này mà app báo sai. Chỉ ra mấy lỗi hay gặp ở dạng này để tao tự soát lại, đừng nói đáp án."],
@@ -1363,17 +1380,19 @@ async function aiSend(text){
 function openCfg(){
   const e=engine()||(AI.eng==="api"?"api":"claude");
   document.querySelectorAll('input[name="aiEngR"]').forEach(r=>r.checked=r.value===(AI.eng==="auto"?e:AI.eng));
-  $("aiBase").value=AI.base;$("aiKey").value=AI.key;$("aiModel").value=AI.model;$("aiCfg").hidden=false;
+  $("aiBase").value=AI.base;$("aiKey").value=AI.key;$("aiModels").value=AI.models.join("\n");$("aiCfg").hidden=false;
 }
 function openAi(){$("ai").hidden=false;$("aiFab").hidden=true;renderChat();updEng();setTimeout(()=>$("aiIn").focus({preventScroll:true}),0)}
 function closeAi(){if(aiCtl)aiCtl.abort();$("ai").hidden=true;$("aiFab").hidden=false;$("aiFab").focus({preventScroll:true})}
 $("aiFab").onclick=openAi;$("aiX").onclick=closeAi;
 $("aiSet").onclick=()=>{if($("aiCfg").hidden)openCfg();else $("aiCfg").hidden=true};
 $("aiCancel").onclick=()=>{$("aiCfg").hidden=true};
+$("aiPick").onchange=e=>{AI.model=e.target.value;saveAI();updEng()};
 $("aiSave").onclick=()=>{
   const r=document.querySelector('input[name="aiEngR"]:checked');
-  AI={eng:r?r.value:"auto",base:$("aiBase").value.trim(),key:$("aiKey").value.trim(),model:$("aiModel").value.trim()};
-  try{localStorage.setItem(AIK,JSON.stringify(AI))}catch(e){}
+  const models=[...new Set($("aiModels").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean))];
+  AI={eng:r?r.value:"auto",base:$("aiBase").value.trim(),key:$("aiKey").value.trim(),models,model:models.includes(AI.model)?AI.model:(models[0]||"")};
+  saveAI();
   updEng();$("aiCfg").hidden=true;
   aiNote(engine()?"":AI.eng==="api"?"API riêng còn thiếu Base URL, key hoặc Model.":"Ở đây không có Claude sẵn, phải mở app trên claude.ai.");
 };
