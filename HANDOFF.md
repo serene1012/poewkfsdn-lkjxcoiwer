@@ -215,3 +215,21 @@ Việc đang treo ngay đầu phiên tới: user sẽ thử chat với key thậ
 mà user xài); có lỗi thì sửa từ report của user, chưa duyệt 5B gì cả — hỏi trước khi làm.
 Phiên sau 5A thêm: user duyệt `DE_XUAT_TAILIEU.md` (ngoài repo) mục nào thì merge mục đó;
 user cũng chưa chạy thử 6 bài học mới + bộ đếm thời gian trên máy thật.
+
+## 8. Web free user sưu tầm (2026-11-08 — CHỈ GHI LẠI, chưa duyệt làm gì)
+
+User lên mạng coi cộng đồng học IELTS xài gì, dán về để tham khảo. Không phải task — nếu muốn đụng
+tới thì hỏi user trước:
+
+- **ZIM** — user chấm 10/10: nhiều đề Writing thi thật + sample tuyệt vời.
+- **learn4aim** — free: chấm/chữa cả 4 kỹ năng, có IPA, shadowing, dictation, luyện không giới hạn.
+- **AI4IELTS** — free: chấm Writing + Speaking theo 4 tiêu chí, AI giám khảo Speaking, chấm phát âm;
+  khóa Writing/Speaking căn bản → 7.0 miễn phí; web luyện đề đủ 4 kỹ năng giao diện giống thi thật +
+  test xếp trình free.
+
+**Ý tưởng nếu Elaina muốn học theo (đề xuất, chưa duyệt):**
+- Shadowing / dictation — làm được trong app không cần backend (audio có sẵn `voice/` + TTS).
+- Chấm phát âm bản nhẹ KHÔNG cần Azure: nhờ AI suy lỗi phát âm khả nghi từ transcript phần Speaking
+  (giọng recognition đã chuyển chữ) — rẻ hơn M7 Azure của Voice Gym.
+- Thêm đề thi thật vào `MOCK_TESTS` (chỉ thêm phần tử là tự ăn theo hồ sơ điểm yếu + ôn tổng).
+- IPA đã có sẵn trong dữ liệu từ vựng; sample Writing tốt có thể đưa vào AI prompt làm phong cách chấm.
