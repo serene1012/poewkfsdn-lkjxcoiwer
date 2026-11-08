@@ -2,11 +2,16 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-08 sáng · App đã LIVE trên GitHub Pages · **phiên này duyệt + merge: Reading
-> `fam`, Listening `gamif`, TIN NÓNG mỗi ngày (sw v12) + PHÁT ÂM KHẢ NGHI trong chấm Speaking,
-> AI suy từ transcript (sw `lo-ielts-v13`)**.
-> `DE_XUAT_TAILIEU.md` NGOÀI repo: user đã duyệt R2/L3/Tin nóng (đã làm); R1/R3/L1/L2/L4 + VOCAB
-> +2 topics + Tips S2 CHƯA duyệt. Việc kế: 5B hỏi trước khi làm · User chỉ đạo bằng tiếng Việt thân mật.
+> Updated: 2026-11-08 chiều · App LIVE trên GitHub Pages, sw **`lo-ielts-v16`** (commit `db59ede`).
+> **Phiên 2026-11-08 chiều đã làm** (chi tiết mục 5A++++ → 5A++++++): dọn cấu trúc (`endModal`), sửa
+> bug key lưu sẵn mất base URL, proxy Cloudflare cho xkiro (user đang chấm + chat bằng xkiro qua proxy,
+> CHẠY RỒI), chat Elaina lấy dữ liệu app theo từ khóa, sổ lỗi khép vòng (lưu phân tích, câu luyện viết
+> được, luật trên ô viết, xu hướng tuần). **VIỆC KẾ: mục 9 — giám khảo Speaking giọng ElevenLabs (chờ
+> user trả lời 2 câu hỏi).**
+> `DE_XUAT_TAILIEU.md` NGOÀI repo: R1/R3/L1/L2/L4 + VOCAB +2 topics + Tips S2 CHƯA duyệt.
+> User chỉ đạo bằng tiếng Việt thân mật (xưng mày/tao). **Elaina (img/, voice/, persona chat) không
+> được đụng trừ khi user bảo rõ.** Push lên main = deploy live → hỏi user trước mỗi lần push.
+> Git trong clone: `git config user.name serene1012` + `user.email tuanminh1012@gmail.com` (repo-local).
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 
@@ -306,11 +311,33 @@ Mày muốn làm gì tiếp thì ghi rõ, vd: "Làm 5B: nghe lại bản thu (In
 Xong việc thì bump sw.js, commit tiếng Việt không dấu, push (Pages tự deploy), verify live.
 ```
 
-Việc đang treo ngay đầu phiên tới: user sẽ thử chat với key thật trên máy mình (web chuẩn OpenAI
+**Mới nhất (2026-11-08 chiều):** việc kế là mục 9 (ElevenLabs) — hỏi user 2 câu ở mục 9 rồi mới làm.
+Test local: server `python -m http.server <port>`; proxy xkiro chỉ nhận origin GitHub Pages nên test
+local thì mock fetch (như các phiên trước) — đừng gửi key thật.
+
+Việc đang treo (cũ, trước phiên chiều): user sẽ thử chat với key thật trên máy mình (web chuẩn OpenAI
 mà user xài); có lỗi thì sửa từ report của user, chưa duyệt 5B gì cả — hỏi trước khi làm.
 Phiên sau 5A thêm: user duyệt `DE_XUAT_TAILIEU.md` mục R2/L3/Tin nóng — đã merge xong (5A++, sw v12);
 user cũng chưa chạy thử trên máy thật: 6 bài phiên trước + 2 bài mới (fam/gamif) + tin nóng + bộ đếm
 thời gian. Còn trong DE_XUAT chờ duyệt: R1/R3, L1/L2/L4, VOCAB +2 topics, Tips S2.
+
+## 9. VIỆC KẾ — Giám khảo Speaking giọng ElevenLabs (ĐỀ XUẤT, user chưa chốt)
+
+User có tài khoản ElevenLabs 10.000 credit, muốn làm tính năng "trò chuyện Speaking".
+- Đã kiểm tra: `api.elevenlabs.io` **bật CORS** (`access-control-allow-origin: *`, allow-headers `*`) →
+  gọi thẳng từ trình duyệt được, KHÔNG cần proxy.
+- Ước tính (giá có thể đổi, cần check lại): TTS ~1 credit/ký tự (model flash/turbo ~0.5) → 10k ≈ 10–20
+  phút giọng. Agent hội thoại của ElevenLabs tính theo phút → đốt credit rất nhanh, KHÔNG dùng.
+- **Thiết kế đề xuất (hybrid, tiết kiệm):** nghe = SpeechRecognition sẵn có (free); giám khảo nghĩ câu
+  hỏi/hỏi vặn = model chat của user (xkiro qua proxy, `chatAPI()`), câu ngắn 1–2 dòng; **chỉ giọng
+  giám khảo** = ElevenLabs TTS; chấm cuối buổi = flow chấm Speaking hiện có (`gradeSpeak`, 1 lần gọi).
+  Cache audio câu hỏi có sẵn (IndexedDB) để phát lại free; hết credit/lỗi → fallback `speak()` TTS
+  trình duyệt; hiện credit còn lại; key ElevenLabs lưu localStorage riêng, KHÔNG vào mã xuất tiến độ
+  (verify lại như các key khác). Giọng Nhật của Elaina (voice/*.mp3) giữ nguyên, không thay.
+- **2 câu đang chờ user trả lời trước khi code:**
+  1. Giám khảo hỏi vặn theo câu trả lời (giống thi thật, tốn thêm lượt gọi xkiro) hay chỉ đọc câu hỏi
+     có sẵn trong app (rẻ nhất)?
+  2. Gói ElevenLabs là free 10k/tháng (nạp lại) hay mua 10k một lần? (để đặt mức cảnh báo credit)
 
 ## 8. Web free user sưu tầm (2026-11-08 — CHỈ GHI LẠI, chưa duyệt làm gì)
 
