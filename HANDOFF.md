@@ -12,6 +12,10 @@
 > User chỉ đạo bằng tiếng Việt thân mật (xưng mày/tao). **Elaina (img/, voice/, persona chat) không
 > được đụng trừ khi user bảo rõ.** Push lên main = deploy live → hỏi user trước mỗi lần push.
 > Git trong clone: `git config user.name serene1012` + `user.email tuanminh1012@gmail.com` (repo-local).
+> **Ở chung repo (2026-11-08 tối, sw `lo-ielts-v19`):** `hop-nhat.html` = app "Lò Luyện Hợp Nhất" (môn Hợp nhất
+> BCTC), quản lý ở session khác, nguồn gốc là artifact claude.ai. Nó đọc ké key `llielts_api_chat`/`llielts_api`
+> (prov openrouter + base) để chat qua proxy xkiro. `sw.js` giờ chỉ lưu bản offline cho trang chính (`/` hoặc
+> `index.html`), trang khác tải thẳng, để `hop-nhat.html`/`theme-preview.html` không ghi đè bản lưu `index.html`.
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 

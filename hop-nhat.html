@@ -1,0 +1,1146 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lò Luyện Hợp Nhất</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: group-ledger workbench. Lesson rail grouped by Phần on the left, case file + answer desk on the right */
+:root{
+  --bg:#EDF0F5; --panel:#FFFFFF; --ink:#141B26; --muted:#5A6577; --line:#D3DAE5;
+  --accent:#1F5FA8; --accent-ink:#FFFFFF; --accent-soft:#E0EAF7;
+  --target:#FFF1C2; --target-line:#D99A00;
+  --good:#127A4A; --good-soft:#DFF2E7; --bad:#C2372B; --bad-soft:#FBE4E1; --head:#F4F6FA;
+  --f-body:"Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D121A; --panel:#151C27; --ink:#E3E9F2; --muted:#94A1B4; --line:#283244;
+  --accent:#6FA8F0; --accent-ink:#08111D; --accent-soft:#1A2A40;
+  --target:#3A3214; --target-line:#E8B923;
+  --good:#4FD18E; --good-soft:#15291F; --bad:#FF7A6B; --bad-soft:#3A1C19; --head:#1A2230; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D121A; --panel:#151C27; --ink:#E3E9F2; --muted:#94A1B4; --line:#283244;
+  --accent:#6FA8F0; --accent-ink:#08111D; --accent-soft:#1A2A40;
+  --target:#3A3214; --target-line:#E8B923;
+  --good:#4FD18E; --good-soft:#15291F; --bad:#FF7A6B; --bad-soft:#3A1C19; --head:#1A2230; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 96px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.brand h1 span{color:var(--accent);font-family:var(--f-mono);font-size:.75em}
+.brand small{color:var(--muted)}
+.stats{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.lvl{display:flex;flex-direction:column;gap:4px;min-width:220px}
+.lvl b{font-size:13px}
+.lvl small{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .5s}
+.chip{font-family:var(--f-mono);font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-variant-numeric:tabular-nums}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;align-items:start}
+nav{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:2px}
+nav .grp{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;padding:10px 8px 4px}
+nav button{all:unset;cursor:pointer;display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:7px 8px;border-radius:8px;font-size:14px;line-height:1.3}
+nav button:hover{background:var(--head)}
+nav button:focus-visible{outline:2px solid var(--accent)}
+nav button.on{background:var(--accent-soft);font-weight:600}
+nav .n{font-family:var(--f-mono);font-size:12px;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);color:var(--muted)}
+nav .full .n{background:var(--good);color:var(--accent-ink);border-color:var(--good)}
+nav .cnt{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+h2{margin:2px 0 6px;font-size:22px;font-weight:800;text-wrap:balance;letter-spacing:-.01em}
+.story{margin:0;color:var(--muted);max-width:72ch}
+.concept{margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.concept>div{background:var(--head);border-radius:10px;padding:12px 14px;min-width:0}
+.concept p{margin:0 0 8px}
+code,.mono{font-family:var(--f-mono);font-size:13px}
+.syntax{display:block;font-family:var(--f-mono);font-size:13.5px;color:var(--accent);font-weight:700;overflow-x:auto;white-space:nowrap}
+.fig{margin-top:12px;overflow-x:auto}
+.fig svg{display:block;max-width:560px;width:100%;height:auto}
+.fig .nd{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.fig .nt{fill:var(--ink);font:700 15px var(--f-mono);text-anchor:middle;dominant-baseline:central}
+.fig .ed{fill:none;stroke:var(--muted);stroke-width:1.5}
+.fig .el{fill:var(--ink);font:600 13px var(--f-mono);text-anchor:middle}
+.fig .ah{fill:var(--muted)}
+.data{margin-top:12px;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.data table,.entry table{border-collapse:collapse;font-size:13.5px;width:100%}
+.data caption{caption-side:top;text-align:left;font-size:12px;color:var(--muted);padding:8px 12px 6px;font-weight:600}
+.data th,.data td{border-top:1px solid var(--line);padding:6px 12px;white-space:nowrap}
+.data th{background:var(--head);color:var(--muted);font-weight:600;text-align:left;font-size:12.5px}
+.data td.num,.data th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.task{display:flex;flex-direction:column;gap:12px}
+.ask{font-size:16px;margin:0;max-width:75ch}
+.ask b{color:var(--accent)}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.steps i{width:24px;height:6px;border-radius:99px;background:var(--line)}
+.steps i.ok{background:var(--good)}.steps i.now{background:var(--target-line)}
+.ans{display:flex;align-items:stretch;border:2px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);max-width:420px;transition:border-color .2s}
+.ans:focus-within{border-color:var(--accent)}
+.ans input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font-family:var(--f-mono);font-size:18px;padding:10px 12px;outline:none;text-align:right}
+.ans .unit{font-size:13px;color:var(--muted);padding:12px;background:var(--head);border-left:1px solid var(--line);white-space:nowrap;display:flex;align-items:center}
+.ans.ok{border-color:var(--good)}
+.shake{animation:sh .35s}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;cursor:pointer;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:10px 14px;display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--head)}
+.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt .k{font-family:var(--f-mono);font-weight:700;color:var(--muted)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft);cursor:not-allowed}
+.opt.yes{border-color:var(--good);background:var(--good-soft)}
+.opt:disabled{cursor:default}
+.entry{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.entry th{background:var(--head);color:var(--muted);font-weight:600;font-size:12.5px;padding:7px 12px;text-align:left}
+.entry th.num{text-align:right}
+.entry td{border-top:1px solid var(--line);padding:5px 8px}
+.entry td.acc{padding-left:12px;white-space:nowrap}
+.entry input{width:100%;min-width:96px;font-family:var(--f-mono);font-size:14px;text-align:right;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+.entry input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.entry tr.wrong td{background:var(--bad-soft)}
+.entry tr.right td{background:var(--good-soft)}
+.entry tfoot td{font-family:var(--f-mono);font-size:13px;text-align:right;background:var(--head);font-variant-numeric:tabular-nums}
+.entry tfoot td.acc{text-align:left;font-family:var(--f-body);color:var(--muted)}
+.entry tfoot .off{color:var(--bad)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:inherit;font-weight:600;border-radius:9px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.btn:hover{background:var(--head)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fb{border-radius:10px;padding:10px 14px;font-size:14px;max-width:80ch}
+.fb.good{background:var(--good-soft)}
+.fb.bad{background:var(--bad-soft)}
+.fb.tip{background:var(--target)}
+.fb .why{display:block;margin-top:6px;color:var(--ink)}
+.hintline{font-size:12px;color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);max-width:90ch}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:16px;z-index:10}
+.modal .box{background:var(--panel);border-radius:16px;padding:28px;max-width:420px;width:100%;text-align:center;display:flex;flex-direction:column;gap:10px}
+.modal h3{margin:0;font-size:28px;font-weight:800}
+.modal .big{font-family:var(--f-mono);font-size:40px;color:var(--accent);font-weight:700}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:11}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  nav{flex-direction:row;overflow-x:auto;align-items:center}
+  nav .grp{display:none}
+  nav button{grid-template-columns:26px auto;white-space:nowrap}
+  nav .cnt{display:none}
+  .concept{grid-template-columns:1fr}
+}
+/* AI tutor drawer */
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:8;font:inherit;font-weight:700;border:0;border-radius:99px;padding:12px 18px;background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 20px rgba(0,0,0,.22);cursor:pointer}
+.fab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ai{position:fixed;right:16px;top:16px;bottom:16px;width:min(440px,calc(100vw - 32px));z-index:9;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden}
+.aiHead{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.aiHead .sp{flex:1}
+.ib{all:unset;cursor:pointer;width:32px;height:32px;display:grid;place-items:center;border-radius:8px;font-size:15px}
+.ib:hover{background:var(--head)}.ib:focus-visible{outline:2px solid var(--accent)}
+.chip.sm{font-size:11px;padding:3px 7px;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.aiCfg{padding:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px;background:var(--head);font-size:13.5px;overflow:auto;max-height:70%}
+.aiCfg label{display:flex;gap:8px;align-items:flex-start}
+.aiCfg .fld{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--muted)}
+.aiCfg input[type=text],.aiCfg input[type=password]{width:100%;font:13px var(--f-mono);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink)}
+.aiLog{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:92%;padding:9px 12px;border-radius:12px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.msg.user{align-self:flex-end;background:var(--accent);color:var(--accent-ink);white-space:pre-wrap}
+.msg.assistant{align-self:flex-start;background:var(--head)}
+.msg p{margin:0 0 6px}.msg p:last-child{margin:0}.msg ul,.msg ol{margin:4px 0 6px;padding-left:20px}
+.msg .mh{font-weight:800}
+.mdt{overflow-x:auto;margin:4px 0 8px}.mdt table{border-collapse:collapse;font-size:12.5px}.mdt td,.mdt th{border:1px solid var(--line);padding:3px 7px;white-space:nowrap}.mdt th{background:var(--panel)}
+.think{color:var(--muted);font-style:italic}
+.aiEmpty{color:var(--muted);font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.aiQuick{display:flex;gap:6px;overflow-x:auto;padding:8px 12px 0;flex-shrink:0}
+.qk{font:inherit;font-size:12.5px;white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:99px;padding:5px 10px;cursor:pointer}
+.qk:hover{border-color:var(--accent)}.qk:focus-visible{outline:2px solid var(--accent)}
+.aiForm{display:flex;gap:8px;padding:10px 12px;align-items:flex-end;flex-shrink:0}
+.aiForm textarea{flex:1;min-width:0;resize:none;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);min-height:44px;max-height:140px}
+.aiForm textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.aiNote{font-size:12.5px;color:var(--bad);padding:0 12px 10px}
+@media (max-width:560px){.ai{inset:0;width:auto;border-radius:0;border:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>Lò Luyện Hợp Nhất <span>Σ−nội bộ</span></h1><small>Hợp nhất BCTC · TT 202/2014 &amp; TT 43/2026</small></div>
+    <div class="stats">
+      <div class="lvl"><b id="lvName">Thực tập sinh</b><div class="bar"><i id="lvBar" style="width:0"></i></div><small id="lvTxt">0 XP</small></div>
+      <span class="chip" id="streak" title="Số câu đúng liên tiếp ngay lần đầu, không xem gợi ý">🔥 0</span>
+    </div>
+  </header>
+  <div class="app">
+    <nav id="nav" aria-label="Danh sách bài"></nav>
+    <main>
+      <section class="card">
+        <div class="eyebrow" id="eb"></div>
+        <h2 id="lt"></h2>
+        <p class="story" id="story"></p>
+        <div class="concept" id="concept"></div>
+        <div class="fig" id="fig" hidden></div>
+        <div class="data" id="data" hidden></div>
+      </section>
+      <section class="card task">
+        <div class="steps" id="steps"></div>
+        <p class="ask" id="ask"></p>
+        <div id="work"></div>
+        <div class="btns">
+          <button class="btn pri" id="bCheck">Kiểm tra (Enter)</button>
+          <button class="btn" id="bHint">Gợi ý (−5 XP)</button>
+          <button class="btn" id="bAns">Xem đáp án</button>
+          <button class="btn pri" id="bNext" hidden>Câu tiếp →</button>
+          <button class="btn" id="bRedo" hidden>Làm lại bài này</button>
+        </div>
+        <div id="fb" hidden></div>
+        <div class="hintline" id="tipline"></div>
+      </section>
+      <p class="foot">Số liệu lấy từ slide Phần 1–4 và bài tập chương 2, chương 4 trong thư mục môn học. Đề không nói thuế suất thì dùng 20% như các ví dụ trên lớp. Bài 11 rút gọn số liệu Thí dụ 6 (bỏ chi phí thanh lý) cho dễ tính. Phần 5 lấy số liệu ngày mua và KQKD từ bài giải mẫu M-A-B của lớp; giao dịch B bán cho M là số tự đặt, không có cổ tức cho gọn. Gõ số kiểu nào cũng được: <code>6.560</code>, <code>6560</code>, <code>94,44</code> hay <code>94.44</code>.</p>
+    </main>
+  </div>
+</div>
+<div class="modal" id="modal" hidden><div class="box">
+  <h3 id="mT">Xong bài!</h3><div class="big" id="mXP">+40 XP</div><p id="mMsg" style="margin:0;color:var(--muted)"></p>
+  <button class="btn pri" id="mNext">Bài tiếp theo</button><button class="btn" id="mStay">Ở lại xem lại</button>
+</div></div>
+<canvas id="cf"></canvas>
+<button class="fab" id="aiFab" aria-controls="ai">💬 Hỏi gia sư AI</button>
+<aside class="ai" id="ai" hidden aria-label="Gia sư AI">
+  <div class="aiHead"><b>Gia sư Hợp Nhất</b><span class="chip sm" id="aiEng">…</span><span class="sp"></span>
+    <button class="ib" id="aiSet" title="Cài đặt AI" aria-label="Cài đặt AI">⚙</button><button class="ib" id="aiClr" title="Xóa đoạn chat" aria-label="Xóa đoạn chat">🗑</button><button class="ib" id="aiX" title="Đóng" aria-label="Đóng">✕</button></div>
+  <div class="aiCfg" id="aiCfg" hidden>
+    <b>Gọi AI bằng đường nào?</b>
+    <label><input type="radio" name="aiEngR" value="claude"><span><b>Claude có sẵn</b>: chạy khi mở app trên claude.ai, không cần key, tính vào lượt dùng Claude của mày.</span></label>
+    <label><input type="radio" name="aiEngR" value="api"><span><b>API riêng</b> (kiểu OpenAI, ví dụ xkiro qua proxy Cloudflare): chỉ chạy khi mở app từ github.io hoặc file HTML. Trang trên claude.ai bị chặn gọi mạng ra ngoài.</span></label>
+    <div class="fld">Base URL<input type="text" id="aiBase" placeholder="https://ten-proxy.ten-may.workers.dev/v1" autocomplete="off" spellcheck="false"></div>
+    <div class="fld">API key<input type="password" id="aiKey" placeholder="sk-..." autocomplete="off"></div>
+    <div class="fld">Model<input type="text" id="aiModel" placeholder="tên model mà xkiro cho dùng" autocomplete="off" spellcheck="false"></div>
+    <span class="hintline">Key chỉ lưu trong trình duyệt này, không nằm trong code app.</span>
+    <div class="btns"><button class="btn pri" id="aiSave">Lưu</button><button class="btn" id="aiCancel">Đóng</button></div>
+  </div>
+  <div class="aiLog" id="aiLog" aria-live="polite"></div>
+  <div class="aiQuick" id="aiQuick"></div>
+  <form class="aiForm" id="aiForm"><textarea id="aiIn" rows="2" placeholder="Hỏi gì cũng được. Enter để gửi, Shift+Enter xuống dòng"></textarea><button class="btn pri" id="aiSend" type="submit">Gửi</button></form>
+  <div class="aiNote" id="aiNote" hidden></div>
+</aside>
+
+<script>
+/* ---------- Ownership diagram for lesson 3 ---------- */
+const FIG_OWN=`<svg viewBox="0 0 540 140" role="img" aria-label="Sơ đồ sở hữu: A nắm 70% B, B nắm 55% C, C nắm 35% D, A nắm trực tiếp 25% C và 20% D">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<path class="ed" d="M72,110 L168,110" marker-end="url(#ar)"/><path class="ed" d="M212,110 L308,110" marker-end="url(#ar)"/><path class="ed" d="M352,110 L448,110" marker-end="url(#ar)"/>
+<path class="ed" d="M62,92 Q190,22 318,92" marker-end="url(#ar)"/><path class="ed" d="M52,88 Q260,-28 468,88" marker-end="url(#ar)"/>
+<text class="el" x="120" y="102">70%</text><text class="el" x="260" y="102">55%</text><text class="el" x="400" y="102">35%</text>
+<text class="el" x="190" y="72">25%</text><text class="el" x="260" y="24">20%</text>
+<circle class="nd" cx="50" cy="110" r="22"/><text class="nt" x="50" y="110">A</text>
+<circle class="nd" cx="190" cy="110" r="22"/><text class="nt" x="190" y="110">B</text>
+<circle class="nd" cx="330" cy="110" r="22"/><text class="nt" x="330" y="110">C</text>
+<circle class="nd" cx="470" cy="110" r="22"/><text class="nt" x="470" y="110">D</text></svg>`;
+/* ---------- Group M → A → B for Phần 5 ---------- */
+const FIG_MAB=`<svg viewBox="0 0 540 130" role="img" aria-label="Sơ đồ tập đoàn: M nắm 80% A, A nắm 70% B. M hưởng 56% B, cổ đông không kiểm soát ở B là 44%">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<path class="ed" d="M94,50 L230,50" marker-end="url(#ar2)"/><path class="ed" d="M294,50 L430,50" marker-end="url(#ar2)"/>
+<text class="el" x="162" y="40">80%</text><text class="el" x="362" y="40">70%</text>
+<circle class="nd" cx="70" cy="50" r="22"/><text class="nt" x="70" y="50">M</text>
+<circle class="nd" cx="270" cy="50" r="22"/><text class="nt" x="270" y="50">A</text>
+<circle class="nd" cx="455" cy="50" r="22"/><text class="nt" x="455" y="50">B</text>
+<text class="el" x="70" y="100">Mẹ</text><text class="el" x="270" y="100">KKS 20%</text>
+<text class="el" x="455" y="100">M hưởng 56%</text><text class="el" x="455" y="120">KKS 30% + 14% = 44%</text></svg>`;
+
+/* ---------- Lessons ----------
+ task types: mcq {o:[...], a:index} · num {a, unit, tol?, traps?:[[value,msg]]} · entry {rows:[[account,"d"|"c",amount]], x:[distractor accounts]}  */
+const PARTS=["Phần 1 · Tổng quan","Phần 2 · Khái niệm & quy trình","Phần 3 · Phương pháp mua","Phần 4 · Giao dịch nội bộ","Phần 5 · Ôn thi cuối kỳ"];
+const L=[
+{p:0,t:"M&A và BCTC hợp nhất",
+ story:"Sếp giao mày phụ lập BCTC hợp nhất cho tập đoàn. Trước khi đụng tới số, phải biết đây là thương vụ gì, ai phải lập, lập những báo cáo nào và nộp khi nào.",
+ c:[["<b>Sáp nhập</b> (Merger): hai công ty gộp lại thành một công ty mới, cổ phiếu cũ không còn. <b>Mua lại</b> (Acquisition): nắm quyền kiểm soát công ty khác bằng cách mua cổ phần hoặc tài sản. Mua cổ phiếu thì công ty mục tiêu vẫn tồn tại.","VNM mua 75% GTNFoods = mua lại"],
+    ["Bộ BCTC hợp nhất gồm 4 phần: BCĐKT hợp nhất, KQHĐKD hợp nhất, LCTT hợp nhất và Thuyết minh. BCTCHN năm nộp chậm nhất <b>90 ngày</b> sau khi kết thúc năm. Căn cứ: TT 202/2014, sửa đổi bởi TT 43/2026.","4 báo cáo · 90 ngày"]],
+ tasks:[
+  {k:"mcq",ask:"Cuối 2019, Vinamilk nâng sở hữu ở GTNFoods từ 43,17% lên 75%. GTNFoods vẫn hoạt động bình thường. Thương vụ này là gì?",
+   o:["Sáp nhập: hai bên gộp thành công ty mới","Mua lại cổ phiếu: Vinamilk nắm quyền kiểm soát GTNFoods","Liên doanh đồng kiểm soát","Chỉ là đầu tư tài chính ngắn hạn"],a:1,
+   hint:"GTNFoods có biến mất và phát hành cổ phiếu công ty mới không?",
+   why:"Vinamilk mua cổ phiếu để nắm quyền kiểm soát, GTNFoods vẫn tồn tại và trở thành công ty con. Đó là mua lại (Acquisition)."},
+  {k:"mcq",ask:"Thứ nào <b>không</b> nằm trong bộ BCTC hợp nhất năm?",
+   o:["Bảng cân đối kế toán hợp nhất","Báo cáo lưu chuyển tiền tệ hợp nhất","Bảng cân đối số phát sinh hợp nhất","Bản thuyết minh BCTC hợp nhất"],a:2,
+   hint:"Bộ BCTCHN giống bộ BCTC thường: 3 báo cáo cộng thuyết minh.",
+   why:"Bộ BCTCHN gồm BCĐKT HN, KQHĐKD HN, LCTT HN và Thuyết minh. Bảng cân đối số phát sinh chỉ là sổ sách nội bộ."},
+  {k:"mcq",ask:"BCTC hợp nhất <b>năm</b> phải nộp cho chủ sở hữu và cơ quan quản lý chậm nhất bao lâu sau ngày kết thúc năm tài chính?",
+   o:["30 ngày","45 ngày","90 ngày","120 ngày"],a:2,
+   hint:"Con số này giống thời hạn nộp BCTC năm của doanh nghiệp thường.",
+   why:"Chậm nhất 90 ngày. Nếu luật chứng khoán, tín dụng, bảo hiểm quy định khác thì theo luật đó."},
+  {k:"mcq",ask:"Công ty mẹ nào <b>được miễn</b> lập BCTC hợp nhất?",
+   o:["Công ty mẹ niêm yết trên HOSE, có 3 công ty con","Công ty mẹ do Nhà nước nắm cổ phần chi phối","Công ty mẹ chưa niêm yết, bản thân là con của tập đoàn Y; Y đã lập BCTCHN công bố theo VAS; mọi cổ đông, kể cả cổ đông không có quyền biểu quyết, đồng ý không lập","Công ty mẹ chưa niêm yết nhưng đang nộp hồ sơ xin phát hành trái phiếu ra công chúng"],a:2,
+   hint:"Muốn được miễn phải thỏa TẤT CẢ điều kiện, không chỉ một.",
+   why:"Được miễn khi thỏa hết: không phải đơn vị lợi ích công chúng, không thuộc Nhà nước chi phối, là con của công ty khác và cổ đông đồng thuận, công cụ vốn/nợ không giao dịch trên thị trường, không đang xin phát hành ra công chúng, và công ty sở hữu nó đã lập BCTCHN theo VAS."}
+ ]},
+{p:1,t:"Quyền kiểm soát",
+ story:"Tập đoàn có cả chục công ty dính líu. Câu hỏi đầu tiên luôn là: mình có kiểm soát nó không? Có thì nó là công ty con và phải hợp nhất.",
+ c:[["Kiểm soát là quyền chi phối chính sách tài chính và hoạt động để hưởng lợi. Dấu hiệu: nắm <b>trên 50%</b> quyền biểu quyết (trực tiếp hoặc gián tiếp), hoặc có quyền bổ nhiệm, bãi miễn đa số HĐQT, Giám đốc; bỏ đa số phiếu tại HĐQT; sửa Điều lệ; được nhà đầu tư khác thỏa thuận nhường hơn 50% quyền biểu quyết.","> 50% quyền biểu quyết"],
+    ["Kiểm soát gián tiếp chỉ đi qua <b>công ty con</b>, không đi qua công ty liên kết hay liên doanh. Công ty con vẫn phải hợp nhất dù ngành nghề khác hẳn mẹ. Chỉ được loại ra khi kiểm soát tạm thời (mua để bán lại trong 12 tháng) hoặc con bị hạn chế hoạt động trên 12 tháng làm ảnh hưởng đáng kể việc chuyển vốn về mẹ.","Trung gian phải là công ty con"]],
+ tasks:[
+  {k:"mcq",ask:"Ngày 1/1/20X1, M mua 2.600 trong tổng số 5.000 cổ phiếu phổ thông có quyền biểu quyết của C. M nắm bao nhiêu quyền biểu quyết ở C, và C là gì của M?",
+   o:["26%, công ty liên kết","52%, công ty con","52%, công ty liên kết","48%, công ty liên doanh"],a:1,
+   hint:"2.600 / 5.000 = ?",
+   why:"2.600 / 5.000 = 52%, trên 50% nên M kiểm soát C. C là công ty con."},
+  {k:"mcq",ask:"M nắm 40% cổ phần C (công ty liên kết). C nắm 60% cổ phần D. M có kiểm soát D không?",
+   o:["Có, vì C nắm trên 50% D","Không, vì kiểm soát gián tiếp chỉ đi qua công ty con mà C chỉ là liên kết của M","Có, vì 40% + 60% = 100%","Chỉ khi D cùng ngành với M"],a:1,
+   hint:"Công ty trung gian ở giữa phải là loại công ty gì thì mới tính kiểm soát gián tiếp?",
+   why:"M không kiểm soát C nên cũng không điều khiển được 60% phiếu của C ở D. Kiểm soát gián tiếp chỉ tồn tại qua công ty con."},
+  {k:"mcq",ask:"M nắm 45% cổ phần C, nhưng có thỏa thuận với các cổ đông khác cho M bổ nhiệm đa số thành viên HĐQT của C. C là gì của M?",
+   o:["Công ty liên kết vì dưới 50%","Công ty con vì M có quyền chi phối","Khoản đầu tư góp vốn khác","Công ty liên doanh"],a:1,
+   hint:"Trên 50% chỉ là một trong nhiều dấu hiệu kiểm soát.",
+   why:"Quyền bổ nhiệm đa số HĐQT là dấu hiệu kiểm soát, xét bản chất chứ không chỉ xét con số sở hữu. C là công ty con."},
+  {k:"mcq",ask:"Tập đoàn thép M có công ty con C là một quỹ đầu tư mạo hiểm. Khi lập BCTCHN thì xử lý C thế nào?",
+   o:["Loại C ra vì hoạt động khác biệt với tập đoàn","Vẫn hợp nhất C như mọi công ty con khác","Chỉ trình bày C trong thuyết minh","Ghi C theo phương pháp vốn chủ sở hữu"],a:1,
+   hint:"Slide có hẳn một mục 'công ty mẹ KHÔNG được loại trừ'.",
+   why:"Không được loại trừ công ty con vì hoạt động khác biệt, kể cả khi con là quỹ tín thác, quỹ tương hỗ, quỹ đầu tư mạo hiểm."},
+  {k:"mcq",ask:"Trường hợp nào công ty mẹ <b>được</b> loại công ty con ra khỏi BCTCHN?",
+   o:["Công ty con lỗ 3 năm liền","Công ty con ở nước ngoài","Công ty con mua về để bán lại trong vòng 12 tháng","Công ty con dùng chính sách kế toán khác công ty mẹ"],a:2,
+   hint:"Kiểm soát chỉ là tạm thời.",
+   why:"Được loại trừ khi kiểm soát chỉ tạm thời (mua để bán lại trong tối đa 12 tháng) hoặc con bị hạn chế hoạt động trên 12 tháng. Chính sách kế toán khác thì phải điều chỉnh cho thống nhất, không được loại."}
+ ]},
+{p:1,t:"Tỷ lệ lợi ích và biểu quyết",
+ story:"Bài tập chương 2, bài 1: A mua 70% B. B nắm 55% C. C nắm 35% D. A còn nắm trực tiếp 25% C và 20% D. Tính xem A thật sự kiểm soát ai và hưởng bao nhiêu lợi nhuận.",
+ c:[["Tỷ lệ <b>lợi ích</b> là phần lợi nhuận A được hưởng. Đi gián tiếp thì <b>nhân</b> dọc theo chuỗi, rồi cộng phần sở hữu trực tiếp.","LI(A,C) = 70% × 55% + 25%"],
+    ["Tỷ lệ <b>biểu quyết</b> là số phiếu A điều khiển được. Đi qua công ty con thì lấy <b>nguyên</b> tỷ lệ của công ty con đó, không nhân, rồi cộng. Biểu quyết trên 50% là công ty con.","BQ(A,C) = 55% + 25%"]],
+ fig:FIG_OWN,
+ tasks:[
+  {k:"num",ask:"Tỷ lệ <b>lợi ích</b> của A trong C là bao nhiêu?",a:63.5,unit:"%",
+   traps:[[38.5,"Mới tính phần gián tiếp qua B. A còn nắm trực tiếp 25% C nữa."],[80,"80% là tỷ lệ biểu quyết. Lợi ích thì phải nhân qua B."]],
+   hint:"70% × 55% = 38,5%, rồi cộng phần A nắm trực tiếp ở C.",
+   why:"70% × 55% + 25% = 63,5%. A hưởng 63,5% lợi nhuận của C."},
+  {k:"num",ask:"Tỷ lệ <b>biểu quyết</b> của A trong C là bao nhiêu?",a:80,unit:"%",
+   traps:[[63.5,"Đó là tỷ lệ lợi ích. Biểu quyết thì không nhân: B là con của A nên A điều khiển toàn bộ 55% phiếu của B."]],
+   hint:"B là con của A, nên A điều khiển nguyên 55% phiếu B nắm ở C. Cộng 25% trực tiếp.",
+   why:"55% + 25% = 80%, trên 50% nên C là công ty con của A."},
+  {k:"num",ask:"Tỷ lệ <b>lợi ích</b> của A trong D là bao nhiêu?",a:42.225,unit:"%",tol:.03,
+   traps:[[22.225,"Đó mới là phần gián tiếp qua C. Cộng thêm 20% A nắm trực tiếp ở D."],[55,"55% là biểu quyết. Lợi ích phải nhân: lợi ích của A ở C × 35%."]],
+   hint:"Lấy lợi ích của A trong C (63,5%) × 35%, rồi cộng 20% trực tiếp.",
+   why:"63,5% × 35% + 20% = 22,225% + 20% = 42,225%."},
+  {k:"num",ask:"Tỷ lệ <b>biểu quyết</b> của A trong D là bao nhiêu?",a:55,unit:"%",
+   traps:[[42.225,"Đó là lợi ích. C là con của A nên lấy nguyên 35% phiếu của C."]],
+   hint:"C là con của A, nên lấy nguyên 35% của C rồi cộng 20% trực tiếp.",
+   why:"35% + 20% = 55%. A kiểm soát D."},
+  {k:"mcq",ask:"Vậy tập đoàn A gồm những công ty con nào?",
+   o:["Chỉ B","B và C","B, C và D","B và D"],a:2,
+   hint:"Xét theo tỷ lệ biểu quyết, không xét theo lợi ích.",
+   why:"Biểu quyết: B 70%, C 80%, D 55%, đều trên 50%. Lợi ích của A ở D chỉ 42,225% nhưng D vẫn là con, vì kiểm soát xét theo biểu quyết."}
+ ]},
+{p:1,t:"LTTM và lợi ích CĐKKS",
+ story:"Thí dụ 3.5: ngày 1/1/20X1, M chi 150 tỷ mua 60% cổ phần C. Tài sản thuần của C lúc đó là 225 tỷ (vốn đầu tư CSH 175 + LNCPP 50), giá trị hợp lý bằng giá ghi sổ. M trả dư so với phần mình mua được. Phần dư đó là gì?",
+ c:[["<b>Lợi thế thương mại</b> = Giá phí khoản đầu tư − % sở hữu × Giá trị hợp lý tài sản thuần của con tại ngày mua. Nếu ra âm thì đó là lãi từ giao dịch mua rẻ.","LTTM = 150 − 60% × 225"],
+    ["<b>Lợi ích cổ đông không kiểm soát</b> (NCI) là phần tài sản thuần của con không thuộc về mẹ, trình bày riêng trong vốn chủ sở hữu. LTTM phân bổ đều tối đa 10 năm, vào chi phí QLDN.","NCI = 40% × 225"]],
+ tasks:[
+  {k:"num",ask:"Lợi thế thương mại phát sinh là bao nhiêu?",a:15,unit:"tỷ đồng",
+   traps:[[75,"Đó là 150 − 75. Phần M mua được là 60% × 225 = 135."],[-75,"Coi lại: 60% × 225 = 135."]],
+   hint:"60% × 225 = 135. Lấy giá phí trừ đi.",
+   why:"150 − 135 = 15 tỷ."},
+  {k:"num",ask:"Lợi ích cổ đông không kiểm soát tại ngày mua là bao nhiêu?",a:90,unit:"tỷ đồng",
+   hint:"CĐKKS nắm 100% − 60% = 40% tài sản thuần.",
+   why:"40% × 225 = 90 tỷ."},
+  {k:"num",ask:"LTTM phân bổ trong 5 năm. Mỗi năm ghi tăng chi phí QLDN bao nhiêu?",a:3,unit:"tỷ đồng",
+   hint:"Phân bổ đều theo đường thẳng.",
+   why:"15 / 5 = 3 tỷ mỗi năm."},
+  {k:"num",ask:"Đổi đề: M trả 120 tỷ cho 60% C, tài sản thuần của C là 180 tỷ (VĐT CSH 150 + LNCPP 30). LTTM là bao nhiêu?",a:12,unit:"tỷ đồng",
+   hint:"60% × 180 = 108.",
+   why:"120 − 108 = 12 tỷ."},
+  {k:"entry",ask:"Quay về đề gốc (150 tỷ, 60%, tài sản thuần 225). Lập <b>bút toán loại trừ khoản đầu tư</b> tại ngày mua, gộp luôn phần tách NCI như bài giải mẫu. Điền số vào cột Nợ hoặc Có, dòng nào không dùng thì để trống.",
+   rows:[["Vốn đầu tư của chủ sở hữu","d",175],["LNST chưa phân phối","d",50],["Lợi thế thương mại","d",15],["Đầu tư vào công ty con","c",150],["Lợi ích cổ đông không kiểm soát","c",90]],
+   x:["Thu nhập khác","Chi phí quản lý doanh nghiệp"],unit:"tỷ đồng",
+   hint:"Xóa toàn bộ vốn chủ của C (cả phần của mẹ lẫn CĐKKS) bên Nợ. Bên Có là khoản đầu tư của M và phần NCI.",
+   why:"Nợ VĐT CSH 175, Nợ LNCPP 50, Nợ LTTM 15 / Có Đầu tư vào công ty con 150, Có LI CĐKKS 90. Tổng hai bên đều 240."}
+ ]},
+{p:1,t:"Quy trình 7 bước",
+ story:"Bài tập chương 2, bài 7: ngày 1/1/N, M mua 70% C với giá 165 tỷ. Tài sản thuần của C (giá trị hợp lý = ghi sổ) là 230 tỷ: VĐT CSH 200 + LNCPP 30. Trong năm M bán cho C lô hàng doanh thu 5 tỷ, giá vốn 3,8 tỷ, đến 31/12 C chưa bán ra ngoài. LTTM phân bổ 5 năm, thuế suất 20%. Đơn vị: tỷ đồng.",
+ c:[["Bảy bước: (1) Hợp cộng BCĐKT và KQKD của mẹ và các con; (2) Loại trừ khoản đầu tư, ghi nhận LTTM; (3) Phân bổ LTTM; (4) Tách lợi ích CĐKKS; (5) Loại trừ giao dịch nội bộ; (6) Lập bảng tổng hợp bút toán điều chỉnh và bảng tổng hợp chỉ tiêu; (7) Lập BCTCHN.","Cộng → Loại ĐT → Phân bổ → Tách NCI → Loại nội bộ → Tổng hợp → Lập"],
+    ["Mẹ bán cho con (bán xuôi): toàn bộ lãi chưa thực hiện thuộc về mẹ, NCI không bị ảnh hưởng. Loại doanh thu nội bộ, giảm giá vốn, giảm HTK phần lãi còn trong kho, ghi tài sản thuế hoãn lại = lãi chưa thực hiện × 20%. NCI trong LNST = % CĐKKS × LNST của con.","Lãi chưa TH = 5 − 3,8 = 1,2"]],
+ data:{cap:"KQHĐKD năm N (tỷ đồng)",head:["Chỉ tiêu","M","C"],rows:[["Doanh thu bán hàng & CCDV",1340,240],["Giá vốn hàng bán",1010,180],["Chi phí bán hàng",138,14],["Chi phí quản lý doanh nghiệp",92,18],["Lợi nhuận kế toán trước thuế",100,28],["Chi phí thuế TNDN hiện hành",25,6.8],["Lợi nhuận sau thuế",75,21.2]]},
+ tasks:[
+  {k:"mcq",ask:"Bước nào đứng ngay sau bước <b>Phân bổ lợi thế thương mại</b>?",
+   o:["Loại trừ giao dịch nội bộ","Tách lợi ích cổ đông không kiểm soát","Hợp cộng các chỉ tiêu","Lập bảng tổng hợp bút toán điều chỉnh"],a:1,
+   hint:"Bước 3 là phân bổ LTTM. Bước 4 là gì?",
+   why:"Thứ tự: Cộng → Loại trừ đầu tư → Phân bổ LTTM → Tách NCI → Loại trừ nội bộ → Bảng tổng hợp → Lập BCTCHN."},
+  {k:"num",ask:"LTTM phát sinh tại ngày mua là bao nhiêu?",a:4,unit:"tỷ đồng",
+   hint:"70% × 230 = 161.",
+   why:"165 − 161 = 4 tỷ. Mỗi năm phân bổ 4 / 5 = 0,8 tỷ vào chi phí QLDN."},
+  {k:"num",ask:"<b>Doanh thu</b> bán hàng hợp nhất năm N là bao nhiêu?",a:1575,unit:"tỷ đồng",
+   traps:[[1580,"Đó mới là hợp cộng. Còn phải loại 5 tỷ doanh thu bán nội bộ."]],
+   hint:"Hợp cộng 1.340 + 240 rồi loại doanh thu nội bộ.",
+   why:"1.340 + 240 − 5 = 1.575 tỷ."},
+  {k:"num",ask:"<b>Giá vốn</b> hàng bán hợp nhất là bao nhiêu?",a:1186.2,unit:"tỷ đồng",
+   traps:[[1186.2+1.2,"Ghi giảm giá vốn đúng bằng doanh thu nội bộ trừ lãi chưa thực hiện: 5 − 1,2 = 3,8."],[1185,"Giá vốn không giảm 5. Phần lãi 1,2 còn nằm trong HTK nên GVHB chỉ giảm 5 − 1,2 = 3,8."]],
+   hint:"Bút toán: Nợ Doanh thu 5 / Có GVHB 3,8 / Có HTK 1,2. Vậy GVHB giảm 3,8.",
+   why:"1.010 + 180 − 3,8 = 1.186,2 tỷ."},
+  {k:"num",ask:"<b>Lợi nhuận sau thuế</b> hợp nhất là bao nhiêu?",a:94.44,unit:"tỷ đồng",
+   traps:[[94.2,"Quên tài sản thuế hoãn lại: lãi chưa thực hiện 1,2 × 20% = 0,24 làm giảm chi phí thuế."],[95.24,"Quên phân bổ LTTM 0,8 vào chi phí QLDN."],[96.2,"Đó mới là hợp cộng 75 + 21,2. Còn LTTM, lãi chưa thực hiện và thuế hoãn lại."]],
+   hint:"75 + 21,2 − 0,8 (phân bổ LTTM) − 1,2 (lãi chưa thực hiện) + 0,24 (thuế hoãn lại).",
+   why:"96,2 − 0,8 − 1,2 + 0,24 = 94,44 tỷ."},
+  {k:"num",ask:"Phần <b>lợi ích CĐKKS</b> trong LNST hợp nhất là bao nhiêu?",a:6.36,unit:"tỷ đồng",
+   hint:"CĐKKS nắm 30% C. Hàng do mẹ bán nên lãi chưa thực hiện không ảnh hưởng NCI.",
+   why:"30% × 21,2 = 6,36 tỷ."},
+  {k:"num",ask:"LNST thuộc về <b>cổ đông công ty mẹ</b> là bao nhiêu?",a:88.08,unit:"tỷ đồng",
+   hint:"LNST hợp nhất trừ phần của CĐKKS.",
+   why:"94,44 − 6,36 = 88,08 tỷ."}
+ ]},
+{p:2,t:"Giá phí hợp nhất kinh doanh",
+ story:"Thí dụ 1 Phần 3: ngày 1/1/20X1, M mua toàn bộ cổ phiếu của C từ X. M trả bằng: tiền 3,5 tỷ; một khoản nợ 3,2 tỷ trả vào 31/12/20X3 (lãi suất 9%/năm); TSCĐ giá ghi sổ 4,3 tỷ, giá trị hợp lý 5 tỷ; phát hành 200.000 cổ phiếu mệnh giá 10.000đ, giá thị trường 20.000đ, chi phí phát hành 80 triệu. M trả phí tư vấn hợp nhất 162 triệu.",
+ c:[["<b>Giá phí HNKD</b> = Giá trị hợp lý tại ngày trao đổi của tài sản đem trao đổi + nợ phải trả phát sinh hoặc thừa nhận + công cụ vốn phát hành, cộng chi phí liên quan trực tiếp (kiểm toán, tư vấn pháp lý, thẩm định giá).","Giá phí = Σ GTHL + chi phí trực tiếp"],
+    ["Khoản trả chậm thì lấy <b>giá trị hiện tại</b>. Cổ phiếu phát hành tính theo giá thị trường. Chi phí phát hành cổ phiếu không tính vào giá phí mà ghi giảm thặng dư vốn cổ phần.","PV = 3,2 ÷ 1,09³"]],
+ tasks:[
+  {k:"mcq",ask:"TSCĐ đem trao đổi (ghi sổ 4,3 tỷ, giá trị hợp lý 5 tỷ) được tính vào giá phí bao nhiêu?",
+   o:["4,3 tỷ","5 tỷ","0,7 tỷ","Không tính vì không phải tiền"],a:1,
+   hint:"Mọi thứ đem trao đổi đều tính theo giá trị hợp lý.",
+   why:"Tính theo giá trị hợp lý 5 tỷ. Phần chênh 0,7 tỷ là lãi M ghi nhận khi đem TSCĐ đi trao đổi."},
+  {k:"num",ask:"200.000 cổ phiếu M phát hành được tính vào giá phí bao nhiêu?",a:4,unit:"tỷ đồng",
+   traps:[[2,"Đó là theo mệnh giá. Phải theo giá thị trường 20.000đ."],[3.92,"Chi phí phát hành không trừ vào giá phí."]],
+   hint:"Số cổ phiếu × giá thị trường.",
+   why:"200.000 × 20.000đ = 4 tỷ."},
+  {k:"mcq",ask:"Chi phí phát hành cổ phiếu 80 triệu xử lý thế nào?",
+   o:["Cộng vào giá phí hợp nhất","Ghi giảm thặng dư vốn cổ phần, không tính vào giá phí","Ghi vào chi phí tài chính rồi cộng vào LTTM","Trừ khỏi giá phí"],a:1,
+   hint:"Đây là chi phí của việc phát hành vốn, không phải chi phí của thương vụ mua.",
+   why:"Chi phí phát hành công cụ vốn ghi giảm thặng dư vốn cổ phần."},
+  {k:"mcq",ask:"Phí tư vấn hợp nhất kinh doanh 162 triệu xử lý thế nào?",
+   o:["Tính vào giá phí hợp nhất kinh doanh","Ghi vào chi phí QLDN trong kỳ","Ghi giảm thặng dư vốn cổ phần","Không ghi nhận"],a:0,
+   hint:"Slide: giá phí bao gồm chi phí liên quan trực tiếp đến việc hợp nhất.",
+   why:"Theo slide (VAS 11), chi phí trả cho kiểm toán viên, tư vấn pháp lý, thẩm định giá và tư vấn khác về hợp nhất được tính vào giá phí."},
+  {k:"num",ask:"Khoản nợ 3,2 tỷ trả vào 31/12/20X3, lãi suất 9%/năm. Giá trị hiện tại tại 1/1/20X1 là bao nhiêu? (làm tròn 3 số lẻ)",a:2.471,unit:"tỷ đồng",tol:.002,
+   traps:[[3.2,"Khoản trả chậm phải chiết khấu về hiện tại."],[2.936,"Đó là chiết khấu 1 năm. Từ 1/1/20X1 tới 31/12/20X3 là 3 năm."]],
+   hint:"3,2 ÷ 1,09³ = 3,2 ÷ 1,295.",
+   why:"3,2 ÷ 1,295029 ≈ 2,471 tỷ. Hai khoản nợ của X (với Y và với M) mà M gánh thay cũng chiết khấu theo 9% như vậy."},
+  {k:"num",ask:"Cộng phần giá phí từ tiền mặt, TSCĐ, cổ phiếu phát hành và phí tư vấn là bao nhiêu?",a:12.662,unit:"tỷ đồng",
+   traps:[[11.962,"Thiếu chênh lệch TSCĐ: lấy 5 tỷ chứ không phải 4,3."],[12.5,"Thiếu phí tư vấn 0,162 tỷ."],[12.742,"Chi phí phát hành 80 triệu không được cộng."]],
+   hint:"3,5 + 5 + 4 + 0,162.",
+   why:"3,5 + 5 + 4 + 0,162 = 12,662 tỷ. Cộng thêm giá trị hiện tại các khoản nợ là ra tổng giá phí."}
+ ]},
+{p:2,t:"Chênh lệch GTHL và thuế hoãn lại",
+ story:"Bài tập chương 4: ngày 1/1/X1, M mua 60% C với 35.000 triệu. Tài sản thuần của C theo sổ là 45.000 (VĐT CSH 40.000 + LNCPP 5.000), nhưng TSCĐ của C có giá trị hợp lý 13.000 so với nguyên giá ghi sổ 10.000. Thuế suất 20%. Đơn vị: triệu đồng.",
+ c:[["Tài sản thuần của con được đưa lên BCĐKT hợp nhất theo <b>giá trị hợp lý</b>. Chênh lệch ghi vào <i>Chênh lệch đánh giá lại tài sản</i>, kèm thuế hoãn lại phải trả (nếu tài sản tăng) hoặc tài sản thuế hoãn lại (nếu giảm).","Thuế HL = chênh lệch × 20%"],
+    ["Rồi mới loại trừ khoản đầu tư: LTTM = Giá phí − % sở hữu × tài sản thuần theo GTHL <b>sau thuế</b>. NCI cũng tính theo GTHL sau thuế.","TS thuần GTHL = 45.000 + 3.000 − 600"]],
+ data:{cap:"C tại 1/1/X1 (triệu đồng)",head:["Khoản mục","Giá ghi sổ","Giá trị hợp lý"],rows:[["Tiền",20000,20000],["Hàng tồn kho",15000,15000],["TSCĐ hữu hình (nguyên giá)",10000,13000],["Cộng tài sản thuần",45000,48000],["Vốn đầu tư CSH",40000,40000],["LNST chưa phân phối",5000,5000]]},
+ tasks:[
+  {k:"num",ask:"Thuế TNDN hoãn lại phải trả phát sinh từ chênh lệch GTHL là bao nhiêu?",a:600,unit:"triệu đồng",
+   hint:"(13.000 − 10.000) × 20%.",
+   why:"3.000 × 20% = 600 triệu."},
+  {k:"num",ask:"Chênh lệch đánh giá lại tài sản (sau thuế) ghi vào vốn chủ sở hữu là bao nhiêu?",a:2400,unit:"triệu đồng",
+   traps:[[3000,"Còn phải trừ 600 thuế hoãn lại."]],
+   hint:"3.000 − 600.",
+   why:"3.000 − 600 = 2.400 triệu."},
+  {k:"num",ask:"Lợi thế thương mại là bao nhiêu?",a:6560,unit:"triệu đồng",
+   traps:[[6200,"Đã dùng 48.000 nhưng quên trừ thuế hoãn lại 600. Tài sản thuần GTHL sau thuế là 47.400."],[8000,"Đó là tính theo giá ghi sổ 45.000. Phải theo giá trị hợp lý sau thuế."]],
+   hint:"Tài sản thuần GTHL sau thuế = 47.400. Phần M = 60% × 47.400 = 28.440.",
+   why:"35.000 − 28.440 = 6.560 triệu."},
+  {k:"num",ask:"Lợi ích CĐKKS tại ngày mua là bao nhiêu?",a:18960,unit:"triệu đồng",
+   traps:[[18000,"Đó là theo giá ghi sổ. NCI cũng phải theo GTHL sau thuế."],[19200,"Quên trừ thuế hoãn lại."]],
+   hint:"40% × 47.400.",
+   why:"40% × 47.400 = 18.960 triệu."},
+  {k:"entry",ask:"Bút toán <b>(1) ghi nhận chênh lệch GTHL</b> của TSCĐ:",
+   rows:[["TSCĐ hữu hình – nguyên giá","d",3000],["Thuế TNDN hoãn lại phải trả","c",600],["Chênh lệch đánh giá lại tài sản","c",2400]],
+   x:["Tài sản thuế TNDN hoãn lại","Lợi thế thương mại"],unit:"triệu đồng",
+   hint:"Tài sản tăng nên ghi Nợ. Bên Có chia cho thuế hoãn lại phải trả và chênh lệch đánh giá lại.",
+   why:"Nợ TSCĐ 3.000 / Có Thuế HL phải trả 600 / Có Chênh lệch ĐGL tài sản 2.400."},
+  {k:"entry",ask:"Bút toán <b>(2) loại trừ khoản đầu tư</b>, ghi nhận LTTM và NCI:",
+   rows:[["Vốn đầu tư của chủ sở hữu","d",40000],["LNST chưa phân phối","d",5000],["Chênh lệch đánh giá lại tài sản","d",2400],["Lợi thế thương mại","d",6560],["Đầu tư vào công ty con","c",35000],["Lợi ích cổ đông không kiểm soát","c",18960]],
+   x:["Thu nhập khác","Thuế TNDN hoãn lại phải trả"],unit:"triệu đồng",
+   hint:"Xóa toàn bộ vốn chủ của C theo GTHL (gồm cả chênh lệch ĐGL vừa ghi) bên Nợ, thêm LTTM. Bên Có là khoản đầu tư và NCI.",
+   why:"Nợ VĐT 40.000, Nợ LNCPP 5.000, Nợ CL ĐGL 2.400, Nợ LTTM 6.560 / Có ĐT vào công ty con 35.000, Có NCI 18.960. Hai bên đều 53.960."}
+ ]},
+{p:2,t:"Mua nhiều lần và mua rẻ",
+ story:"Bài tập chương 2, bài 4: M mua cổ phiếu C qua 3 đợt. C có tổng 1.000.000 cổ phiếu. Ngày 1/1/20X3 giá thị trường cổ phiếu C là 55.000đ. Giá trị hợp lý tài sản thuần bằng giá ghi sổ. Đơn vị: triệu đồng.",
+ c:[["Mua nhiều lần: giá phí = giá phí lần đạt quyền kiểm soát + các lần mua trước <b>đánh giá lại theo giá trị hợp lý</b> tại ngày kiểm soát. LTTM tính một lần tại ngày đạt kiểm soát.","Giá phí = SL cũ × giá TT + giá phí lần cuối"],
+    ["LTTM âm (<b>lãi mua rẻ</b>): xem lại việc xác định GTHL và giá phí, phần còn lại ghi ngay vào thu nhập khác. LTTM dương phân bổ đều tối đa 10 năm; năm nào tổn thất lớn hơn mức phân bổ thì phân bổ theo số tổn thất.","Phân bổ ≤ 10 năm"]],
+ data:{cap:"Bài 4 – các đợt mua cổ phiếu C (triệu đồng)",head:["Thời điểm","SL cổ phiếu","Giá phí","VĐT CSH của C","LNCPP của C"],rows:[["1/1/20X1",250000,5000,20000,2000],["1/1/20X2",100000,3200,28200,3000],["1/1/20X3",200000,11000,45000,10000]]},
+ tasks:[
+  {k:"num",ask:"Sau đợt mua 1/1/20X3, M nắm bao nhiêu % cổ phần C?",a:55,unit:"%",
+   hint:"(250.000 + 100.000 + 200.000) / 1.000.000.",
+   why:"550.000 / 1.000.000 = 55%. M đạt quyền kiểm soát vào 1/1/20X3."},
+  {k:"num",ask:"Giá phí khoản đầu tư dùng để tính LTTM là bao nhiêu?",a:30250,unit:"triệu đồng",
+   traps:[[19200,"Đó là cộng giá phí lịch sử. Hai đợt trước phải đánh giá lại theo giá thị trường tại 1/1/20X3."]],
+   hint:"350.000 cổ phiếu cũ × 55.000đ = 19.250 triệu, cộng giá phí đợt cuối 11.000.",
+   why:"19.250 + 11.000 = 30.250 triệu."},
+  {k:"num",ask:"Lợi thế thương mại là bao nhiêu?",a:0,unit:"triệu đồng",tol:.5,
+   traps:[[-10950,"Phải dùng giá phí đã đánh giá lại 30.250, không phải 19.200."]],
+   hint:"Tài sản thuần tại 1/1/20X3 = 45.000 + 10.000 = 55.000. Phần M = 55%.",
+   why:"30.250 − 55% × 55.000 = 30.250 − 30.250 = 0. Không có LTTM."},
+  {k:"num",ask:"Bài 6: M mua 150.000 CP (giá phí 3.750), 150.000 CP (4.200), rồi 1/1/20X3 mua 250.000 CP (7.500). Tổng 1.000.000 CP, giá thị trường 1/1/20X3 là 30.000đ/CP. Tại 1/1/20X3 C có VĐT CSH 29.000, LNCPP 5.000, GTHL = giá ghi sổ. <b>Lãi từ giao dịch mua rẻ</b> là bao nhiêu? (nhập số dương)",a:2200,unit:"triệu đồng",
+   traps:[[2950,"Hai đợt trước phải đánh giá lại: 300.000 × 30.000đ = 9.000, không phải 7.950."]],
+   hint:"Giá phí = 300.000 × 30.000đ + 7.500 = 16.500. Phần M = 55% × 34.000 = 18.700.",
+   why:"16.500 − 18.700 = −2.200, tức lãi mua rẻ 2.200 triệu."},
+  {k:"mcq",ask:"Sau khi đã xem xét lại mà vẫn còn lãi từ giao dịch mua rẻ thì ghi vào đâu?",
+   o:["Ghi âm vào lợi thế thương mại và phân bổ dần","Thu nhập khác trên KQHĐKD hợp nhất, ghi nhận ngay","Thặng dư vốn cổ phần","Giảm giá trị khoản đầu tư"],a:1,
+   hint:"Slide: ghi nhận ngay vào Báo cáo kết quả hoạt động kinh doanh.",
+   why:"Lãi mua rẻ ghi ngay vào thu nhập khác của năm mua. Các năm sau, khi lặp lại bút toán, nó nằm trong LNCPP."},
+  {k:"num",ask:"LTTM 6.560 triệu (bài trước) phân bổ trong 5 năm. Đến năm thứ 3, M đánh giá LTTM đã <b>tổn thất hết</b>. Số phân bổ năm thứ 3 là bao nhiêu?",a:3936,unit:"triệu đồng",
+   traps:[[1312,"Tổn thất lớn hơn mức phân bổ thường thì phân bổ theo số tổn thất, tức toàn bộ phần còn lại."]],
+   hint:"Đã phân bổ 2 năm × 1.312. Phần còn lại tổn thất hết.",
+   why:"6.560 − 2 × 1.312 = 3.936 triệu, phân bổ hết trong năm thứ 3."}
+ ]},
+{p:2,t:"Sau ngày mua",
+ story:"Quay lại bài chương 4 lúc 31/12/X1. BCTC riêng của M và C không có bút toán hợp nhất nào của năm trước, nên năm nào cũng phải làm lại từ đầu và cộng thêm ảnh hưởng của thời gian. LTTM 6.560, chênh lệch GTHL TSCĐ 3.000, khấu hao 5 năm, thuế 20%. Đơn vị: triệu đồng.",
+ c:[["BCTCHN lập từ BCTC riêng, nên bút toán tại ngày mua phải <b>lặp lại</b> mỗi năm. Khoản nào năm trước đi vào doanh thu, chi phí thì năm nay ghi vào LNST chưa phân phối.","Chi phí năm trước → LNCPP"],
+    ["Cổ tức con chia từ lợi nhuận <b>trước ngày mua</b>: mẹ ghi giảm giá trị khoản đầu tư, không ghi doanh thu. Chênh lệch GTHL của TSCĐ được khấu hao dần: mỗi năm tăng chi phí khấu hao và giảm thuế hoãn lại phải trả.","3.000 ÷ 5 = 600 mỗi năm"]],
+ tasks:[
+  {k:"num",ask:"Năm X1, C trả 3.500 cổ tức từ lợi nhuận năm trước (trước ngày mua). M nhận được bao nhiêu?",a:2100,unit:"triệu đồng",
+   hint:"M nắm 60%.",
+   why:"60% × 3.500 = 2.100 triệu. CĐKKS nhận 1.400."},
+  {k:"num",ask:"Sau khi nhận khoản cổ tức đó, giá trị khoản đầu tư vào C trên sổ của M là bao nhiêu?",a:32900,unit:"triệu đồng",
+   traps:[[35000,"Cổ tức từ lợi nhuận trước ngày mua phải ghi giảm khoản đầu tư."]],
+   hint:"35.000 − 2.100.",
+   why:"35.000 − 2.100 = 32.900, khớp đúng số trên BCĐKT của M ngày 31/12/X1."},
+  {k:"num",ask:"Chi phí khấu hao hợp nhất tăng thêm mỗi năm do chênh lệch GTHL của TSCĐ là bao nhiêu?",a:600,unit:"triệu đồng",
+   hint:"3.000 chia 5 năm.",
+   why:"3.000 / 5 = 600 triệu mỗi năm."},
+  {k:"num",ask:"Mỗi năm thuế hoãn lại phải trả được hoàn nhập (ghi giảm chi phí thuế hoãn lại) bao nhiêu?",a:120,unit:"triệu đồng",
+   hint:"600 × 20%.",
+   why:"600 × 20% = 120 triệu."},
+  {k:"entry",ask:"Lập BCTCHN năm <b>X2</b>: bút toán phân bổ LTTM (6.560, 5 năm) cho cả năm X1 và năm X2.",
+   rows:[["LNST chưa phân phối","d",1312],["Chi phí quản lý doanh nghiệp","d",1312],["Lợi thế thương mại","c",2624]],
+   x:["Chi phí khác","Lợi ích cổ đông không kiểm soát"],unit:"triệu đồng",
+   hint:"Phần năm X1 đã nằm trong lợi nhuận lũy kế, nên đi vào LNCPP. Phần năm X2 vào chi phí QLDN.",
+   why:"Nợ LNCPP 1.312 (năm trước) / Nợ Chi phí QLDN 1.312 (năm nay) / Có LTTM 2.624."}
+ ]},
+{p:3,t:"Bán hàng tồn kho nội bộ",
+ story:"Thí dụ 1–5 Phần 4: ngày 20/10/X1, mẹ M bán hàng cho con C giá 5.000 triệu, giá vốn 4.000. Đứng ở góc tập đoàn thì đây chỉ là chuyển hàng từ kho này sang kho kia, lãi chỉ thật sự có khi hàng được bán ra ngoài. Thuế 20%.",
+ c:[["Loại toàn bộ doanh thu và giá vốn bán nội bộ. <b>Lãi chưa thực hiện</b> = lãi gộp × phần hàng còn trong kho cuối kỳ, trừ khỏi HTK. Ghi tài sản thuế hoãn lại = lãi chưa thực hiện × 20%.","Lãi chưa TH = (5.000 − 4.000) × % còn tồn"],
+    ["Năm sau: lặp lại bút toán năm trước, doanh thu và giá vốn đổi thành LNCPP; phần hàng đã bán tiếp ra ngoài thì lãi thành đã thực hiện, ghi giảm GVHB. <b>Lỗ</b> nội bộ cũng loại trừ, trừ phần lỗ không thu hồi được.","Lỗ không thu hồi được → giữ lại"]],
+ tasks:[
+  {k:"num",ask:"Đến 31/12/X1 toàn bộ lô hàng còn trong kho C. Lãi chưa thực hiện là bao nhiêu?",a:1000,unit:"triệu đồng",
+   hint:"5.000 − 4.000, còn tồn 100%.",
+   why:"Cả 1.000 lãi chưa thực hiện vì hàng chưa ra khỏi tập đoàn."},
+  {k:"num",ask:"Nếu đến 31/12/X1, C đã bán được 40% lô hàng ra ngoài thì lãi chưa thực hiện cuối kỳ là bao nhiêu?",a:600,unit:"triệu đồng",
+   traps:[[400,"400 là phần đã thực hiện. Lãi chưa thực hiện nằm trong 60% hàng còn tồn."]],
+   hint:"Còn tồn 60%.",
+   why:"1.000 × 60% = 600 triệu."},
+  {k:"num",ask:"Tài sản thuế TNDN hoãn lại tương ứng là bao nhiêu?",a:120,unit:"triệu đồng",
+   hint:"600 × 20%.",
+   why:"600 × 20% = 120 triệu."},
+  {k:"entry",ask:"Lập bút toán điều chỉnh năm X1 (C đã bán 40% ra ngoài):",
+   rows:[["Doanh thu bán hàng và CCDV","d",5000],["Giá vốn hàng bán","c",4400],["Hàng tồn kho","c",600],["Tài sản thuế TNDN hoãn lại","d",120],["Chi phí thuế TNDN hoãn lại","c",120]],
+   x:["LNST chưa phân phối","Phải trả người bán"],unit:"triệu đồng",
+   hint:"Nợ Doanh thu 5.000; bên Có chia cho GVHB và HTK sao cho HTK giảm đúng 600. Sau đó ghi thuế hoãn lại.",
+   why:"Nợ DT 5.000 / Có GVHB 4.400 / Có HTK 600; Nợ TS thuế HL 120 / Có Chi phí thuế HL 120."},
+  {k:"num",ask:"Thí dụ 2: năm X2, C bán thêm 35% lô hàng ra ngoài. Khi lập BCTCHN năm X2, GVHB hợp nhất được ghi giảm bao nhiêu?",a:350,unit:"triệu đồng",
+   traps:[[600,"Chỉ phần lãi của 35% hàng bán trong X2 mới thành đã thực hiện. Phần 25% còn lại vẫn nằm trong kho."]],
+   hint:"Phần lãi đã thực hiện trong X2 = 1.000 × 35%.",
+   why:"1.000 × 35% = 350. Bút toán: Nợ LNCPP 600 / Có GVHB 350 / Có HTK 250."},
+  {k:"num",ask:"Cuối X2, HTK hợp nhất còn phải ghi giảm bao nhiêu?",a:250,unit:"triệu đồng",
+   hint:"Còn tồn 100% − 40% − 35%.",
+   why:"1.000 × 25% = 250 triệu."},
+  {k:"num",ask:"Thí dụ 3: M bán cho C giá 5.000, giá vốn 5.500 (lỗ 500). Giá trị thuần có thể thực hiện cuối X1 là 5.800. Phải loại trừ bao nhiêu lỗ chưa thực hiện (ghi tăng HTK)?",a:500,unit:"triệu đồng",
+   traps:[[0,"Giá trị thuần 5.800 cao hơn giá gốc tập đoàn 5.500, nên khoản lỗ này thu hồi được và phải loại trừ."]],
+   hint:"Giá gốc tập đoàn 5.500 thấp hơn giá trị thuần 5.800. Lỗ có thu hồi được không?",
+   why:"Lỗ thu hồi được, loại trừ toàn bộ 500: HTK hợp nhất về lại giá gốc 5.500."},
+  {k:"num",ask:"Thí dụ 4: vẫn giá bán 5.000, giá vốn 5.500, nhưng giá trị thuần có thể thực hiện chỉ còn 4.900. Phải loại trừ bao nhiêu lỗ?",a:0,unit:"triệu đồng",tol:.5,
+   traps:[[500,"Giá trị thuần 4.900 còn thấp hơn giá bán nội bộ, nên cả khoản lỗ 500 không thu hồi được. Giữ nguyên."]],
+   hint:"Giá trị thuần thấp hơn cả giá bán nội bộ 5.000.",
+   why:"Lỗ không thu hồi được nên không loại trừ. Đứng ở góc tập đoàn thì HTK đằng nào cũng phải ghi xuống 4.900."}
+ ]},
+{p:3,t:"Bán TSCĐ nội bộ",
+ story:"Rút gọn từ Thí dụ 6: ngày 1/1/X1, M bán cho C (con 100%) một thiết bị quản lý, nguyên giá 50.000 triệu, hao mòn lũy kế 41.000, giá bán 15.000. C khấu hao đường thẳng trong 3 năm, không có giá trị thu hồi. Thuế 20%.",
+ c:[["Loại thu nhập khác và chi phí khác của giao dịch, đưa TSCĐ về như chưa bán: nguyên giá và hao mòn lũy kế cũ của bên bán. Ghi tài sản thuế hoãn lại cho lãi chưa thực hiện.","Nợ TN khác, Nợ NG / Có CP khác, Có HMLK"],
+    ["Bên mua khấu hao trên giá đã có lãi, nên chi phí khấu hao cao hơn góc nhìn tập đoàn. Mỗi năm ghi giảm khấu hao, tài sản thuế hoãn lại hoàn nhập dần. Nếu bên bán là công ty con có CĐKKS thì phân bổ lãi chưa thực hiện cho cả NCI.","KH chênh lệch = lãi ÷ số năm"]],
+ tasks:[
+  {k:"num",ask:"Lãi chưa thực hiện từ giao dịch là bao nhiêu?",a:6000,unit:"triệu đồng",
+   hint:"Giá trị còn lại = 50.000 − 41.000.",
+   why:"15.000 − 9.000 = 6.000 triệu."},
+  {k:"entry",ask:"Bút toán loại trừ giao dịch bán TSCĐ năm X1 (chưa tính khấu hao, thuế):",
+   rows:[["Thu nhập khác","d",15000],["TSCĐ hữu hình – nguyên giá","d",35000],["Chi phí khác","c",9000],["Hao mòn lũy kế TSCĐ","c",41000]],
+   x:["Doanh thu bán hàng và CCDV","Giá vốn hàng bán"],unit:"triệu đồng",
+   hint:"Nguyên giá phải từ 15.000 (sổ C) về 50.000. Hao mòn về lại 41.000.",
+   why:"Nợ TN khác 15.000, Nợ NG 35.000 / Có CP khác 9.000, Có HMLK 41.000. Hai bên đều 50.000."},
+  {k:"num",ask:"Mỗi năm chi phí khấu hao hợp nhất phải ghi giảm bao nhiêu?",a:2000,unit:"triệu đồng",
+   hint:"C khấu hao 15.000 / 3. Tập đoàn chỉ khấu hao 9.000 / 3.",
+   why:"5.000 − 3.000 = 2.000 triệu, cũng bằng 6.000 / 3."},
+  {k:"num",ask:"Tài sản thuế hoãn lại còn lại cuối X1 là bao nhiêu?",a:800,unit:"triệu đồng",
+   traps:[[1200,"Đó là số ban đầu. Trong X1 đã hoàn nhập 2.000 × 20% = 400."]],
+   hint:"Lãi chưa thực hiện còn lại cuối X1 = 6.000 − 2.000.",
+   why:"(6.000 − 2.000) × 20% = 800 triệu."},
+  {k:"mcq",ask:"Nếu bên <b>bán</b> TSCĐ là công ty con có cổ đông không kiểm soát (bán ngược lên mẹ) thì khác gì?",
+   o:["Không khác gì","Lãi chưa thực hiện được phân bổ một phần cho CĐKKS theo tỷ lệ lợi ích","Không loại trừ giao dịch","Chỉ loại trừ phần của mẹ"],a:1,
+   hint:"Lãi đó nằm trong lợi nhuận của con, mà con thì có cả CĐKKS.",
+   why:"Vẫn loại trừ toàn bộ, nhưng khi xác định NCI phải trừ phần lãi chưa thực hiện thuộc về CĐKKS."}
+ ]},
+{p:3,t:"HTK thành TSCĐ, cổ tức, vay",
+ story:"Ba loại giao dịch nội bộ còn lại trong Phần 4: mẹ bán thành phẩm cho con làm TSCĐ, con chia cổ tức cho mẹ, và các đơn vị trong tập đoàn cho nhau vay. Thuế 20%, đơn vị triệu đồng.",
+ c:[["<b>HTK thành TSCĐ</b>: loại doanh thu, giá vốn và phần lãi chưa thực hiện nằm trong nguyên giá; mỗi năm ghi giảm khấu hao; ghi tài sản thuế hoãn lại.","9.000 − 6.000 = 3.000 lãi trong NG"],
+    ["<b>Cổ tức</b> con chia từ lợi nhuận sau ngày mua: loại doanh thu tài chính của mẹ trong năm chia. <b>Vay nội bộ</b>: loại khoản vay, phải thu, lãi vay; nếu lãi vay nội bộ đã vốn hóa vào tài sản thì ghi giảm nguyên giá.","Nợ DT HĐTC / Có LNCPP"]],
+ tasks:[
+  {k:"entry",ask:"Thí dụ 7: ngày 1/1/X1, M bán sản phẩm tự sản xuất cho C dùng làm TSCĐ, giá 9.000, giá vốn 6.000. Bút toán loại trừ giao dịch (chưa tính khấu hao, thuế):",
+   rows:[["Doanh thu bán hàng và CCDV","d",9000],["Giá vốn hàng bán","c",6000],["TSCĐ hữu hình – nguyên giá","c",3000]],
+   x:["Hàng tồn kho","Chi phí khác"],unit:"triệu đồng",
+   hint:"Hàng không còn trong kho mà đã thành TSCĐ, nên phần lãi bị trừ khỏi nguyên giá.",
+   why:"Nợ DT 9.000 / Có GVHB 6.000 / Có NG TSCĐ 3.000."},
+  {k:"num",ask:"C khấu hao thiết bị đó trong 3 năm. Chi phí khấu hao hợp nhất mỗi năm phải ghi giảm bao nhiêu?",a:1000,unit:"triệu đồng",
+   hint:"Lãi chưa thực hiện 3.000 chia 3 năm.",
+   why:"3.000 / 3 = 1.000 triệu mỗi năm."},
+  {k:"num",ask:"Tài sản thuế hoãn lại cuối X1 là bao nhiêu?",a:400,unit:"triệu đồng",
+   traps:[[600,"Đó là số lúc mới bán. Cuối X1 đã khấu hao bớt 1.000 lãi."]],
+   hint:"(3.000 − 1.000) × 20%.",
+   why:"2.000 × 20% = 400 triệu."},
+  {k:"entry",ask:"Thí dụ 7b: M nắm 70% C. Ngày 30/5/X2, C trả cho M 2.000 cổ tức từ lợi nhuận sau ngày mua. Bút toán điều chỉnh năm X2:",
+   rows:[["Doanh thu hoạt động tài chính","d",2000],["LNST chưa phân phối","c",2000]],
+   x:["Đầu tư vào công ty con","Phải thu ngắn hạn khác"],unit:"triệu đồng",
+   hint:"Mẹ đã ghi doanh thu tài chính, con đã ghi giảm LNCPP. Đảo cả hai.",
+   why:"Nợ Doanh thu HĐTC 2.000 / Có LNCPP 2.000."},
+  {k:"mcq",ask:"Khi lập BCTCHN năm X3, khoản cổ tức năm X2 đó cần bút toán gì?",
+   o:["Lặp lại: Nợ LNCPP / Có LNCPP","Không cần bút toán điều chỉnh nào","Nợ Đầu tư vào công ty con / Có LNCPP","Nợ LNCPP / Có Lợi ích CĐKKS"],a:1,
+   hint:"Sang năm sau, doanh thu của mẹ và phần giảm lợi nhuận của con đều đã nằm trong LNCPP.",
+   why:"LNCPP của M đã tăng 2.000, LNCPP của C đã giảm đúng phần đó. Cộng lại tự triệt tiêu nên không cần điều chỉnh."},
+  {k:"num",ask:"Thí dụ 8: ngày 1/1/X1, C1 cho C2 (cùng là con của A) vay 10.000 để xây dựng, lãi 10%/năm. Công trình hoàn thành 31/12/X1, lãi vay năm X1 được vốn hóa. Nguyên giá TSCĐ hợp nhất phải ghi giảm bao nhiêu?",a:1000,unit:"triệu đồng",
+   hint:"Lãi vay nội bộ năm X1 = 10.000 × 10%.",
+   why:"1.000 triệu. Đứng ở góc tập đoàn, tiền lãi chỉ chạy từ túi này sang túi kia, không được vốn hóa."},
+  {k:"entry",ask:"Bút toán loại trừ lãi vay nội bộ đã vốn hóa năm X1 (chưa tính thuế, chưa loại khoản vay gốc):",
+   rows:[["Doanh thu hoạt động tài chính","d",1000],["TSCĐ hữu hình – nguyên giá","c",1000]],
+   x:["Chi phí tài chính","Vay và nợ thuê tài chính dài hạn"],unit:"triệu đồng",
+   hint:"C1 ghi doanh thu lãi, C2 ghi lãi vào nguyên giá. Loại cả hai.",
+   why:"Nợ DT HĐTC 1.000 / Có NG TSCĐ 1.000. Từ X2, TSCĐ khấu hao 5 năm nên mỗi năm giảm khấu hao 200, kèm thuế hoãn lại."}
+ ]},
+{p:4,t:"Đề thi và bẫy trắc nghiệm",
+ story:"Đề cuối kỳ: 75 phút, 10 câu trắc nghiệm và 1 bài tự luận hợp nhất theo phương pháp trực tiếp, tối đa 3 công ty. Đọc kỹ đề: có dữ liệu cài vào để làm mày xao nhãng. Bảng nào không dùng thì gạch bỏ cột đó cho đỡ rối. Bài này luyện 9 câu trắc nghiệm đúng kiểu đề, rồi hai bài sau làm bài tự luận 3 công ty.",
+ c:[["<b>Phương pháp trực tiếp</b>: mẹ hợp nhất một lần BCTC riêng của mẹ, con cấp 1 và con cấp 2 trên cùng một bảng. Con cấp 2 dùng <b>tỷ lệ lợi ích gián tiếp</b> của mẹ, nhân dọc theo chuỗi; CĐKKS ở con cấp 2 gồm phần trực tiếp cộng phần gián tiếp qua con cấp 1.","M→A 80%, A→B 70% ⇒ M hưởng 56%, KKS ở B 44%"],
+    ["<b>Phương pháp gián tiếp</b>: con cấp 1 hợp nhất với con cấp 2 trước, rồi mẹ hợp nhất BCTCHN đó. Hai phương pháp ra cùng kết quả. Phương pháp trực tiếp hay dùng khi con cấp 1 không bắt buộc lập BCTCHN, hoặc con cấp 2 chỉ là liên kết của con cấp 1 nhưng mẹ vẫn kiểm soát gián tiếp.","Trực tiếp = 1 lần · Gián tiếp = 2 tầng"]],
+ fig:FIG_MAB,
+ tasks:[
+  {k:"mcq",ask:"Khi hợp nhất công ty con cấp 2 theo <b>phương pháp trực tiếp</b>, công ty mẹ làm gì?",
+   o:["Đợi con cấp 1 lập BCTCHN với con cấp 2, rồi hợp nhất BCTCHN đó với mẹ","Hợp nhất một lần BCTC riêng của mẹ, con cấp 1 và con cấp 2, dùng tỷ lệ lợi ích gián tiếp cho con cấp 2","Chỉ hợp nhất con cấp 1; con cấp 2 ghi theo phương pháp giá gốc","Ghi con cấp 2 theo phương pháp vốn chủ sở hữu"],a:1,
+   hint:"\"Trực tiếp\" là mẹ đụng thẳng tới BCTC của con cấp 2, không qua tầng trung gian.",
+   why:"Phương pháp trực tiếp hợp nhất cả 3 công ty cùng lúc. Phương án A là phương pháp gián tiếp."},
+  {k:"mcq",ask:"M nắm 80% A, A nắm 70% B. Theo phương pháp trực tiếp, tỷ lệ lợi ích của <b>CĐKKS trong B</b> là bao nhiêu?",
+   o:["30%","14%","44%","56%"],a:2,
+   hint:"Có CĐKKS trực tiếp ở B (100% − 70%), và CĐKKS của A cũng hưởng gián tiếp một phần B.",
+   why:"30% trực tiếp + 20% × 70% = 14% gián tiếp qua A, cộng là 44%. Kiểm tra: M hưởng 80% × 70% = 56%, cộng 44% đủ 100%."},
+  {k:"mcq",ask:"Cùng tập đoàn đó: ngày A mua B, A trả 17.200 và GTHL tài sản thuần của B là 24.000. Theo phương pháp trực tiếp, <b>LTTM của B thuộc M</b> tính thế nào?",
+   o:["17.200 − 70% × 24.000","80% × 17.200 − 56% × 24.000","17.200 − 56% × 24.000","80% × (17.200 − 24.000)"],a:1,
+   hint:"Giá phí của M cho B chỉ là phần M sở hữu trong khoản A bỏ ra, tức 80% × 17.200.",
+   why:"80% × 17.200 − 56% × 24.000 = 13.760 − 13.440 = 320. Phương án A ra 400, là LTTM ở cấp A-B trong phương pháp gián tiếp, chưa loại phần của CĐKKS trong A."},
+  {k:"mcq",ask:"Khi loại trừ khoản đầu tư của A vào B theo phương pháp trực tiếp, phần 20% × 17.200 (giá phí thuộc CĐKKS của A) được ghi thế nào?",
+   o:["Ghi Nợ Lợi thế thương mại","Ghi Nợ Lợi ích cổ đông không kiểm soát (ghi giảm NCI)","Ghi Có Lợi ích cổ đông không kiểm soát","Ghi Nợ Chi phí khác"],a:1,
+   hint:"CĐKKS của A đã được tính 20% trên tài sản thuần của A, mà tài sản đó có chứa khoản đầu tư vào B. Giờ khoản đầu tư bị loại đi thì sao?",
+   why:"Khoản đầu tư vào B nằm trong tài sản thuần của A, nên NCI của A đã được ghi nhận một phần trên nó. Loại khoản đầu tư thì phải ghi giảm NCI tương ứng: Nợ LICĐKKS 20% × 17.200 = 3.440."},
+  {k:"mcq",ask:"Lập BCTCHN theo phương pháp trực tiếp và theo phương pháp gián tiếp thì kết quả cuối cùng thế nào?",
+   o:["Trực tiếp ra LTTM lớn hơn","Gián tiếp ra NCI lớn hơn","Giống hệt nhau","Tùy công ty mẹ chọn chính sách"],a:2,
+   hint:"Chỉ là hai đường đi khác nhau tới cùng một bộ báo cáo.",
+   why:"Hai phương pháp phải cho cùng BCTCHN. Ở phương pháp gián tiếp, LTTM cấp A-B là 400 nhưng phải ghi giảm 80 thuộc CĐKKS trong A, nên cũng còn 320."},
+  {k:"mcq",ask:"Đề cho: M nắm 80% A; A nắm 70% B và 30% D; M nắm 10% E. BCTCHN của tập đoàn M hợp nhất những công ty nào?",
+   o:["M, A, B, D, E","M, A, B, D","M, A, B","M và A"],a:2,
+   hint:"Chỉ hợp nhất công ty con. 30% và 10% là gì?",
+   why:"B là con của A nên là con cấp 2 của M. D (30%) là công ty liên kết, ghi theo phương pháp vốn chủ sở hữu. E (10%) là đầu tư góp vốn khác. Đề có ghi chỉ hợp nhất tối đa 3 công ty, nên gặp D, E là dữ liệu gây nhiễu."},
+  {k:"mcq",ask:"B bán hàng cho M, cuối năm còn lãi chưa thực hiện 80, thuế 20%. Theo phương pháp trực tiếp, <b>LNST thuộc CĐKKS</b> giảm bao nhiêu?",
+   o:["0, vì lãi chưa thực hiện chỉ trừ vào phần của mẹ","19,2 (30% × 64)","28,16 (44% × 64)","64"],a:2,
+   hint:"Bên bán là B, mà CĐKKS ở B chiếm bao nhiêu % theo phương pháp trực tiếp? Lấy lãi sau thuế: 80 − 16.",
+   why:"Bên bán là công ty con (bán ngược lên) nên phải phân bổ cho NCI. Lãi sau thuế 64 × 44% = 28,16."},
+  {k:"mcq",ask:"M bán hàng cho A, cuối năm còn lãi chưa thực hiện trong kho A. NCI có bị ảnh hưởng không?",
+   o:["Không, vì bên bán là công ty mẹ (bán xuôi)","Có, giảm 20% lãi chưa thực hiện","Có, giảm 44% lãi chưa thực hiện","Có, vì hàng nằm trong kho A"],a:0,
+   hint:"Lãi đó nằm trong lợi nhuận của ai?",
+   why:"Giao dịch xuôi từ mẹ xuống: lãi nằm trong lợi nhuận của M, nên trừ hết vào phần của cổ đông mẹ, NCI không đổi."},
+  {k:"mcq",ask:"Theo slide, phương pháp trực tiếp thường được dùng khi nào?",
+   o:["Khi công ty con cấp 1 niêm yết trên sàn","Khi con cấp 1 không thuộc đối tượng bắt buộc lập BCTCHN, hoặc con cấp 2 là liên kết, liên doanh của con cấp 1 nhưng mẹ vẫn kiểm soát gián tiếp","Khi mẹ nắm 100% con cấp 1","Khi không có giao dịch nội bộ"],a:1,
+   hint:"Nếu con cấp 1 đã phải tự lập BCTCHN thì mẹ dùng luôn báo cáo đó (gián tiếp). Ngược lại thì sao?",
+   why:"Slide Phần 2 nêu hai trường hợp này. Con cấp 1 không phải lập BCTCHN thì không có báo cáo trung gian, nên mẹ hợp nhất thẳng."}
+ ]},
+{p:4,t:"Tự luận 3 công ty: ngày mua",
+ story:"Đề luyện, số liệu theo bài giải mẫu M-A-B của lớp. Ngày 1/1/N1, M mua 80% cổ phần A với giá 45.000; cùng ngày A mua 70% cổ phần B với giá 17.200. Tại ngày mua: A có VĐT CSH 41.000, LNCPP 7.200; TSCĐ hữu hình của A có GTHL 15.000, giá ghi sổ 9.000, còn khấu hao 10 năm. B có VĐT CSH 20.000, LNCPP 4.000, GTHL bằng giá ghi sổ. Giá thị trường cổ phiếu M ngày 1/1/N1 là 30.000đ. Thuế suất 20%, LTTM phân bổ 5 năm. Hợp nhất theo phương pháp trực tiếp. Đơn vị: triệu đồng.",
+ c:[["Thứ tự làm bài: (1) Vẽ sơ đồ, tính % lợi ích của M và % CĐKKS ở từng con. (2) Đưa tài sản của con về GTHL, ghi thuế hoãn lại. (3) Tính LTTM A = giá phí − 80% × TS thuần GTHL sau thuế của A. (4) Tính LTTM B thuộc M = 80% × giá phí A trả − 56% × TS thuần B.","LTTM A = 45.000 − 80% × 53.000"],
+    ["Bút toán loại trừ khoản đầu tư vào B: Nợ vốn chủ của B, Nợ LTTM B thuộc M, Nợ LICĐKKS (phần 20% giá phí đầu tư vào B) / Có Đầu tư vào công ty con, Có LICĐKKS tại B (44% tài sản thuần B).","LICĐKKS tại B = 44% × 24.000"]],
+ fig:FIG_MAB,
+ data:{cap:"Số liệu tại ngày mua 1/1/N1 (triệu đồng)",head:["Khoản mục","A","B"],rows:[["Giá phí khoản đầu tư",45000,17200],["Tỷ lệ sở hữu trực tiếp","80% (M nắm)","70% (A nắm)"],["Vốn đầu tư CSH",41000,20000],["LNST chưa phân phối",7200,4000],["Chênh lệch GTHL TSCĐ",6000,0]]},
+ tasks:[
+  {k:"num",ask:"Tỷ lệ <b>lợi ích của M</b> trong B là bao nhiêu?",a:56,unit:"%",
+   traps:[[70,"70% là A nắm B. M chỉ hưởng qua A nên phải nhân với 80%."],[80,"80% là M nắm A. Nhân tiếp với 70%."]],
+   hint:"80% × 70%.",
+   why:"80% × 70% = 56%."},
+  {k:"num",ask:"Tỷ lệ <b>CĐKKS</b> trong B theo phương pháp trực tiếp là bao nhiêu?",a:44,unit:"%",
+   traps:[[30,"Mới có CĐKKS trực tiếp. Cộng thêm phần CĐKKS của A hưởng gián tiếp: 20% × 70% = 14%."],[14,"Đó mới là phần gián tiếp. Cộng 30% trực tiếp."]],
+   hint:"100% − 56%, hoặc 30% + 20% × 70%.",
+   why:"30% + 14% = 44% = 100% − 56%."},
+  {k:"entry",ask:"Bút toán <b>(a0)</b> đưa TSCĐ của A về GTHL:",
+   rows:[["TSCĐ hữu hình – nguyên giá","d",6000],["Thuế TNDN hoãn lại phải trả","c",1200],["Chênh lệch đánh giá lại tài sản","c",4800]],
+   x:["Tài sản thuế TNDN hoãn lại","Lợi thế thương mại"],unit:"triệu đồng",
+   hint:"Chênh lệch 15.000 − 9.000 = 6.000, thuế 20%.",
+   why:"Nợ TSCĐ 6.000 / Có Thuế HL phải trả 1.200 / Có CL đánh giá lại tài sản 4.800."},
+  {k:"num",ask:"<b>LTTM của A</b> là bao nhiêu?",a:2600,unit:"triệu đồng",
+   traps:[[6440,"Đó là tính theo giá ghi sổ 48.200. Phải cộng chênh lệch GTHL sau thuế."],[1640,"Quên trừ thuế hoãn lại 1.200. TS thuần GTHL sau thuế = 48.200 + 6.000 − 1.200 = 53.000."]],
+   hint:"TS thuần GTHL sau thuế của A = 41.000 + 7.200 + 6.000 − 1.200 = 53.000.",
+   why:"45.000 − 80% × 53.000 = 45.000 − 42.400 = 2.600."},
+  {k:"num",ask:"<b>LTTM của B thuộc M</b> theo phương pháp trực tiếp là bao nhiêu?",a:320,unit:"triệu đồng",
+   traps:[[400,"400 là LTTM ở cấp A-B (17.200 − 70% × 24.000). Trên BCTCHN của M chỉ giữ phần của M, tức 80% × 400."],[3760,"Giá phí của M cho B chỉ là 80% × 17.200, không phải nguyên 17.200."]],
+   hint:"80% × 17.200 − 56% × 24.000.",
+   why:"13.760 − 13.440 = 320. Cũng bằng 80% × 400."},
+  {k:"num",ask:"Tổng LTTM trên BCĐKT hợp nhất ngày 1/1/N1 là bao nhiêu?",a:2920,unit:"triệu đồng",
+   traps:[[3000,"LTTM của B chỉ lấy phần thuộc M là 320, không phải 400."]],
+   hint:"LTTM A + LTTM B thuộc M.",
+   why:"2.600 + 320 = 2.920."},
+  {k:"entry",ask:"Bút toán <b>(b0)</b> loại trừ khoản đầu tư của M vào A:",
+   rows:[["Vốn đầu tư của chủ sở hữu (A)","d",41000],["LNST chưa phân phối (A)","d",7200],["Chênh lệch đánh giá lại tài sản","d",4800],["Lợi thế thương mại","d",2600],["Đầu tư vào công ty con","c",45000],["Lợi ích cổ đông không kiểm soát","c",10600]],
+   x:["Thu nhập khác","Thuế TNDN hoãn lại phải trả"],unit:"triệu đồng",
+   hint:"NCI của A = 20% × 53.000.",
+   why:"Nợ VĐT 41.000, Nợ LNCPP 7.200, Nợ CL ĐGL 4.800, Nợ LTTM 2.600 / Có ĐT vào công ty con 45.000, Có NCI 10.600. Hai bên đều 55.600."},
+  {k:"entry",ask:"Bút toán <b>(b0')</b> loại trừ khoản đầu tư của A vào B theo phương pháp trực tiếp:",
+   rows:[["Vốn đầu tư của chủ sở hữu (B)","d",20000],["LNST chưa phân phối (B)","d",4000],["Lợi thế thương mại","d",320],["LICĐKKS tại A (phần giá phí đầu tư vào B)","d",3440],["Đầu tư vào công ty con","c",17200],["LICĐKKS tại B (44% tài sản thuần B)","c",10560]],
+   x:["Thu nhập khác","Chênh lệch đánh giá lại tài sản"],unit:"triệu đồng",
+   hint:"Ghi giảm NCI của A = 20% × 17.200. NCI tại B = 44% × 24.000.",
+   why:"Nợ VĐT B 20.000, Nợ LNCPP B 4.000, Nợ LTTM 320, Nợ LICĐKKS 3.440 / Có ĐT vào công ty con 17.200, Có LICĐKKS 10.560. Hai bên đều 27.760."},
+  {k:"num",ask:"Tổng <b>LICĐKKS</b> trên BCĐKT hợp nhất ngày 1/1/N1 là bao nhiêu?",a:17720,unit:"triệu đồng",
+   traps:[[21160,"Quên ghi giảm 3.440: phần NCI của A trên khoản đầu tư vào B, khoản này đã bị loại trừ."]],
+   hint:"10.600 + 10.560 − 3.440.",
+   why:"17.720. Kiểm tra cách khác: 20% × (53.000 − 17.200) + 44% × 24.000 = 7.160 + 10.560 = 17.720."},
+  {k:"mcq",ask:"Dữ liệu nào trong đề <b>không dùng</b> tới khi lập BCTCHN ngày 1/1/N1?",
+   o:["Giá thị trường cổ phiếu M là 30.000đ","Thời gian khấu hao còn lại 10 năm của TSCĐ","Giá ghi sổ TSCĐ của A","Giá phí A trả cho B"],a:0,
+   hint:"M trả bằng tiền chứ có phát hành cổ phiếu đâu.",
+   why:"Giá cổ phiếu M là dữ liệu gây nhiễu. Thời gian khấu hao 10 năm thì dùng ở bài sau, lúc lập BCTCHN cuối năm."}
+ ]},
+{p:4,t:"Tự luận 3 công ty: cuối năm N1",
+ story:"Tiếp đề trước, lập BCTCHN năm N1 theo phương pháp trực tiếp. Trong năm, B bán cho M một lô hàng giá 1.000, giá vốn 800; đến 31/12/N1 M còn tồn 40% lô hàng. Trong năm không công ty nào chia cổ tức. KQHĐKD riêng năm N1 như bảng. LTTM phân bổ 5 năm, TSCĐ chênh lệch GTHL của A khấu hao 10 năm, chi phí khấu hao tính vào chi phí bán hàng và QLDN. Thuế 20%. Đơn vị: triệu đồng.",
+ c:[["Bút toán năm N1: lặp lại a0, b0, b0'; phân bổ LTTM (2.600 + 320) / 5; khấu hao chênh lệch GTHL 6.000 / 10 kèm hoàn nhập thuế hoãn lại; loại doanh thu, giá vốn và lãi chưa thực hiện của lô hàng B bán cho M.","LNST HN = Σ LNST − LTTM − KH sau thuế − lãi chưa TH sau thuế"],
+    ["Tách NCI: LNST của từng con phải điều chỉnh trước rồi mới nhân %. A: trừ khấu hao chênh lệch GTHL sau thuế (thuộc tài sản thuần của A). B: trừ lãi chưa thực hiện sau thuế vì B là bên bán. Phân bổ LTTM không ảnh hưởng NCI.","NCI = 20% × LNST A đ/c + 44% × LNST B đ/c"]],
+ fig:FIG_MAB,
+ data:{cap:"KQHĐKD riêng năm N1 (triệu đồng)",head:["Chỉ tiêu","M","A","B"],rows:[["Doanh thu bán hàng",150000,72000,65000],["Giá vốn hàng bán",105000,57600,48750],["Chi phí bán hàng và QLDN",12000,6480,7800],["Doanh thu hoạt động tài chính",3000,1100,900],["Chi phí thuế TNDN",7920,1894,2020],["Lợi nhuận sau thuế",28080,7126,7330]]},
+ tasks:[
+  {k:"num",ask:"Chi phí <b>phân bổ LTTM</b> năm N1 là bao nhiêu?",a:584,unit:"triệu đồng",
+   traps:[[520,"Mới phân bổ LTTM của A. Còn 320 của B: 320 / 5 = 64."],[600,"LTTM của B trên BCTCHN chỉ là 320, không phải 400."]],
+   hint:"(2.600 + 320) / 5.",
+   why:"520 + 64 = 584."},
+  {k:"entry",ask:"Bút toán khấu hao chênh lệch GTHL TSCĐ của A năm N1, kèm thuế hoãn lại:",
+   rows:[["Chi phí bán hàng và QLDN","d",600],["Hao mòn lũy kế TSCĐ","c",600],["Thuế TNDN hoãn lại phải trả","d",120],["Chi phí thuế TNDN hoãn lại","c",120]],
+   x:["Tài sản thuế TNDN hoãn lại","Lợi thế thương mại"],unit:"triệu đồng",
+   hint:"6.000 / 10 = 600. Thuế hoãn lại phải trả giảm 600 × 20%.",
+   why:"Nợ CP BH&QLDN 600 / Có HMLK 600; Nợ Thuế HL phải trả 120 / Có CP thuế HL 120."},
+  {k:"entry",ask:"Bút toán loại trừ giao dịch B bán hàng cho M:",
+   rows:[["Doanh thu bán hàng và CCDV","d",1000],["Giá vốn hàng bán","c",920],["Hàng tồn kho","c",80],["Tài sản thuế TNDN hoãn lại","d",16],["Chi phí thuế TNDN hoãn lại","c",16]],
+   x:["Lợi ích cổ đông không kiểm soát","Phải trả người bán"],unit:"triệu đồng",
+   hint:"Lãi gộp 200 × 40% còn tồn = 80. GVHB giảm 1.000 − 80.",
+   why:"Nợ DT 1.000 / Có GVHB 920 / Có HTK 80; Nợ TS thuế HL 16 / Có CP thuế HL 16."},
+  {k:"num",ask:"<b>Doanh thu</b> bán hàng hợp nhất là bao nhiêu?",a:286000,unit:"triệu đồng",
+   traps:[[287000,"Đó mới là hợp cộng. Loại 1.000 doanh thu nội bộ."]],
+   hint:"150.000 + 72.000 + 65.000 − 1.000.",
+   why:"287.000 − 1.000 = 286.000."},
+  {k:"num",ask:"<b>Giá vốn</b> hàng bán hợp nhất là bao nhiêu?",a:210430,unit:"triệu đồng",
+   traps:[[210350,"GVHB không giảm nguyên 1.000. Lãi 80 còn nằm trong kho nên chỉ giảm 920."],[212270,"Ngược dấu rồi: GVHB giảm 920, tức 211.350 − 920."]],
+   hint:"211.350 − 920.",
+   why:"105.000 + 57.600 + 48.750 − 920 = 210.430."},
+  {k:"num",ask:"<b>Chi phí bán hàng và QLDN</b> hợp nhất (gồm cả phân bổ LTTM) là bao nhiêu?",a:27464,unit:"triệu đồng",
+   traps:[[26864,"Quên khấu hao chênh lệch GTHL 600."],[26880,"Quên phân bổ LTTM 584."]],
+   hint:"26.280 + 600 + 584.",
+   why:"12.000 + 6.480 + 7.800 + 600 + 584 = 27.464."},
+  {k:"num",ask:"<b>LNST hợp nhất</b> năm N1 là bao nhiêu?",a:41408,unit:"triệu đồng",
+   traps:[[41392,"Quên tài sản thuế hoãn lại 16 của lãi chưa thực hiện."],[41288,"Quên hoàn nhập thuế hoãn lại 120 của khấu hao chênh lệch."],[41992,"Quên phân bổ LTTM 584."],[42536,"Đó mới là hợp cộng LNST riêng."]],
+   hint:"42.536 − 584 − (600 − 120) − (80 − 16).",
+   why:"42.536 − 584 − 480 − 64 = 41.408. Kiểm tra: 286.000 − 210.430 − 27.464 + 5.000 − 11.698 = 41.408."},
+  {k:"num",ask:"LNST thuộc <b>CĐKKS của A</b> là bao nhiêu?",a:1329.2,unit:"triệu đồng",
+   traps:[[1425.2,"Quên điều chỉnh khấu hao chênh lệch GTHL sau thuế 480 vào LNST của A."]],
+   hint:"20% × (7.126 − 480).",
+   why:"20% × 6.646 = 1.329,2."},
+  {k:"num",ask:"LNST thuộc <b>CĐKKS của B</b> là bao nhiêu?",a:3197.04,unit:"triệu đồng",
+   traps:[[2179.8,"Mới lấy 30%. Theo phương pháp trực tiếp CĐKKS ở B là 44%."],[3225.2,"Quên trừ lãi chưa thực hiện sau thuế 64: B là bên bán."],[2199,"Lấy 30% và quên lãi chưa thực hiện. Phải là 44% × (7.330 − 64)."]],
+   hint:"44% × (7.330 − 64).",
+   why:"44% × 7.266 = 3.197,04."},
+  {k:"num",ask:"LNST thuộc <b>cổ đông công ty mẹ</b> là bao nhiêu?",a:36881.76,unit:"triệu đồng",
+   hint:"LNST hợp nhất − NCI của A − NCI của B.",
+   why:"41.408 − 1.329,2 − 3.197,04 = 36.881,76."}
+ ]}
+];
+L.forEach((l,i)=>l.tasks.forEach((t,j)=>{t.id=i+"-"+j}));
+const TOTAL=L.reduce((s,l)=>s+l.tasks.length,0),MAXXP=TOTAL*20;
+const LEVELS=[[0,"Thực tập sinh"],[.1,"Trợ lý kiểm toán"],[.25,"Kế toán tổng hợp"],[.45,"Kế toán trưởng tập đoàn"],[.65,"Kiểm toán viên cao cấp"],[.85,"Partner Big4"]].map(([f,n])=>[Math.round(f*MAXXP/10)*10,n]);
+const PRAISE=["Ngon lành!","Chuẩn không cần chỉnh.","Khớp sổ, không lệch một đồng.","Sếp gật gù hài lòng.","Kế toán trưởng tập đoàn tương lai đây rồi.","Tay to thật sự.","Partner nhìn mày bằng ánh mắt khác."];
+const NUDGE=["Chưa đúng, thử lại phát nữa.","Lệch rồi, kiểm toán viên sẽ bắt lỗi này đấy.","Gần rồi, soát lại xem.","Chưa khớp, làm lại nào."];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- Progress (localStorage, optional) ---------- */
+let P={done:{},xp:0,streak:0,lesson:0};
+try{const s=JSON.parse(localStorage.getItem("llhn")||"null");if(s)P=Object.assign(P,s)}catch(e){}
+const save=()=>{try{localStorage.setItem("llhn",JSON.stringify(P))}catch(e){}};
+
+/* ---------- Numbers ---------- */
+const fmt=v=>typeof v==="number"?v.toLocaleString("vi-VN",{maximumFractionDigits:3}):v;
+function parseNum(s){
+  s=String(s).trim().replace(/\s|đ/g,"").replace(/%$/,"");if(!s)return[];
+  let neg=false;if(/^\(.*\)$/.test(s)){neg=true;s=s.slice(1,-1)}if(/^[-−]/.test(s)){neg=true;s=s.slice(1)}
+  if(!/^[\d.,]+$/.test(s))return[];
+  const vi=(s.match(/,/g)||[]).length>1?NaN:+s.replace(/\./g,"").replace(",","."),
+        en=(s.match(/\./g)||[]).length>1?NaN:+s.replace(/,/g,"");
+  return [vi,en].filter(v=>isFinite(v)).map(v=>neg?-v:v);
+}
+const tolOf=(a,t)=>t!=null?t:Math.max(.005,Math.abs(a)*5e-4);
+const close=(v,a,t)=>Math.abs(v-a)<=tolOf(a,t);
+const numMatch=(cands,a,unit,t)=>cands.some(v=>close(v,a,t)||(unit==="%"&&Math.abs(v)<=1&&close(v*100,a,t)));
+
+/* ---------- State & rendering ---------- */
+const $=id=>document.getElementById(id);
+let li=0,ti=0,solved=false,wrongNow=false,hintNow=false,ansNow=false,mcqWrong=new Set();
+const L_=()=>L[li],T_=()=>L_().tasks[ti];
+
+function renderNav(){
+  let h="",lastP=-1;
+  L.forEach((l,i)=>{if(l.p!==lastP){h+=`<div class="grp">${PARTS[l.p]}</div>`;lastP=l.p}
+    const d=l.tasks.filter(t=>P.done[t.id]!=null).length,full=d===l.tasks.length;
+    h+=`<button class="${i===li?"on":""} ${full?"full":""}" data-i="${i}"><span class="n">${full?"✓":i+1}</span><span>${l.t}</span><span class="cnt">${d}/${l.tasks.length}</span></button>`});
+  $("nav").innerHTML=h;
+}
+function renderStats(){
+  let cur=LEVELS[0],nxt=null;LEVELS.forEach((x,i)=>{if(P.xp>=x[0]){cur=x;nxt=LEVELS[i+1]||null}});
+  $("lvName").textContent=cur[1];
+  $("lvBar").style.width=(nxt?(P.xp-cur[0])/(nxt[0]-cur[0])*100:100)+"%";
+  const dn=Object.keys(P.done).length;
+  $("lvTxt").textContent=`${P.xp} XP · ${dn}/${TOTAL} câu`+(nxt?` · còn ${nxt[0]-P.xp} XP lên ${nxt[1]}`:" · cấp cao nhất");
+  $("streak").textContent="🔥 "+P.streak;
+}
+function renderLesson(){
+  const l=L_();
+  $("eb").textContent=`${PARTS[l.p]} · Bài ${li+1}/${L.length}`;$("lt").textContent=l.t;$("story").textContent=l.story;
+  $("concept").innerHTML=l.c.map(([p,s])=>`<div><p>${p}</p><span class="syntax">${s}</span></div>`).join("");
+  $("fig").hidden=!l.fig;$("fig").innerHTML=l.fig||"";
+  if(l.data){const d=l.data,isN=v=>typeof v==="number";
+    $("data").innerHTML=`<table><caption>${d.cap}</caption><thead><tr>${d.head.map((h,j)=>`<th class="${j?"num":""}">${h}</th>`).join("")}</tr></thead><tbody>${
+      d.rows.map(r=>`<tr>${r.map(v=>`<td class="${isN(v)?"num":""}">${fmt(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;$("data").hidden=false}
+  else{$("data").hidden=true;$("data").innerHTML=""}
+  renderTask();renderNav();
+}
+function entryRows(t){ // stable alphabetical order so debit/credit structure isn't given away
+  if(!t._rows)t._rows=[...t.rows.map(r=>({acc:r[0],side:r[1],v:r[2]})),...t.x.map(a=>({acc:a,side:null,v:0}))].sort((a,b)=>a.acc.localeCompare(b.acc,"vi"));
+  return t._rows;
+}
+function renderTask(){
+  const l=L_(),done=ti>=l.tasks.length;
+  $("steps").innerHTML=l.tasks.map((t,k)=>`<i class="${k<ti?"ok":k===ti?"now":""}"></i>`).join("");
+  solved=wrongNow=hintNow=ansNow=false;mcqWrong=new Set();$("fb").hidden=true;
+  $("bCheck").hidden=$("bHint").hidden=$("bAns").hidden=done;$("bNext").hidden=true;$("bRedo").hidden=!done;
+  if(done){$("ask").innerHTML="Xong bài này rồi. Bấm bài khác bên trái, hoặc làm lại để luyện tay (không cộng thêm XP).";$("work").innerHTML="";$("tipline").textContent="";return}
+  const t=T_();$("ask").innerHTML=t.ask;
+  if(t.k==="num"){
+    $("work").innerHTML=`<div class="ans" id="ansbox"><input id="numIn" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="Gõ số"><span class="unit">${t.unit}</span></div>`;
+    $("tipline").textContent="Gõ số rồi bấm Enter. Dấu chấm hay dấu phẩy đều được.";setTimeout(()=>$("numIn").focus({preventScroll:true}),0);
+  }else if(t.k==="mcq"){
+    $("bCheck").hidden=true;
+    $("work").innerHTML=`<div class="opts">${t.o.map((o,j)=>`<button class="opt" data-j="${j}"><span class="k">${"ABCD"[j]}</span><span>${o}</span></button>`).join("")}</div>`;
+    $("tipline").textContent="Bấm vào đáp án mày chọn, hoặc gõ phím A, B, C, D.";
+  }else{
+    const rows=entryRows(t);
+    $("work").innerHTML=`<div class="entry"><table><thead><tr><th>Tài khoản / chỉ tiêu</th><th class="num">Nợ</th><th class="num">Có</th></tr></thead><tbody>${
+      rows.map((r,j)=>`<tr id="er${j}"><td class="acc">${r.acc}</td><td><input id="e${j}d" inputmode="decimal" autocomplete="off" aria-label="Nợ ${r.acc}"></td><td><input id="e${j}c" inputmode="decimal" autocomplete="off" aria-label="Có ${r.acc}"></td></tr>`).join("")
+    }</tbody><tfoot><tr><td class="acc">Tổng (${t.unit})</td><td id="sumD">0</td><td id="sumC">0</td></tr></tfoot></table></div>`;
+    $("tipline").textContent="Điền số vào cột Nợ hoặc Có. Dòng không dùng thì để trống. Tổng Nợ phải bằng tổng Có.";
+    $("work").querySelectorAll("input").forEach(i=>i.addEventListener("input",sums));
+  }
+}
+function sums(){
+  const rows=entryRows(T_());let d=0,c=0;
+  rows.forEach((r,j)=>{d+=(parseNum($("e"+j+"d").value)[0]||0);c+=(parseNum($("e"+j+"c").value)[0]||0)});
+  $("sumD").textContent=fmt(d);$("sumC").textContent=fmt(c);
+  const off=Math.abs(d-c)>1e-6;$("sumD").classList.toggle("off",off);$("sumC").classList.toggle("off",off);
+}
+function feedback(kind,html){const f=$("fb");f.className="fb "+kind;f.innerHTML=html;f.hidden=false}
+function fail(html){
+  wrongNow=true;P.streak=0;save();renderStats();feedback("bad",html);
+  const b=$("work").firstElementChild;if(b){b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake")}
+}
+function answerText(t){
+  if(t.k==="num")return `<code>${fmt(t.a)} ${t.unit}</code>`;
+  if(t.k==="mcq")return `<b>${"ABCD"[t.a]}.</b> ${t.o[t.a]}`;
+  return t.rows.map(r=>`${r[1]==="d"?"Nợ":"Có"} ${r[0]} <code>${fmt(r[2])}</code>`).join(" · ");
+}
+function check(choice){
+  if(solved)return next();
+  const t=T_();
+  if(t.k==="num"){
+    const raw=$("numIn").value,c=parseNum(raw);
+    if(!raw.trim())return feedback("tip","Chưa gõ số nào kìa.");
+    if(!c.length)return fail("Cái này không đọc ra số được. Gõ kiểu <code>6.560</code> hoặc <code>94,44</code> nha.");
+    if(!numMatch(c,t.a,t.unit,t.tol)){
+      const tr=(t.traps||[]).find(([v])=>numMatch(c,v,t.unit,Math.max(tolOf(v),.005)));
+      return fail(tr?`${pick(NUDGE)} ${tr[1]}`:`${pick(NUDGE)} Mày đang ra <code>${fmt(c[0])}</code>. Bấm Gợi ý nếu bí.`);
+    }
+    $("ansbox").classList.add("ok");
+  }else if(t.k==="mcq"){
+    if(choice==null)return;
+    const btn=$("work").querySelector(`.opt[data-j="${choice}"]`);
+    if(choice!==t.a){btn.classList.add("no");btn.disabled=true;mcqWrong.add(choice);return fail(`${pick(NUDGE)} Phương án ${"ABCD"[choice]} chưa đúng.`)}
+    $("work").querySelectorAll(".opt").forEach(b=>b.disabled=true);btn.classList.add("yes");
+  }else{
+    const rows=entryRows(t);let bad=0,blank=true;
+    rows.forEach((r,j)=>{
+      const dv=$("e"+j+"d").value.trim(),cv=$("e"+j+"c").value.trim();if(dv||cv)blank=false;
+      const ok=(s,want)=>want?numMatch(parseNum(s),want,null):(!s||numMatch(parseNum(s),0,null,1e-9));
+      const good=ok(dv,r.side==="d"?r.v:0)&&ok(cv,r.side==="c"?r.v:0);
+      $("er"+j).className=good?"":"wrong";if(!good)bad++;
+    });
+    if(blank)return feedback("tip","Chưa điền dòng nào kìa.");
+    if(bad){const off=$("sumD").classList.contains("off");
+      return fail(`${pick(NUDGE)} Có <b>${bad}</b> dòng chưa đúng (tô đỏ).${off?" Tổng Nợ còn đang khác tổng Có nữa.":""}`)}
+    rows.forEach((r,j)=>$("er"+j).className="right");
+    $("work").querySelectorAll("input").forEach(i=>i.disabled=true);
+  }
+  // correct
+  const first=P.done[t.id]==null;let gain=0;
+  if(first){gain=ansNow?5:hintNow?15:20;P.done[t.id]=gain;P.xp+=gain}
+  if(!wrongNow&&!hintNow&&!ansNow)P.streak++;
+  solved=true;save();renderStats();renderNav();
+  $("steps").children[ti].className="ok";
+  $("bCheck").hidden=$("bHint").hidden=$("bAns").hidden=true;
+  const last=ti===L_().tasks.length-1;
+  $("bNext").hidden=false;$("bNext").textContent=last?"Hoàn thành bài 🎉":"Câu tiếp →";$("bNext").focus({preventScroll:true});
+  feedback("good",`<b>${pick(PRAISE)}</b> ${gain?`+${gain} XP.`:"Ôn lại thôi nên không cộng XP."} ${P.streak>=3?`Chuỗi ${P.streak} câu đúng liền, đang vào phom!`:""}<span class="why">${t.why}</span>`);
+}
+function next(){
+  const last=ti===L_().tasks.length-1;ti++;
+  if(last){
+    const earned=L_().tasks.reduce((s,x)=>s+(P.done[x.id]||0),0),end=li===L.length-1;
+    $("mT").textContent=end?"Phá đảo!":"Xong bài "+(li+1)+"!";$("mXP").textContent=earned+" XP";
+    $("mMsg").textContent=end?`Mày đã đi hết ${L.length} bài hợp nhất. Giờ bấm "Hỏi gia sư AI", xin một đề tự luận 3 công ty rồi tự giải trong 45 phút xem sao.`:"Bài tiếp: "+L[li+1].t;
+    $("mNext").hidden=end;$("modal").hidden=false;confetti();
+  }
+  renderTask();
+}
+function openLesson(i){li=i;P.lesson=i;save();const l=L_();ti=l.tasks.findIndex(t=>P.done[t.id]==null);if(ti<0)ti=l.tasks.length;renderLesson();window.scrollTo({top:0,behavior:"smooth"})}
+
+/* ---------- Events ---------- */
+$("bCheck").onclick=()=>check();
+$("bNext").onclick=next;
+$("bHint").onclick=()=>{hintNow=true;P.streak=0;save();renderStats();feedback("tip","<b>Gợi ý:</b> "+T_().hint)};
+$("bAns").onclick=()=>{
+  const t=T_();ansNow=true;P.streak=0;save();renderStats();
+  if(t.k==="num")$("numIn").value=fmt(t.a);
+  if(t.k==="entry"){entryRows(t).forEach((r,j)=>{$("e"+j+"d").value=r.side==="d"?fmt(r.v):"";$("e"+j+"c").value=r.side==="c"?fmt(r.v):""});sums()}
+  feedback("tip",`<b>Đáp án:</b> ${answerText(t)}<span class="why">${t.why}</span>${t.k==="mcq"?"<span class=\"why\">Bấm chọn đáp án đó để qua câu (câu này chỉ được 5 XP).</span>":"<span class=\"why\">Đọc hiểu rồi bấm Kiểm tra (câu này chỉ được 5 XP).</span>"}`);
+};
+$("bRedo").onclick=()=>{ti=0;renderTask()};
+$("work").addEventListener("click",e=>{const b=e.target.closest(".opt");if(b&&!b.disabled)check(+b.dataset.j)});
+document.addEventListener("keydown",e=>{
+  if(e.target.closest&&e.target.closest("#ai"))return;
+  if(!$("modal").hidden){if(e.key==="Escape")$("modal").hidden=true;return}
+  if(ti>=L_().tasks.length)return;
+  if(e.key==="Enter"){e.preventDefault();check();return}
+  const t=T_();if(t.k==="mcq"&&!solved&&!e.ctrlKey&&!e.metaKey){const j="abcd".indexOf(e.key.toLowerCase());
+    if(j>=0&&j<t.o.length&&!mcqWrong.has(j))check(j)}
+});
+$("nav").onclick=e=>{const b=e.target.closest("button");if(b)openLesson(+b.dataset.i)};
+$("mNext").onclick=()=>{$("modal").hidden=true;openLesson(Math.min(li+1,L.length-1))};
+$("mStay").onclick=()=>{$("modal").hidden=true};
+
+/* ---------- Confetti ---------- */
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const c=$("cf"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+  const cols=["#1F5FA8","#6FA8F0","#E8B923","#127A4A","#E2574C"];
+  const ps=Array.from({length:140},()=>({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*16,vy:-Math.random()*14-4,s:Math.random()*6+4,c:cols[Math.random()*5|0],r:Math.random()*6}));
+  let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.vy+=.4;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+    if(++f<120)requestAnimationFrame(tick);else x.clearRect(0,0,c.width,c.height)})();
+}
+
+/* ---------- AI tutor ----------
+ Two engines: "claude" = the claude.ai sample capability (no key, only inside claude.ai);
+ "api" = any OpenAI-compatible endpoint (e.g. xkiro behind a Cloudflare Worker proxy), only outside claude.ai. */
+const KNOW=`MÔN: Hợp nhất BCTC (giảng viên PGS.TS Phạm Quốc Thuần, UEL). Căn cứ: VAS 11, VAS 25, TT 202/2014 sửa đổi bởi TT 43/2026.
+ĐỀ THI CUỐI KỲ: 75 phút, 10 câu trắc nghiệm + 1 bài tự luận hợp nhất theo PHƯƠNG PHÁP TRỰC TIẾP, tối đa 3 công ty (mẹ, con, cháu). Đề có dữ liệu gây nhiễu; bảng nào không dùng thì gạch cột.
+
+PHẦN 1 – TỔNG QUAN
+- Sáp nhập: gộp thành công ty mới, cổ phiếu cũ mất. Mua lại: nắm quyền kiểm soát bằng mua cổ phần hoặc tài sản, công ty mục tiêu vẫn tồn tại (VNM mua 75% GTNFoods).
+- Bộ BCTCHN: BCĐKT HN, KQHĐKD HN, LCTT HN, Thuyết minh. BCTCHN năm nộp chậm nhất 90 ngày.
+- Miễn lập BCTCHN khi thỏa TẤT CẢ: không phải đơn vị lợi ích công chúng; không thuộc Nhà nước chi phối; là con của công ty khác và cổ đông (kể cả không có quyền biểu quyết) đồng thuận; công cụ vốn/nợ không giao dịch trên thị trường; không đang làm hồ sơ phát hành ra công chúng; công ty sở hữu nó đã lập BCTCHN theo VAS.
+
+PHẦN 2 – KHÁI NIỆM, QUY TRÌNH
+- Kiểm soát: >50% quyền biểu quyết (trực tiếp hoặc gián tiếp), hoặc quyền bổ nhiệm/bãi miễn đa số HĐQT, đa số phiếu HĐQT, sửa Điều lệ, được nhường >50% quyền biểu quyết, chi phối chính sách theo thỏa thuận. Kiểm soát gián tiếp CHỈ đi qua công ty con, không qua liên kết/liên doanh.
+- Tỷ lệ lợi ích: NHÂN dọc chuỗi rồi cộng phần trực tiếp. Tỷ lệ biểu quyết: qua công ty con lấy NGUYÊN tỷ lệ của con đó rồi cộng. Xác định công ty con theo biểu quyết.
+  Ví dụ: A→B 70%, B→C 55%, C→D 35%, A→C 25%, A→D 20%: C lợi ích 63,5%, biểu quyết 80%; D lợi ích 42,225%, biểu quyết 55%.
+- Phải hợp nhất cả con có hoạt động khác biệt (kể cả quỹ đầu tư). Chỉ loại trừ khi kiểm soát tạm thời (mua để bán trong 12 tháng) hoặc con bị hạn chế hoạt động >12 tháng ảnh hưởng chuyển vốn về mẹ.
+- LTTM = Giá phí − % sở hữu × GTHL tài sản thuần của con tại ngày mua (âm = lãi mua rẻ). NCI ngày mua = % CĐKKS × GTHL tài sản thuần.
+- 7 bước: hợp cộng → loại trừ khoản đầu tư, ghi LTTM → phân bổ LTTM → tách NCI → loại trừ giao dịch nội bộ → bảng tổng hợp bút toán (BTH01) và chỉ tiêu (BTH02) → lập BCTCHN.
+- Bút toán loại trừ đầu tư ngày mua: Nợ VĐT CSH, Nợ LNCPP, Nợ CL đánh giá lại TS, Nợ LTTM / Có Đầu tư vào công ty con, Có LICĐKKS (hoặc Có Thu nhập khác nếu mua rẻ).
+- Ví dụ bài 7 chương 2 (tỷ): LTTM = 165 − 70% × 230 = 4, phân bổ 0,8/năm. Mẹ bán con lãi chưa TH 1,2, TS thuế HL 0,24. LNST HN = 96,2 − 0,8 − 1,2 + 0,24 = 94,44; NCI = 30% × 21,2 = 6,36; mẹ 88,08. Phân bổ LTTM KHÔNG có thuế hoãn lại.
+
+HỢP NHẤT CON CẤP 2 (TẬP ĐOÀN 3 CÔNG TY)
+- Phương pháp trực tiếp: mẹ hợp nhất một lần BCTC riêng của mẹ, con cấp 1, con cấp 2. Thường dùng khi con cấp 1 không bắt buộc lập BCTCHN, hoặc con cấp 2 là liên kết/liên doanh của con cấp 1 nhưng mẹ kiểm soát gián tiếp.
+- Phương pháp gián tiếp: con cấp 1 hợp nhất con cấp 2 trước, rồi mẹ hợp nhất BCTCHN đó. LTTM cấp 2 trên BCTCHN của con cấp 1 gồm cả phần của CĐKKS trong con cấp 1, nên lên BCTCHN của mẹ phải ghi giảm phần đó kèm ghi giảm NCI. Hai phương pháp cho cùng kết quả.
+- Giao dịch xuôi (mẹ bán con): không ảnh hưởng NCI. Giao dịch ngược (con bán mẹ) và ngang (con bán con): lãi chưa thực hiện sau thuế phân bổ cho NCI của bên bán.
+- Bài giải mẫu M-A-B (triệu đồng): M mua 80% A giá 45.000; A mua 70% B giá 17.200, cùng ngày 1/1/N1. A: VĐT 41.000, LNCPP 7.200, TSCĐ GTHL 15.000 vs sổ 9.000 (KH 10 năm). B: VĐT 20.000, LNCPP 4.000, GTHL = sổ. Thuế 20%, LTTM 5 năm.
+  M hưởng B = 80% × 70% = 56%; NCI ở B = 30% + 20% × 70% = 44%.
+  a0: Nợ TSCĐ 6.000 / Có Thuế HL phải trả 1.200 / Có CL ĐGL 4.800. TS thuần GTHL A = 53.000. LTTM A = 45.000 − 80% × 53.000 = 2.600; NCI A = 10.600.
+  LTTM B thuộc M (trực tiếp) = 80% × 17.200 − 56% × 24.000 = 320 (= 80% × 400 cấp A-B).
+  b0': Nợ VĐT B 20.000, Nợ LNCPP B 4.000, Nợ LTTM 320, Nợ LICĐKKS 3.440 (20% × 17.200) / Có ĐT vào con 17.200, Có LICĐKKS 10.560 (44% × 24.000). Tổng NCI ngày mua = 17.720.
+  Năm N1: phân bổ LTTM (2.600 + 320)/5 = 584; KH chênh lệch 600, hoàn nhập thuế HL 120. NCI trong LNST = 20% × (LNST A − 480) + 44% × LNST B điều chỉnh.
+
+PHẦN 3 – PHƯƠNG PHÁP MUA (VAS 11)
+- 3 bước: xác định bên mua → xác định giá phí → phân bổ giá phí cho tài sản, nợ phải trả, nợ tiềm tàng theo GTHL.
+- Giá phí = GTHL tài sản đem trao đổi + nợ phát sinh/thừa nhận + công cụ vốn phát hành + chi phí liên quan trực tiếp (kiểm toán, tư vấn, thẩm định). Trả chậm lấy giá trị hiện tại. Cổ phiếu phát hành theo giá thị trường. Chi phí phát hành cổ phiếu ghi giảm thặng dư vốn, không vào giá phí.
+- Chênh lệch GTHL: tài sản tăng thì Nợ TS / Có Thuế HL phải trả (× 20%) / Có CL đánh giá lại TS (sau thuế); tài sản giảm thì ngược lại với tài sản thuế HL. LTTM và NCI tính trên tài sản thuần GTHL SAU thuế. Ví dụ chương 4: M mua 60% C giá 35.000, TSCĐ +3.000, thuế HL 600, TS thuần GTHL 47.400, LTTM 6.560, NCI 18.960.
+- Mua nhiều lần: giá phí = giá phí lần đạt kiểm soát + các lần trước đánh giá lại theo giá thị trường tại ngày kiểm soát.
+- Lãi mua rẻ: xem lại GTHL và giá phí, phần còn lại ghi ngay thu nhập khác.
+- Phân bổ LTTM: đường thẳng tối đa 10 năm vào chi phí QLDN; tổn thất lớn hơn mức phân bổ thì phân bổ theo tổn thất.
+- Sau ngày mua: lặp lại bút toán ngày mua mỗi năm; khoản năm trước vào doanh thu/chi phí thì năm nay ghi vào LNCPP. HTK chênh lệch: bán ra ngoài thì điều chỉnh GVHB. TSCĐ chênh lệch: mỗi năm điều chỉnh khấu hao và giảm thuế HL phải trả.
+- Cổ tức từ lợi nhuận TRƯỚC ngày mua: mẹ ghi giảm khoản đầu tư.
+
+PHẦN 4 – GIAO DỊCH NỘI BỘ (loại trừ toàn bộ)
+- Bán HTK: loại toàn bộ doanh thu và giá vốn nội bộ; lãi chưa thực hiện = lãi gộp × % còn tồn, trừ HTK, ghi TS thuế HL = lãi chưa TH × 20%. Ví dụ: bán 5.000, giá vốn 4.000, đã bán ra ngoài 40%: Nợ DT 5.000 / Có GVHB 4.400 / Có HTK 600; Nợ TS thuế HL 120 / Có CP thuế HL 120. Năm sau: Nợ LNCPP (lãi chưa TH đầu kỳ) / Có GVHB (phần đã bán ra) / Có HTK (phần còn tồn). Lỗ nội bộ cũng loại trừ, trừ phần không thu hồi được.
+- Bán TSCĐ: Nợ Thu nhập khác, Nợ Nguyên giá / Có Chi phí khác, Có HMLK (về như chưa bán). Mỗi năm giảm khấu hao = lãi chưa TH / số năm còn lại; TS thuế HL hoàn nhập dần.
+- HTK thành TSCĐ: Nợ DT / Có GVHB / Có Nguyên giá (phần lãi); mỗi năm giảm khấu hao kèm thuế HL.
+- Cổ tức từ lợi nhuận SAU ngày mua: năm chia Nợ DT HĐTC / Có LNCPP; các năm sau tự triệt tiêu. Chưa trả thì loại phải thu, phải trả. Trả bằng cổ phiếu: chuyển sang Vốn khác của CSH.
+- Vay nội bộ: loại khoản vay, phải thu, doanh thu và chi phí lãi. Lãi vay nội bộ đã vốn hóa: Nợ DT HĐTC / Có Nguyên giá, tạo TS thuế HL, hoàn nhập qua khấu hao.
+
+MẸO THUẾ HOÃN LẠI: điều chỉnh nào làm giá trị tài sản trên BCTCHN lệch sổ riêng (HTK, TSCĐ) thì có thuế hoãn lại. LTTM không bao giờ có thuế hoãn lại.`;
+const SYS=()=>`Mày là gia sư môn Hợp nhất BCTC trong app học "Lò Luyện Hợp Nhất". Người học là sinh viên kế toán – kiểm toán ở Việt Nam, tự nhận lười, đang ôn thi cuối kỳ.
+Cách nói: tiếng Việt, xưng "tao", gọi người học là "mày", kiểu bạn thân, ngắn gọn, đi thẳng vào ý, không rào đón.
+Quy tắc:
+- Bám kiến thức môn học bên dưới. Chỗ nào tài liệu không nói thì nói rõ là mày suy luận theo chuẩn mực.
+- Có tính toán thì trình bày từng bước, số viết kiểu Việt Nam (1.234,5). Bút toán viết dạng "Nợ ... / Có ...". Đề không cho thuế suất thì lấy 20%.
+- Tự kiểm tra lại số học trước khi trả lời. Khi ra đề thì phải tự giải trước để chắc số liệu khớp, nhưng đừng đưa lời giải nếu nó chưa xin.
+- Nó xin gợi ý thì chỉ gợi ý, không nói đáp án. Nó xin đáp án hoặc đã làm xong câu thì mới giải đầy đủ.
+- Ra đề trắc nghiệm thì đợi nó trả lời rồi mới chấm. Ra đề thì bám đúng format đề thi cuối kỳ.
+- Định dạng: Markdown đơn giản (in đậm, gạch đầu dòng, bảng nhỏ). Không dùng LaTeX.
+
+=== KIẾN THỨC MÔN HỌC ===
+${KNOW}`;
+const strip=h=>String(h).replace(/<[^>]+>/g,"").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">");
+function aiCtx(){
+  const l=L_();let s=`Bài đang mở: Bài ${li+1}/${L.length} – ${l.t} (${PARTS[l.p]})\nĐề/bối cảnh: ${l.story}`;
+  if(l.data)s+=`\nBảng "${l.data.cap}":\n`+[l.data.head,...l.data.rows].map(r=>r.map(fmt).join(" | ")).join("\n");
+  if(ti<l.tasks.length){const t=T_();
+    s+=`\nCâu đang làm (câu ${ti+1}/${l.tasks.length}): ${strip(t.ask)}`;
+    if(t.k==="mcq")s+="\nCác phương án: "+t.o.map((o,j)=>"ABCD"[j]+". "+strip(o)).join(" | ");
+    if(t.k==="entry")s+="\nDạng câu: điền bút toán Nợ/Có. Các dòng tài khoản có sẵn: "+entryRows(t).map(r=>r.acc).join("; ");
+    s+=`\nĐáp án đúng (để mày đối chiếu; KHÔNG nói ra trừ khi nó xin đáp án hoặc đã làm xong câu): ${strip(answerText(t))}. Giải thích của app: ${t.why}`;
+    s+=solved?"\nTrạng thái: nó đã làm đúng câu này.":"\nTrạng thái: nó chưa làm xong câu này.";
+    if(!$("fb").hidden)s+=`\nPhản hồi app đang hiện: ${$("fb").textContent}`;
+  }else s+="\nNó đã làm xong hết các câu của bài này.";
+  return s;
+}
+function md(src){
+  const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const inl=t=>esc(t).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>");
+  const isRow=x=>/^\s*\|.*\|\s*$/.test(x),isSep=x=>/^\s*\|[\s:|-]+\|\s*$/.test(x);
+  const isUl=x=>/^\s*[-*•]\s+/.test(x),isOl=x=>/^\s*\d+[.)]\s+/.test(x),isH=x=>/^#{1,4}\s+/.test(x);
+  const ls=String(src).split("\n");let h="",i=0;
+  while(i<ls.length){const ln=ls[i];
+    if(isRow(ln)){const rows=[];while(i<ls.length&&isRow(ls[i]))rows.push(ls[i++]);
+      const head=rows.length>1&&isSep(rows[1]),cells=r=>r.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+      h+=`<div class="mdt"><table>${rows.filter(r=>!isSep(r)).map((r,k)=>`<tr>${cells(r).map(c=>head&&k===0?`<th>${inl(c)}</th>`:`<td>${inl(c)}</td>`).join("")}</tr>`).join("")}</table></div>`;continue}
+    if(isUl(ln)){h+="<ul>";while(i<ls.length&&isUl(ls[i]))h+=`<li>${inl(ls[i++].replace(/^\s*[-*•]\s+/,""))}</li>`;h+="</ul>";continue}
+    if(isOl(ln)){h+="<ol>";while(i<ls.length&&isOl(ls[i]))h+=`<li>${inl(ls[i++].replace(/^\s*\d+[.)]\s+/,""))}</li>`;h+="</ol>";continue}
+    if(isH(ln)){h+=`<p class="mh">${inl(ln.replace(/^#{1,4}\s+/,""))}</p>`;i++;continue}
+    if(!ln.trim()){i++;continue}
+    const p=[inl(ls[i++])];while(i<ls.length&&ls[i].trim()&&!isRow(ls[i])&&!isUl(ls[i])&&!isOl(ls[i])&&!isH(ls[i]))p.push(inl(ls[i++]));
+    h+=`<p>${p.join("<br>")}</p>`;
+  }
+  return h;
+}
+
+const AIK="llhn_ai",CHK="llhn_chat";
+let AI={eng:"auto",base:"",key:"",model:""},chat=[];
+try{Object.assign(AI,JSON.parse(localStorage.getItem(AIK)||"{}"))}catch(e){}
+// Same origin as the IELTS app on github.io: reuse its OpenAI-compatible key (chat key first) until this app saves its own.
+if(!AI.key){try{const src=["llielts_api_chat","llielts_api"].map(k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}})
+  .find(a=>a&&a.key&&a.prov==="openrouter"&&a.base);if(src)Object.assign(AI,{base:src.base,key:src.key,model:AI.model||src.model||""})}catch(e){}}
+if(!AI.base)AI.base="https://lo-ielts-proxy.tuanminh1012.workers.dev/v1";
+try{const c=JSON.parse(localStorage.getItem(CHK)||"[]");if(Array.isArray(c))chat=c.filter(m=>m&&m.content)}catch(e){}
+const saveChat=()=>{try{localStorage.setItem(CHK,JSON.stringify(chat.slice(-40)))}catch(e){}};
+let sampleFn=null,aiCtl=null;
+const claudeReady=(window.claude&&typeof window.claude.use==="function")
+  ?window.claude.use("sample").then(s=>{sampleFn=s||null;updEng();return sampleFn}).catch(()=>null)
+  :Promise.resolve(null);
+const apiOk=()=>!!(AI.base&&AI.key&&AI.model);
+function engine(){
+  if(AI.eng==="claude")return sampleFn?"claude":null;
+  if(AI.eng==="api")return apiOk()?"api":null;
+  return sampleFn?"claude":apiOk()?"api":null;
+}
+function updEng(){const e=engine();$("aiEng").textContent=e==="claude"?"Claude":e==="api"?"API · "+AI.model:"chưa cài";$("aiEng").title=e==="api"?AI.base:""}
+const QUICK=[
+  ["Giải thích câu này","Giải thích cho tao câu đang làm: đề hỏi gì, dùng công thức hay bút toán nào. Đừng nói đáp án cuối, để tao tự bấm."],
+  ["Sao tao sai?","Tao làm câu này mà app báo sai. Chỉ ra mấy lỗi hay gặp ở dạng này để tao tự soát lại, đừng nói đáp án."],
+  ["Ra 1 câu trắc nghiệm","Ra cho tao 1 câu trắc nghiệm 4 phương án đúng kiểu đề thi cuối kỳ, có bẫy. Đừng nói đáp án, đợi tao trả lời rồi chấm."],
+  ["Ra đề tự luận 3 công ty","Ra cho tao 1 đề tự luận ngắn đúng kiểu đề thi: tập đoàn 3 công ty (mẹ, con cấp 1, con cấp 2), hợp nhất theo phương pháp trực tiếp, có chênh lệch GTHL, 1 giao dịch nội bộ và vài dữ liệu gây nhiễu. Cho số tròn dễ tính. Chỉ ra đề và các yêu cầu, chưa giải. Tao làm xong sẽ gửi mày chấm."],
+  ["Tóm tắt PP trực tiếp","Tóm tắt cho tao các bước làm bài tự luận hợp nhất 3 công ty theo phương pháp trực tiếp, kèm công thức và bút toán mẫu, ngắn gọn để học thuộc."]
+];
+$("aiQuick").innerHTML=QUICK.map(([lb],j)=>`<button class="qk" type="button" data-q="${j}">${lb}</button>`).join("");
+function aiNote(t){const n=$("aiNote");n.textContent=t||"";n.hidden=!t}
+function addMsg(role,html){const d=document.createElement("div");d.className="msg "+role;d.innerHTML=html;$("aiLog").appendChild(d);return d}
+const scrollLog=()=>{const g=$("aiLog");g.scrollTop=g.scrollHeight};
+function renderChat(){
+  $("aiLog").innerHTML="";
+  if(!chat.length)$("aiLog").innerHTML=`<div class="aiEmpty"><b>Hỏi tao gì cũng được về môn này.</b><span>Tao thấy được bài và câu mày đang làm, nên cứ hỏi kiểu "sao câu này ra 320?" là được. Bấm mấy nút bên dưới để xin giải thích, ra đề trắc nghiệm hay đề tự luận 3 công ty.</span></div>`;
+  chat.forEach(m=>m.role==="user"?addMsg("user","").textContent=m.content:addMsg("assistant",md(m.content)));
+  scrollLog();
+}
+function setBusy(b){const s=$("aiSend");s.textContent=b?"Dừng":"Gửi";s.classList.toggle("pri",!b);$("aiQuick").querySelectorAll("button").forEach(x=>x.disabled=b)}
+function aiErr(e){
+  const c=e&&e.code;
+  if(c==="not_granted")return "Mày chưa cho app dùng Claude. Tải lại trang rồi bấm Cho phép khi được hỏi, hoặc vào ⚙ chuyển sang API riêng.";
+  if(c==="sampling_disabled"||c==="capability_disabled"||c==="not_declared")return "Tài khoản này chưa dùng được Claude trong app. Vào ⚙ chuyển sang API riêng.";
+  if(c==="rate_limited")return "Hỏi dồn quá hoặc hết lượt dùng Claude rồi. Đợi chút rồi hỏi lại.";
+  if(c==="session_expired")return "Phiên đăng nhập claude.ai hết hạn. Đăng nhập lại rồi hỏi tiếp.";
+  if(c==="prompt_too_large")return "Đoạn chat dài quá. Bấm 🗑 xóa bớt rồi hỏi lại.";
+  if(c==="refused")return "Câu này AI không trả lời. Hỏi kiểu khác thử.";
+  if(c==="http")return "API báo lỗi: "+e.message;
+  if(e instanceof TypeError)return "Không gọi được API. Nếu đang mở trên claude.ai thì trang bị chặn gọi mạng ra ngoài: vào ⚙ chọn Claude có sẵn. Nếu đang ở github.io thì kiểm tra Base URL đã là địa chỉ proxy chưa.";
+  return "Lỗi kết nối, bấm gửi lại thử.";
+}
+async function callApi(msgs,onText,signal){
+  const r=await fetch(AI.base.replace(/\/+$/,"")+"/chat/completions",{method:"POST",signal,
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+AI.key},
+    body:JSON.stringify({model:AI.model,messages:msgs,stream:true})});
+  if(!r.ok){let t="";try{t=await r.text()}catch(e){}throw{code:"http",message:`HTTP ${r.status} ${t.slice(0,240)}`}}
+  if(!r.body||(r.headers.get("content-type")||"").includes("application/json")){
+    const j=await r.json(),t=(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||"";if(t)onText(t);return t}
+  const rd=r.body.getReader(),dec=new TextDecoder();let buf="",out="";
+  for(;;){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});
+    const lines=buf.split("\n");buf=lines.pop();
+    for(const ln of lines){const s=ln.trim();if(!s.startsWith("data:"))continue;const d=s.slice(5).trim();if(!d||d==="[DONE]")continue;
+      try{const j=JSON.parse(d),dl=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content;if(dl){out+=dl;onText(out)}}catch(e){}}}
+  return out;
+}
+async function aiSend(text){
+  text=String(text||"").trim();if(!text||aiCtl)return;
+  aiNote("");
+  if(!sampleFn&&AI.eng!=="api")await claudeReady;
+  const eng=engine();
+  if(!eng){openCfg();aiNote(AI.eng==="api"?"Điền đủ Base URL, API key và Model rồi bấm Lưu.":"Ở đây không có Claude sẵn (mày đang mở ngoài claude.ai). Điền API riêng rồi bấm Lưu.");return}
+  const hist=chat.slice(-20);
+  chat.push({role:"user",content:text});renderChat();
+  const bub=addMsg("assistant",`<span class="think">Đang nghĩ…</span>`);scrollLog();
+  const turn=`[Ngữ cảnh app lúc tao gửi tin này]\n${aiCtx()}\n\n[Tin nhắn của tao]\n${text}`;
+  const show=t=>{bub.innerHTML=md(t);scrollLog()};
+  aiCtl=new AbortController();setBusy(true);let out="";
+  try{
+    if(eng==="claude"){
+      const r=await sampleFn([{role:"user",content:SYS()},...hist,{role:"user",content:turn}],{cache:false,signal:aiCtl.signal,onText:({text:t})=>{out=t;show(t)}});
+      out=r.text+(r.truncated?"\n\n(Bị cắt ngang vì dài quá, hỏi nhỏ lại nha.)":"");
+    }else{
+      out=await callApi([{role:"system",content:SYS()},...hist,{role:"user",content:turn}],t=>{out=t;show(t)},aiCtl.signal);
+    }
+    if(!out.trim())throw{code:"empty"};
+    chat.push({role:"assistant",content:out});
+  }catch(e){
+    const stopped=(e&&e.code==="cancelled")||(e&&e.name==="AbortError");
+    const keep=e&&e.code==="refused"?"":(e&&e.text)||out;
+    if(keep)chat.push({role:"assistant",content:keep+"\n\n(…bị ngắt)"});
+    if(!stopped)aiNote(aiErr(e));
+  }finally{aiCtl=null;setBusy(false);saveChat();renderChat()}
+}
+function openCfg(){
+  const e=engine()||(AI.eng==="api"?"api":"claude");
+  document.querySelectorAll('input[name="aiEngR"]').forEach(r=>r.checked=r.value===(AI.eng==="auto"?e:AI.eng));
+  $("aiBase").value=AI.base;$("aiKey").value=AI.key;$("aiModel").value=AI.model;$("aiCfg").hidden=false;
+}
+function openAi(){$("ai").hidden=false;$("aiFab").hidden=true;renderChat();updEng();setTimeout(()=>$("aiIn").focus({preventScroll:true}),0)}
+function closeAi(){if(aiCtl)aiCtl.abort();$("ai").hidden=true;$("aiFab").hidden=false;$("aiFab").focus({preventScroll:true})}
+$("aiFab").onclick=openAi;$("aiX").onclick=closeAi;
+$("aiSet").onclick=()=>{if($("aiCfg").hidden)openCfg();else $("aiCfg").hidden=true};
+$("aiCancel").onclick=()=>{$("aiCfg").hidden=true};
+$("aiSave").onclick=()=>{
+  const r=document.querySelector('input[name="aiEngR"]:checked');
+  AI={eng:r?r.value:"auto",base:$("aiBase").value.trim(),key:$("aiKey").value.trim(),model:$("aiModel").value.trim()};
+  try{localStorage.setItem(AIK,JSON.stringify(AI))}catch(e){}
+  updEng();$("aiCfg").hidden=true;
+  aiNote(engine()?"":AI.eng==="api"?"API riêng còn thiếu Base URL, key hoặc Model.":"Ở đây không có Claude sẵn, phải mở app trên claude.ai.");
+};
+$("aiClr").onclick=()=>{if(aiCtl)aiCtl.abort();chat=[];saveChat();renderChat();aiNote("")};
+$("aiQuick").onclick=e=>{const b=e.target.closest(".qk");if(b&&!b.disabled)aiSend(QUICK[+b.dataset.q][1])};
+$("aiForm").onsubmit=e=>{e.preventDefault();if(aiCtl){aiCtl.abort();return}const v=$("aiIn").value;$("aiIn").value="";aiSend(v)};
+$("aiIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();$("aiForm").requestSubmit()}});
+$("ai").addEventListener("keydown",e=>{if(e.key==="Escape"){e.stopPropagation();closeAi()}});
+updEng();
+
+renderStats();openLesson(Math.min(P.lesson||0,L.length-1));
+</script>
+
+</body></html>
