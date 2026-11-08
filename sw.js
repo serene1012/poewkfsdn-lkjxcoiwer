@@ -1,6 +1,6 @@
 ﻿// Lưu sẵn app để mở nhanh và học được khi mất mạng (chấm AI vẫn cần mạng).
 // Sửa app xong thì tăng số phiên bản này để điện thoại tải bản mới.
-const V = "lo-ielts-v19";
+const V = "lo-ielts-v20";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png",
   ...["01","02","03","04","05","06","07","08","09","10"].map(n => `img/${n}.svg`)];
 
@@ -17,7 +17,8 @@ self.addEventListener("fetch", e => {
   // Trang chính: lấy bản mới trước, mất mạng thì dùng bản đã lưu. Hình, giọng: dùng bản lưu trước.
   if (e.request.mode === "navigate") {
     if (!/\/(index\.html)?$/.test(u.pathname)) return; // trang khác (hop-nhat.html...) tải thẳng, không ghi đè bản lưu của app
-    e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(V).then(x => x.put("index.html", c)); return r; })
+    // cache "no-cache": bỏ qua bộ đệm HTTP của trình duyệt (GitHub Pages cho giữ 10 phút) → luôn hỏi server bản mới
+    e.respondWith(fetch(e.request.url, { cache: "no-cache" }).then(r => { const c = r.clone(); caches.open(V).then(x => x.put("index.html", c)); return r; })
       .catch(() => caches.match("index.html")));
     return;
   }

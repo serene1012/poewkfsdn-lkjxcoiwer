@@ -3513,5 +3513,12 @@ $("voiceT").onclick=()=>{vOn=!vOn;try{localStorage.setItem(VKEY,vOn?"1":"0")}cat
 vUI();
 
 renderStats();renderTabs();route();
-if("serviceWorker" in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+/* App cài trên màn hình chính hay mở lại từ bộ nhớ, không tải lại trang → mỗi lần quay lại app thì hỏi sw.js mới;
+   có bản mới (sw mới chiếm quyền) thì tự tải lại một lần. */
+if("serviceWorker" in navigator&&location.protocol!=="file:"){
+  const hadSW=!!navigator.serviceWorker.controller;let swReload=false;
+  navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")reg.update().catch(()=>{})})}).catch(()=>{});
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(hadSW&&!swReload){swReload=true;location.reload()}});
+}
 </script>
