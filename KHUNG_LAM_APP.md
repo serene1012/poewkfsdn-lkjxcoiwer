@@ -84,3 +84,30 @@ Làm môn mới thì đưa file này cho Claude đọc trước, kèm tài liệ
 3. Sửa → test local (`python -m http.server 8432`) bằng fetch giả → tăng `V` trong `sw.js` → commit tiếng Việt
    không dấu → **hỏi trước khi push** → push → kiểm tra trang live đã đúng bản.
 4. Nhiều session cùng đụng một repo thì `git fetch` trước khi push; bị từ chối thì rebase và gộp, không ép push.
+5. Dữ liệu mới thì để trong `P` (vd `P.xplog`, `P.smet`) là tự có trong xuất/nhập tiến độ, khỏi sửa phần export.
+
+## 8. Lấy nội dung cho môn mới (bản quyền)
+
+- Tài liệu gốc (đề cũ, slide, ghi chép lớp, ảnh chụp bảng) chỉ là **chất liệu**: giữ kiến thức và cấu trúc bẫy,
+  **viết lại 100% bằng lời mới**, không chép nguyên đoạn.
+- Repo đang public trên GitHub Pages, nên mọi thứ đưa vào app là "ra ngoài trời". File đề xuất/cào được để
+  **ngoài repo**, duyệt xong từng mục mới ghép vào.
+- Mỗi đề xuất ghi rõ: tên, chủ đề, file nguồn, vì sao hợp format hiện có, trạng thái (chờ duyệt / đã merge).
+- Tài liệu môn nhiều quá thì cho gia sư AI **tra cứu theo đoạn** (slide + OCR ảnh) thay vì nhồi hết vào prompt.
+
+## 9. Học từ web khác (chỉ lấy ý tưởng)
+
+- Cào/xem vài web cùng loại, ghi lại cái nên học và cái nên tránh vào một file TAKEAWAYS, không chép nội dung.
+- Bài học đã rút ra:
+  - **Quy chiếu điểm ra chuẩn ngoài đời** (band, thang điểm thi thật) thay vì điểm số lơ lửng.
+  - **Vòng làm → nhận nhận xét → sửa → làm lại** là sản phẩm chính; nói thẳng vòng đó ra trong giao diện.
+  - **Một màu nhấn duy nhất** cho nút chính, nút phụ để trong suốt; chữ trên nút là động từ đúng hành động.
+  - **Tránh nhồi**: banner khuyến mãi, carousel, widget nổi, badge "NEW" đỏ làm mất thứ tự đọc.
+- Port tính năng từ app khác thì **port ý tưởng**, không bê code (app kia có backend, app này không).
+
+## Nguồn để đọc thêm
+
+- `HANDOFF.md` trong repo này: chi tiết từng phiên của app IELTS (bản chính, mới nhất).
+- `C:\Users\ACER\.zcode\workspace\d646d9b5-e543-44b7-95cf-c6a5c30db8c8\DE_XUAT_TAILIEU.md`: mẫu file đề xuất tài liệu chờ duyệt.
+- `C:\Users\ACER\.zcode\workspace\d646d9b5-e543-44b7-95cf-c6a5c30db8c8\rea-ielts-captures\TAKEAWAYS.md`: mẫu ghi chép khảo sát web.
+- `theme-preview.html` trong repo này: bệ thử theme A/B/C.
