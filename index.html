@@ -408,6 +408,7 @@ mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 
 box:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/>',
 exam:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/><path d="m14.5 13.5 1 1 2-2"/>',
 expand:'<path d="M4 9V4h5"/><path d="M15 4h5v5"/><path d="M20 15v5h-5"/><path d="M9 20H4v-5"/>',
+shrink:'<path d="M9 4v5H4"/><path d="M20 9h-5V4"/><path d="M15 20v-5h5"/><path d="M4 15h5v5"/>',
 gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
 volOn:'<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5.5a9.5 9.5 0 0 1 0 13"/>',
 volOff:'<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m16.5 9.5 5 5"/><path d="m21.5 9.5-5 5"/>',
@@ -561,7 +562,11 @@ async function apiCall(prompt,signal,opts,api){
 let SAMPLE=null;
 function apiInit(){SAMPLE=API.key?{json:async(p,o={})=>pickJSON(await apiCall(p,o.signal))}:null}
 apiInit();
-const provName=()=>API.prov==="openrouter"?"chuẩn OpenAI":API.prov==="claude"?"Claude":"Gemini";
+const provNameOf=p=>p==="openrouter"?"chuẩn OpenAI":p==="claude"?"Claude":"Gemini";
+const provName=()=>provNameOf(API.prov);
+function apiErrText(e){const c=e&&e.code;return c==="not_granted"?"Key sai hoặc chưa được cấp quyền.":c==="rate_limited"?"Gọi nhiều quá, đợi chút rồi thử lại.":c==="network"?"Không kết nối được, kiểm tra mạng.":"Lỗi: "+((e&&e.message)||c)}
+/* Mã lỗi nghĩa là "không có AI để chấm" → rơi về tự chấm. Mấy mã ngoài not_granted/unavailable là của bản chạy trong Claude cũ, giữ cho chắc. */
+const NO_AI=["not_granted","unavailable","sampling_disabled","not_declared","capability_disabled","capability_removed"];
 function apiForm(){$("aProv").value=API.prov;$("aKey").value=API.key;$("aModel").value=API.model||API_DEF[API.prov];$("aBase").value=API.base||""}
 $("aProv").onchange=()=>{$("aModel").value=API_DEF[$("aProv").value]};
 $("aSave").onclick=()=>{const p=$("aProv").value,m=$("aModel").value.trim();
@@ -573,17 +578,15 @@ $("aDel").onclick=()=>{$("aKey").value="";$("aSave").onclick()};
 $("aTest").onclick=async()=>{if(!SAMPLE){$("aMsg").textContent="Lưu key trước đã.";return}
   $("aMsg").textContent="Đang thử…";
   try{const r=await SAMPLE.json('Return exactly this JSON and nothing else: {"ok": true}');$("aMsg").textContent=r&&r.ok?`Ngon! ${provName()} chạy được rồi.`:"Gọi được nhưng trả lời lạ, thử model khác xem."}
-  catch(e){$("aMsg").textContent=e.code==="not_granted"?"Key sai hoặc chưa được cấp quyền.":e.code==="rate_limited"?"Gọi nhiều quá, đợi chút rồi thử lại.":e.code==="network"?"Không kết nối được, kiểm tra mạng.":"Lỗi: "+(e.message||e.code)}};
+  catch(e){$("aMsg").textContent=apiErrText(e)}};
 /* ---- Key riêng cho chat (llielts_api_chat, bỏ trống = dùng chung key chấm bài) ---- */
 const CHAT_STORE="llielts_api_chat";
 let API_CHAT=null;
 try{const c=JSON.parse(localStorage.getItem(CHAT_STORE)||"null");if(c&&c.key)API_CHAT={prov:c.prov||"gemini",key:String(c.key),model:c.model||"",base:c.base||""}}catch(e){}
 const chatAPI=()=>API_CHAT&&API_CHAT.key?API_CHAT:API;
 const chatReady=()=>!!(chatAPI()&&chatAPI().key);
-const provNameOf=p=>p==="openrouter"?"chuẩn OpenAI":p==="claude"?"Claude":"Gemini";
 const chatProvName=()=>provNameOf(chatAPI().prov);
-function chatErrText(e){const c=e&&e.code;return c==="not_granted"?"Key chat sai hoặc chưa được cấp quyền.":c==="rate_limited"?"Key chat hết hạn mức, đổi key khác trong Cài đặt nhé.":c==="network"?"Không kết nối được, kiểm tra mạng.":"Lỗi: "+((e&&e.message)||c)}
-function apiErrText(e){const c=e&&e.code;return c==="not_granted"?"Key sai hoặc chưa được cấp quyền.":c==="rate_limited"?"Gọi nhiều quá, đợi chút rồi thử lại.":c==="network"?"Không kết nối được, kiểm tra mạng.":"Lỗi: "+(e.message||e.code)}
+function chatErrText(e){const c=e&&e.code;return c==="not_granted"?"Key chat sai hoặc chưa được cấp quyền.":c==="rate_limited"?"Key chat hết hạn mức, đổi key khác trong Cài đặt nhé.":apiErrText(e)}
 $("aCProv").onchange=()=>{$("aCModel").value=API_DEF[$("aCProv").value]};
 $("aCSave").onclick=()=>{const key=$("aCKey").value.trim();
   if(!key){API_CHAT=null;try{localStorage.removeItem(CHAT_STORE)}catch(e){}
@@ -592,7 +595,7 @@ $("aCSave").onclick=()=>{const key=$("aCKey").value.trim();
   API_CHAT={prov:p,key,model:m===API_DEF[p]?"":m,base:$("aCBase").value.trim()};
   try{localStorage.setItem(CHAT_STORE,JSON.stringify(API_CHAT))}catch(e){}
   chatUI();$("aCMsg").textContent=`Đã lưu. Chat giờ dùng ${chatProvName()}. Bấm "Thử gọi chat" để kiểm tra.`};
-$("aCTest").onclick=async()=>{if(!chatReady()){$("aCMsg").textContent="Chưa có key chat (dùng chung chấm bài thì cũng gọi thử được luôn)."}
+$("aCTest").onclick=async()=>{if(!chatReady()){$("aCMsg").textContent="Chưa có key chat (dùng chung chấm bài thì cũng gọi thử được luôn).";return}
   $("aCMsg").textContent="Đang thử…";
   try{const t=await apiCall('Return exactly this JSON and nothing else: {"ok": true}',null,null,chatAPI());
     $("aCMsg").textContent=/ok/.test(t)?`Ngon! ${chatProvName()} chạy được rồi.`:"Gọi được nhưng trả lời lạ, thử model khác xem."}
@@ -616,7 +619,7 @@ $("aKDel").onclick=()=>{const id=$("aKPick").value;if(!id){$("aKMsg").textConten
   KEYS=KEYS.filter(k=>k.id!==id);keysSave();renderKeys();$("aKMsg").textContent="Đã xóa key khỏi danh sách (key đang dùng của chấm/chat thì vẫn còn)."};
 $("aKUseG").onclick=()=>{const k=KEYS.find(x=>x.id===$("aKPick").value);
   if(!k){$("aKMsg").textContent="Chưa chọn key nào.";return}
-  API={prov:k.prov,key:k.key,model:k.model||""};
+  API={prov:k.prov,key:k.key,model:k.model||"",base:k.base||""};
   try{localStorage.setItem(API_KEY_STORE,JSON.stringify(API))}catch(e){}
   apiInit();chatUI();apiForm();
   $("aNow").textContent=SAMPLE?`Đang chấm bằng ${provName()}.`:"Chưa có key: đang tự chấm theo checklist.";
@@ -640,7 +643,7 @@ $("aImp").onclick=()=>{let d;try{d=JSON.parse($("aData").value)}catch(e){d=null}
   if(!confirm("Ghi đè tiến độ hiện tại bằng mã vừa dán?"))return;
   P=Object.assign(P,d);save();location.reload()};
 /* Toàn màn hình */
-function fsUI(){const on=!!document.fullscreenElement;$("fsT").textContent=on?"⤡":"⛶";$("fsT").title=on?"Thoát toàn màn hình":"Toàn màn hình"}
+function fsUI(){const on=!!document.fullscreenElement;$("fsT").innerHTML=ic(on?"shrink":"expand",15);$("fsT").title=on?"Thoát toàn màn hình":"Toàn màn hình"}
 $("fsT").onclick=()=>{try{const p=document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();if(p&&p.catch)p.catch(()=>{})}catch(e){}};
 document.addEventListener("fullscreenchange",fsUI);
 if(!document.fullscreenEnabled)$("fsT").hidden=true;
@@ -788,6 +791,14 @@ function renderStats(){
   $("lvTxt").textContent=`${P.xp} XP`+(nxt?` · còn ${nxt[0]-P.xp}`:" · max");
   $("streak").innerHTML=ic("flame",15)+" "+P.streak;
 }
+/* Bảng cuối lượt dùng chung cho mọi phần: again = "Làm lượt nữa", back = "Về menu".
+   Giữ nguyên các tiêu đề "Hoàn hảo!" / "Cố lên…" / "…thẻ…" vì linh vật chọn hình theo chữ này. */
+const endTitle=(c,n,mid)=>c===n?"Hoàn hảo!":c>=n/2?(mid||"Xong lượt!"):"Cố lên mày!";
+function endModal(title,msg,good,again,back){
+  $("mT").textContent=title;$("mXP").textContent="+"+R.earned+" XP";$("mMsg").textContent=msg;$("modal").hidden=false;if(good)confetti();
+  $("mAgain").onclick=()=>{$("modal").hidden=true;again()};
+  $("mBack").onclick=()=>{$("modal").hidden=true;back()};
+}
 function renderTabs(){
   $("tabs").innerHTML=PARTS.map(p=>`<button data-tab="${p.id}" class="${P.tab===p.id?"on":""} ${p.ready?"":"lock"}">${p.ready?"":ic("lock",15)+" "}${p.name}</button>`).join("");
   const on=$("tabs").querySelector(".on");if(on){const t=$("tabs");t.scrollLeft=Math.max(0,on.offsetLeft-t.offsetLeft-(t.clientWidth-on.offsetWidth)/2)}
@@ -913,14 +924,10 @@ function answer(q,b){
   $("qReveal").hidden=true;$("qNext").hidden=false;$("qNext").focus();
 }
 function endRound(){
-  const n=R.qs.length;
-  $("mT").textContent=R.correct===n?"Hoàn hảo!":R.correct>=n/2?"Xong lượt!":"Cố lên mày!";
-  $("mXP").textContent="+"+R.earned+" XP";
-  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(wrongIds().length?` Có ${wrongIds().length} từ đang chờ ôn lại.`:"");
-  $("modal").hidden=false;if(R.correct>=n/2)confetti();
+  const n=R.qs.length,m=R.mode,nw=wrongIds().length;
+  endModal(endTitle(R.correct,n),`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} từ đang chờ ôn lại.`:""),
+    R.correct>=n/2,()=>startMode(m),vocabMenu);
 }
-$("mAgain").onclick=()=>{$("modal").hidden=true;startMode(R.mode)};
-$("mBack").onclick=()=>{$("modal").hidden=true;vocabMenu()};
 
 /* ---------- Flashcard ---------- */
 function startFlash(words){R={mode:"flash",list:shuffle(words),i:0,earned:0};renderFlash()}
@@ -939,9 +946,8 @@ function renderFlash(){
   $("qBack").onclick=vocabMenu;
   const flip=()=>{if(open)return;open=true;$("back").hidden=false;$("hint").hidden=true;$("fbtn").hidden=false};
   $("card").onclick=flip;$("card").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flip()}};
-  const next=()=>{R.i++;if(R.i<R.list.length)renderFlash();else{
-    $("mT").textContent="Hết bộ thẻ!";$("mXP").textContent="+"+R.earned+" XP";
-    $("mMsg").textContent="Thẻ nào chưa nhớ đã nằm trong mục Ôn từ hay sai.";$("modal").hidden=false;confetti()}};
+  const next=()=>{R.i++;if(R.i<R.list.length)renderFlash();
+    else endModal("Hết bộ thẻ!","Thẻ nào chưa nhớ đã nằm trong mục Ôn từ hay sai.",true,()=>startMode("flash"),vocabMenu)};
   $("fYes").onclick=()=>{if(!P.known[w.id]){P.known[w.id]=1;R.earned+=5;gain(5)}next()};
   $("fNo").onclick=()=>{delete P.known[w.id];P.wrong[w.id]=Math.max(2,P.wrong[w.id]||0);save();next()};
 }
@@ -1013,7 +1019,7 @@ async function gradeSentence(w){
   }catch(e){
     const c=e&&e.code;
     if(c==="cancelled"){$("fb").hidden=true}
-    else if(c==="not_granted"||c==="sampling_disabled"||c==="not_declared"||c==="capability_disabled"||c==="capability_removed"||c==="unavailable"){SAMPLE=null;selfCheck(w,ans,"AI không chấm được (key sai hoặc hết hạn, xem lại ở ⚙), nên mày tự chấm theo checklist.")}
+    else if(NO_AI.includes(c)){SAMPLE=null;selfCheck(w,ans,"AI không chấm được (key sai hoặc hết hạn, xem lại ở ⚙), nên mày tự chấm theo checklist.")}
     else if(c==="rate_limited")selfCheck(w,ans,"AI đang bận vì gọi nhiều quá. Tạm tự chấm, lát nữa thử lại sau.");
     else selfCheck(w,ans,"Lần này chấm bị lỗi. Mày tự chấm theo checklist, hoặc bấm chấm lại sau.");
   }finally{btn.disabled=false}
@@ -1204,16 +1210,10 @@ function gAnswer(it,b){
   fb("good",`<div><b>${pick(PRAISE)}</b> +${g} XP${P.streak>=3?` · chuỗi ${P.streak} 🔥`:""}</div>${fixLine}<div>💡 ${esc(q.why)}</div>`);
   $("qReveal").hidden=true;$("qNext").hidden=false;$("qNext").focus();
 }
-function gModal(title,msg,good,again){
-  $("mT").textContent=title;$("mXP").textContent="+"+R.earned+" XP";$("mMsg").textContent=msg;$("modal").hidden=false;if(good)confetti();
-  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
-  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
-  a.onclick=()=>{restore();again()};b.onclick=()=>{restore();grammarMenu()};
-}
 function gEnd(){
   const n=R.qs.length,m=R.gm,nw=gWrongIds().length;
-  gModal(R.correct===n?"Hoàn hảo!":R.correct>=n/2?"Xong lượt!":"Cố lên mày!",
-    `Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} câu đang chờ ôn lại.`:""),R.correct>=n/2,()=>startG(m));
+  endModal(endTitle(R.correct,n),`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} câu đang chờ ôn lại.`:""),
+    R.correct>=n/2,()=>startG(m),grammarMenu);
 }
 
 /* ---------- Tự viết, AI chấm ---------- */
@@ -1274,7 +1274,7 @@ async function gradeGWrite(w){
   }catch(e){
     const c=e&&e.code;
     if(c==="cancelled"){$("fb").hidden=true}
-    else if(c==="not_granted"||c==="sampling_disabled"||c==="not_declared"||c==="capability_disabled"||c==="capability_removed"||c==="unavailable"){SAMPLE=null;gSelfCheck(w,"AI không chấm được (key sai hoặc hết hạn, xem lại ở ⚙), nên mày tự chấm theo checklist.")}
+    else if(NO_AI.includes(c)){SAMPLE=null;gSelfCheck(w,"AI không chấm được (key sai hoặc hết hạn, xem lại ở ⚙), nên mày tự chấm theo checklist.")}
     else if(c==="rate_limited")gSelfCheck(w,"AI đang bận vì gọi nhiều quá. Tạm tự chấm, lát nữa thử lại sau.");
     else gSelfCheck(w,"Lần này chấm bị lỗi. Mày tự chấm theo checklist, hoặc bấm chấm lại sau.");
   }finally{btn.disabled=false}
@@ -1652,13 +1652,8 @@ function lEnd(){
   stopSpeak();
   const n=R.qs.length,m=R.lm,nw=lWrongIds().length;
   if(R.set){P.lbest[R.set.key]=Math.max(P.lbest[R.set.key]||0,R.correct);save()}
-  $("mT").textContent=R.correct===n?"Hoàn hảo!":R.correct>=n/2?"Xong lượt!":"Cố lên mày!";
-  $("mXP").textContent="+"+R.earned+" XP";
-  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} câu đang chờ ôn lại.`:"");
-  $("modal").hidden=false;if(R.correct>=n/2)confetti();
-  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
-  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
-  a.onclick=()=>{restore();startL(m)};b.onclick=()=>{restore();listenMenu()};
+  endModal(endTitle(R.correct,n),`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} câu đang chờ ôn lại.`:""),
+    R.correct>=n/2,()=>startL(m),listenMenu);
 }
 
 /* ===== PHẦN 4: ĐỌC — dữ liệu =====
@@ -2108,13 +2103,8 @@ function rEnd(){
   if(R.end){const left=Math.round((R.end-Date.now())/60000);tmsg=R.late?" Quá giờ rồi, lần sau đọc câu hỏi trước rồi mới lướt bài tìm từ khóa.":` Kịp giờ${left>0?`, còn dư khoảng ${left} phút`:""}.`}
   stopTimer();
   if(m==="all"&&R.pass){P.rbest[R.pass.id]=Math.max(P.rbest[R.pass.id]||0,R.correct);save()}
-  $("mT").textContent=R.correct===n?"Hoàn hảo!":R.correct>=n/2?"Xong lượt!":"Cố lên mày!";
-  $("mXP").textContent="+"+R.earned+" XP";
-  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu.`+tmsg+(nw?` Có ${nw} câu đang chờ ôn lại.`:"");
-  $("modal").hidden=false;if(R.correct>=n/2)confetti();
-  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
-  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
-  a.onclick=()=>{restore();startR(m)};b.onclick=()=>{restore();readMenu()};
+  endModal(endTitle(R.correct,n),`Đúng ngay lần đầu ${R.correct}/${n} câu.`+tmsg+(nw?` Có ${nw} câu đang chờ ôn lại.`:""),
+    R.correct>=n/2,()=>startR(m),readMenu);
 }
 
 /* ---------- Tin nóng mỗi ngày: đọc bản tin ngắn + 3 câu MC (đọc thêm, không vào SRS) ---------- */
@@ -2170,13 +2160,8 @@ function newsPick(it,b){
 function newsEnd(){
   const n=R.qs.length;
   P.news.done[dayKey()]=R.correct;save();
-  $("mT").textContent=R.correct===n?"Đọc tin giỏi!":R.correct>=n/2?"Xong rồi!":"Ngày mai lại có tin mới";
-  $("mXP").textContent="+"+R.earned+" XP";
-  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu. Tin nóng để luyện thêm nên không vào ôn tổng.`;
-  $("modal").hidden=false;if(R.correct>=n/2)confetti();
-  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
-  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
-  a.onclick=()=>{restore();newsStart()};b.onclick=()=>{restore();readMenu()};
+  endModal(R.correct===n?"Đọc tin giỏi!":R.correct>=n/2?"Xong rồi!":"Ngày mai lại có tin mới",
+    `Đúng ngay lần đầu ${R.correct}/${n} câu. Tin nóng để luyện thêm nên không vào ôn tổng.`,R.correct>=n/2,newsStart,readMenu);
 }
 
 /* ===== PHẦN 5: GIAO TIẾP + SPEAKING — dữ liệu ===== */
@@ -2390,13 +2375,8 @@ function sAnswer(it,b){
 }
 function sEnd(){
   const n=R.qs.length,m=R.sm,nw=sWrongIds().length;
-  $("mT").textContent=R.correct===n?"Hoàn hảo!":R.correct>=n/2?"Xong lượt!":"Cố lên mày!";
-  $("mXP").textContent="+"+R.earned+" XP";
-  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} câu đang chờ ôn lại.`:"");
-  $("modal").hidden=false;if(R.correct>=n/2)confetti();
-  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
-  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
-  a.onclick=()=>{restore();startS(m)};b.onclick=()=>{restore();speakMenu()};
+  endModal(endTitle(R.correct,n),`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(nw?` Có ${nw} câu đang chờ ôn lại.`:""),
+    R.correct>=n/2,()=>startS(m),speakMenu);
 }
 
 /* ---------- Khung trả lời & từ nối ---------- */
@@ -2632,7 +2612,7 @@ async function gradeSpeak(){
   }catch(e){
     const c=e&&e.code;
     if(c==="cancelled"){$("fb").hidden=true}
-    else if(c==="not_granted"||c==="sampling_disabled"||c==="not_declared"||c==="capability_disabled"||c==="capability_removed"||c==="unavailable"){SAMPLE=null;sSelf("AI không chấm được (key sai hoặc hết hạn, xem lại ở ⚙), nên mày tự chấm theo checklist.",st)}
+    else if(NO_AI.includes(c)){SAMPLE=null;sSelf("AI không chấm được (key sai hoặc hết hạn, xem lại ở ⚙), nên mày tự chấm theo checklist.",st)}
     else if(c==="rate_limited")sSelf("AI đang bận vì gọi nhiều quá. Tạm tự chấm, lát nữa thử lại sau.",st);
     else sSelf("Lần này chấm bị lỗi. Mày tự chấm theo checklist, hoặc bấm chấm lại sau.",st);
   }finally{if($("sGrade"))btn.disabled=false}
@@ -3074,13 +3054,9 @@ function revAnswer(it,b){
 function revEnd(){
   stopSpeak();
   const n=R.qs.length,left=revWrongCount();
-  $("mT").textContent=R.correct===n?"Hoàn hảo!":R.correct>=n/2?"Ôn xong!":"Cố lên mày!";
-  $("mXP").textContent="+"+R.earned+" XP";
-  $("mMsg").textContent=`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(R.fixed?` Gỡ được ${R.fixed} câu khỏi danh sách hay sai.`:"")+(left?` Còn ${left} câu đang chờ ôn.`:" Sạch danh sách câu sai rồi!");
-  $("modal").hidden=false;if(R.correct>=n/2)confetti();
-  const a=$("mAgain"),b=$("mBack"),oa=a.onclick,ob=b.onclick;
-  const restore=()=>{a.onclick=oa;b.onclick=ob;$("modal").hidden=true};
-  a.onclick=()=>{restore();R.back?R.back():startRev()};b.onclick=()=>{restore();R.back?R.back():mockMenu()};
+  /* drill (R.back) thì "Làm lượt nữa" chơi lại đúng bộ drill, không văng về sổ lỗi */
+  endModal(endTitle(R.correct,n,"Ôn xong!"),`Đúng ngay lần đầu ${R.correct}/${n} câu.`+(R.fixed?` Gỡ được ${R.fixed} câu khỏi danh sách hay sai.`:"")+(left?` Còn ${left} câu đang chờ ôn.`:" Sạch danh sách câu sai rồi!"),
+    R.correct>=n/2,R.back?startDrill:()=>startRev(),R.back||mockMenu);
 }
 
 /* ================= PHẦN 7: TIẾN BỘ — chỉ vẽ số đo được, thiếu data thì bỏ trống (không zero-fill) ================= */

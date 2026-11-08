@@ -10,7 +10,7 @@
 
 ## 1. Bối cảnh + ràng buộc SẮP (đừng phá)
 
-- App: **"Lò Luyện IELTS"** — PWA 1 file (`index.html` ~2.6k dòng, không build step), 7 phần
+- App: **"Lò Luyện IELTS"** — PWA 1 file (`index.html` ~3.3k dòng, không build step), 7 phần
   (vocab/grammar/listening/reading/speaking/mock/**prog**), XP→Band 4–6.5, SRS 2-lần-đúng-mới-xóa,
   AI chấm + chat bằng key của user (Gemini / Claude / web khác chuẩn OpenAI) lưu localStorage,
   SpeechRecognition, speechSynthesis.
@@ -20,7 +20,7 @@
 - Bản làm việc: chính là repo này (clone về đâu làm đó). Server test:
   `python -m http.server 8432` chạy trong thư mục repo, mở http://localhost:8432.
 - Repo gốc (không đụng): `serene1012/dfsoiweun-lwkashdfsoiu`.
-- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v10`)
+- **Nhớ sw.js:** app có service worker, SỬA APP XONG phải tăng `V` trong `sw.js` (đang là `lo-ielts-v14`)
   thì điện thoại tải bản mới. Bản test qua server thì chỉ cần reload là network-first.
 - **An toàn (user nhắc rõ):** key chỉ nằm localStorage máy user, gọi thẳng HTTPS tới hãng, không
   backend; mã xuất tiến độ (Xuất trong Cài đặt) KHÔNG được chứa key — mỗi lần đụng tới key/export
@@ -236,6 +236,19 @@ hiện có — không tốn thêm lần gọi API nào**.
   Hồ sơ điểm yếu hiện "usually ×2, freetime ×1"; smoke 7 tab 0 lỗi; data test + key giả đã dọn.
   Chấm tự (không key) vẫn rơi `sSelf` như cũ, không đụng pron. Nếu AI cũ không trả field pron →
   `Array.isArray(x.pron)` là false → UI hiện như cũ, không vỡ gì.
+
+### 5A++++. PHIÊN 2026-11-08 (dọn cấu trúc, sw `lo-ielts-v14`) — KHÔNG đụng Elaina
+
+- **Bảng cuối lượt gom về 1 helper** `endModal(title,msg,good,again,back)` + `endTitle(c,n,mid)`:
+  8 chỗ copy-paste (vocab/flash/grammar/listen/read/news/speak/ôn tổng) trước đây tự lưu/khôi phục
+  onclick của `mAgain`/`mBack`. Thêm phần mới thì gọi `endModal`, đừng gán tay. Tiêu đề giữ nguyên
+  ("Hoàn hảo!", "Cố lên mày!", "Hết bộ thẻ!") vì MutationObserver linh vật chọn hình theo chữ.
+  Drill từ sổ lỗi: "Làm lượt nữa" giờ chơi lại drill (trước văng về sổ lỗi).
+- **Bug key lưu sẵn:** "Dùng cho chấm" làm rơi `base` → web khác chuẩn OpenAI bị gọi nhầm sang
+  openrouter.ai. Đã giữ `base`.
+- "Thử gọi chat" khi chưa có key giờ dừng luôn (trước báo rồi vẫn gọi API không key).
+- Gom `apiErrText` / `provNameOf` / `NO_AI` (danh sách mã lỗi rơi về tự chấm) — hết lặp 3 chỗ.
+- Nút toàn màn hình: đổi icon SVG `expand`/`shrink` (trước bấm vào thì thành ký tự ⛶/⤡ lệch bộ icon).
 
 ### 5B. Chưa duyệt (hỏi trước khi làm)
 
