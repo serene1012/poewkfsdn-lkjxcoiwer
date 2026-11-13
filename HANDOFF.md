@@ -2,7 +2,21 @@
 
 > Đọc file này trước nếu là chat/session mới tiếp quản. File nằm NGAY TRONG repo
 > `serene1012/poewkfsdn-lkjxcoiwer` — clone repo này về là có đủ (app + handoff + bệ thử theme).
-> Updated: 2026-11-08 chiều · App LIVE trên GitHub Pages, sw **`lo-ielts-v16`** (commit `db59ede`).
+> **MỚI NHẤT — phiên 2026-11-08 tối → 11-13 (sw `lo-ielts-v20`), đọc cái này trước:**
+> - Chat Elaina: prompt thêm mục "NGHE LỜI HỌC VIÊN" (`chatPrompt`) — xin lý thuyết thì giảng, xin bài thì ra đề
+>   đánh số rồi chờ, bị chê thì làm lại, chỉ từ chối chủ đề RÕ RÀNG ngoài lề. User báo bot cãi + từ chối nhầm → đã sửa (v17).
+> - ElevenLabs giám khảo Speaking: XONG (mục 9, v18). Nhiều key tự xoay, cache IndexedDB, nút "🎯 Giám khảo hỏi vặn".
+> - Điện thoại không nhận bản mới → sw navigate dùng `fetch(url,{cache:"no-cache"})`, đăng ký `updateViaCache:"none"`,
+>   `reg.update()` khi quay lại app, `controllerchange` tự reload 1 lần (v20). CHƯA verify trên điện thoại thật.
+> - `KHUNG_LAM_APP.md` trong repo: khung làm app "Lò Luyện" cho môn khác (không nội dung tiếng Anh). User dùng nó
+>   cho các app khác (Hợp Nhất, Excel, Python) và đưa cho ChatGPT làm dự án bên kia (kèm "bí kíp chat AI").
+> - **VIỆC TREO (chưa làm, đề xuất user):** `chatSend` cắt câu trả lời ở 600 ký tự (`r.slice(0,600)`) → bài giảng
+>   lý thuyết dài có thể cụt. Nâng lên ~2000 (cả lúc lưu `P.chat`) — chờ user gật.
+> - Base URL xkiro cho app: `https://lo-ielts-proxy.tuanminh1012.workers.dev/v1` (proxy chỉ nhận Origin
+>   `https://serene1012.github.io`). Script ngoài trình duyệt gọi thẳng `https://api.xkiro.com/v1`.
+> - Repo có nhiều session cùng push (hop-nhat, gia sư AI…): luôn `git fetch` + rebase trước khi push.
+>
+> Cũ: 2026-11-08 chiều · sw `lo-ielts-v16` (commit `db59ede`).
 > **Phiên 2026-11-08 chiều đã làm** (chi tiết mục 5A++++ → 5A++++++): dọn cấu trúc (`endModal`), sửa
 > bug key lưu sẵn mất base URL, proxy Cloudflare cho xkiro (user đang chấm + chat bằng xkiro qua proxy,
 > CHẠY RỒI), chat Elaina lấy dữ liệu app theo từ khóa, sổ lỗi khép vòng (lưu phân tích, câu luyện viết
